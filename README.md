@@ -1,6 +1,13 @@
 # Permitta
 Authorise all the things
 
+## Interesting Reading
+* https://trino.io/docs/current/security/opa-access-control.html
+* https://www.openpolicyagent.org/
+* https://www.permit.io/
+* https://www.adaltas.com/en/2020/01/22/intro-open-policy-agent-with-kafka/
+* https://trino.io/docs/current/develop/system-access-control.html
+
 ## Setup
 ```bash
 brew install python@3.12
