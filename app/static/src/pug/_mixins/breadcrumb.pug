@@ -1,0 +1,12 @@
+mixin breadcrumb(items)
+  nav(aria-label="breadcrumb")
+    ol.breadcrumb.my-0
+      each item, index in items
+        - var href = item.href
+        - var label = item.label
+
+        li.breadcrumb-item(class=(index === items.length - 1 ? 'active' : false))
+          if (href)
+            a(href=(href ? href : '#'))= label ? label : item
+          else
+            span= label ? label : item

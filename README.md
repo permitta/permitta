@@ -15,3 +15,11 @@ python3.12 -m venv venv
 source venv/bin/activate
 
 ```
+
+## Front End
+https://github.com/coreui/coreui-free-bootstrap-admin-template
+```bash
+cd app/static
+npm install
+npm run build
+```

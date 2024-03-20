@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="21.441553mm"
+   height="6.6401596mm"
+   viewBox="0 0 21.441553 6.6401596"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   sodipodi:docname="permitta-logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.4818822"
+     inkscape:cx="81.188381"
+     inkscape:cy="7.4540201"
+     inkscape:window-width="1512"
+     inkscape:window-height="916"
+     inkscape:window-x="0"
+     inkscape:window-y="38"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-51.361457,-32.821491)">
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.175px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Italic';fill:#ffffff;stroke-width:0.264583"
+       x="54.503353"
+       y="39.461651"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Italic';fill:#ffffff;stroke-width:0.264583"
+         x="54.503353"
+         y="39.461651">PERMITTA</tspan></text>
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;stroke-width:0.265;stroke-dasharray:none;paint-order:markers stroke fill"
+       id="path2"
+       inkscape:flatsided="false"
+       sodipodi:sides="5"
+       sodipodi:cx="49.692444"
+       sodipodi:cy="36.599461"
+       sodipodi:r1="3.2974801"
+       sodipodi:r2="1.2631303"
+       sodipodi:arg1="1.6447354"
+       sodipodi:arg2="2.572239"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 49.448853,39.887931 -0.82028,-2.607532 -2.138924,0.103587 2.22643,-1.585905 -0.759481,-2.002228 2.19629,1.627389 1.669539,-1.341031 -0.869048,2.591687 1.791313,1.173424 -2.733392,-0.02564 z"
+       inkscape:transform-center-x="0.075274206"
+       inkscape:transform-center-y="0.24243112"
+       transform="translate(4.8718085,-0.9743617)" />
+  </g>
+</svg>
