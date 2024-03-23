@@ -7,3 +7,4 @@ pytailwindcss
 tinydb
 black
 fastapi-opa
+opa-python-client

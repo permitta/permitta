@@ -13,7 +13,6 @@ Authorise all the things
 brew install python@3.12
 python3.12 -m venv venv
 source venv/bin/activate
-
 ```
 
 ## Front End
@@ -22,4 +21,10 @@ https://github.com/coreui/coreui-free-bootstrap-admin-template
 cd app/static
 npm install
 npm run build
+```
+
+## Run OPA
+OPA doesn't automatically update its own policies, it needs a restart
+```bash
+docker-compose up
 ```

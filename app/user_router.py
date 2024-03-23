@@ -1,20 +1,14 @@
 from dataclasses import dataclass
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
+from permitta_opa_client import PermittaOpaClient
 
-router = APIRouter()
-
+router = APIRouter(prefix="/users")
 templates = Jinja2Templates(directory="app/static/dist")
+opa_client = PermittaOpaClient()
+
 
 @router.get("/")
-def index(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
-
-@router.get("/users/{username}")
-def user(request: Request, username: str):
-    return "Hello " + username
-
-@router.get("/users")
 def users(request: Request):
     @dataclass
     class User:
@@ -31,3 +25,9 @@ def users(request: Request):
     ]
 
     return templates.TemplateResponse("users.html", {"request": request, "users": users})
+
+@router.get("/users/{username}")
+def user(request: Request, username: str):
+    return "Hello " + username
+
+

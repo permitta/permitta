@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.config import Settings
-from app.routes import router
+
+from app.main_router import router as main_router
+from app.user_router import router as user_router
+from app.opa_router import router as opa_router
 
 use_opa: bool = True
 
@@ -10,7 +13,9 @@ settings = Settings()
 
 def get_app() -> FastAPI:
     app = FastAPI(**settings.fastapi_kwargs)
-    app.include_router(router)
+    app.include_router(main_router)
+    app.include_router(user_router)
+    app.include_router(opa_router)
     return app
 
 
