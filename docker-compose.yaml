@@ -1,0 +1,13 @@
+version: '2'
+services:
+  opa:
+    image: openpolicyagent/opa:latest
+    ports:
+      - 8181:8181
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "/policy/auth.rego"
+    volumes:
+      - ./policy:/policy

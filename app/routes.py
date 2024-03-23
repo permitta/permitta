@@ -10,9 +10,12 @@ templates = Jinja2Templates(directory="app/static/dist")
 def index(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+@router.get("/users/{username}")
+def user(request: Request, username: str):
+    return "Hello " + username
 
 @router.get("/users")
-def index(request: Request):
+def users(request: Request):
     @dataclass
     class User:
         first_name: str
