@@ -1,1 +1,0 @@
-from .src.permitta_opa_client import PermittaOpaClient
