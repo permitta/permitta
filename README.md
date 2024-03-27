@@ -18,8 +18,14 @@ source venv/bin/activate
 ## Front End
 https://github.com/coreui/coreui-free-bootstrap-admin-template
 
-### Datatables
-https://pypi.org/project/django-dynamic-datatb/
+```bash
+# tailwind
+npm install -D tailwindcss
+
+npx tailwindcss -i ./permitta/css/input.css -o ./permitta/static/css/output.css --watch
+
+```
+
 
 ```bash
 cd app/static
@@ -58,7 +64,7 @@ Capability Config:
 ## OPA Stuff
 ```bash
 # tar the bundle folder
-tar czf app/static/dist/bundles/permitta/bundle.tar.gz policy_bundle
+tar czf app/static/static/bundles/permitta/bundle.tar.gz policy_bundle
 
 # decision logger
 https://gist.github.com/asafc/036ead38d8711e4376a02c98d39877a3

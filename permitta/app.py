@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify
+from flask import Flask, session, jsonify, render_template
 from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.user_session import UserSession
@@ -37,7 +37,8 @@ class PermittaSession(UserSession):
 @auth.oidc_auth(PROVIDER_NAME)
 def index():
     permitta_session = PermittaSession(session)
-    return f"Hello {permitta_session.given_name} {permitta_session.family_name} with email {permitta_session.email}"
+    # return f"Hello {permitta_session.given_name} {permitta_session.family_name} with email {permitta_session.email}"
+    return render_template("index.html")
 
 
 @app.route("/hello")
