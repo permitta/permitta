@@ -9,10 +9,21 @@ Authorise all the things
 * https://trino.io/docs/current/develop/system-access-control.html
 
 ## Setup
+`venv` and `node_modules` should both be at the project root
 ```bash
+brew install nodejs
+npm install
+
 brew install python@3.12
 python3.12 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Flask
+```bash
+# nuking a bad flask process
+kill $(pgrep -f flask)
 ```
 
 ## Front End
@@ -24,13 +35,6 @@ npm install -D tailwindcss
 
 npx tailwindcss -i ./permitta/css/input.css -o ./permitta/static/css/output.css --watch
 
-```
-
-
-```bash
-cd app/static
-npm install
-npm run build
 ```
 
 ## Run OPA
