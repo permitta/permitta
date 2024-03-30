@@ -17,3 +17,9 @@ class OidcAuthProvider:
         )
         self.auth = OIDCAuthentication({self.PROVIDER_NAME: provider_config})
         self.auth.init_app(flask_app)
+
+    def require_oidc_auth(self):
+        return self.auth.oidc_auth
+
+    def oidc_logout(self):
+        return self.auth.oidc_logout

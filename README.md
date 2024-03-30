@@ -14,7 +14,7 @@ Authorise all the things
 brew install nodejs
 npm install
 
-brew install python@3.12
+brew install python@3.11
 python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
