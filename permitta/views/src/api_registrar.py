@@ -6,7 +6,7 @@ from auth import OidcAuthProvider
 
 from .healthz_view import HealthzGroupApi
 from .root_view import RootGroupApi
-from .users_group_api import UsersGroupApi
+from .principals_group_api import PrincipalsGroupApi
 
 
 @dataclass
@@ -28,7 +28,7 @@ class ApiRegistrar:
         Api(
             model=None,
             item_api_class=None,
-            group_api_class=UsersGroupApi,
+            group_api_class=PrincipalsGroupApi,
         ),
         Api(
             model=None,
