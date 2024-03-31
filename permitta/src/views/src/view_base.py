@@ -1,6 +1,6 @@
-from flask.views import MethodView
-from flask import session as flask_session
 from auth import OidcAuthProvider
+from flask import session as flask_session
+from flask.views import MethodView
 from models import WebSession
 
 

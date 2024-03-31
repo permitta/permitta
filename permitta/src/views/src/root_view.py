@@ -1,4 +1,5 @@
 from flask import jsonify, render_template
+
 from .view_base import ViewBase
 
 

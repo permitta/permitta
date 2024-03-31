@@ -12,7 +12,7 @@ class WebSession:
         return {
             "given_name": self.given_name,
             "family_name": self.family_name,
-            "email": self.email
+            "email": self.email,
         }
 
     @property

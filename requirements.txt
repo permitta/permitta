@@ -4,3 +4,4 @@ black
 flask-sqlalchemy
 pyyaml
 pytest
+isort

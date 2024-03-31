@@ -1,15 +1,14 @@
-from flask import Flask, session, jsonify, render_template
-from models import sql_alchemy
-
-from views import ApiRegistrar
 from auth import OidcAuthProvider
-from models import PrincipalDbo
+from flask import Flask, jsonify, render_template, session
+from models import PrincipalDbo, sql_alchemy
+from views import ApiRegistrar
 
-flask_app = Flask(__name__,
-            static_url_path='',
-            static_folder='../ui/static',
-            template_folder='../ui/templates'
-                  )
+flask_app = Flask(
+    __name__,
+    static_url_path="",
+    static_folder="../ui/static",
+    template_folder="../ui/templates",
+)
 flask_app.secret_key = "jhfreakjwsdnfkjlsnd"  # SECRET_KEY
 
 
@@ -46,22 +45,27 @@ with flask_app.app_context():
 api_registrar: ApiRegistrar = ApiRegistrar()
 api_registrar.init_app(flask_app=flask_app, oidc_auth_provider=oidc_auth_provider)
 
+
 @flask_app.route("/")
 def dashboard():
     return render_template("views/dashboard.html")
+
 
 @flask_app.route("/policies")
 def policies():
     return render_template("views/policies.html")
 
+
 @flask_app.route("/principals")
 def principals():
     return render_template("views/principals.html")
+
 
 @flask_app.route("/attributes")
 @flask_app.route("/")
 def attributes():
     return render_template("views/attributes.html")
+
 
 @flask_app.route("/logout")
 @oidc_auth_provider.auth.oidc_logout

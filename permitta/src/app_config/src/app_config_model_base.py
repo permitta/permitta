@@ -1,6 +1,8 @@
 import os
 import re
+
 import yaml
+
 
 class AppConfigModelBase:
     """

@@ -20,12 +20,20 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Formatting
+```bash
+# in project root
+isort --profile black permitta/src
+black permitta/src
+```
+
 ## Flask
 ```bash
 # nuking a bad flask process
 kill $(pgrep -f flask)
 ```
 
+## Front end
 ```bash
 # tailwind
 npm install -D tailwindcss

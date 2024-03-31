@@ -1,12 +1,13 @@
-from flask import Flask
-from .view_base import ViewBase
 from dataclasses import dataclass
 from typing import Optional
+
 from auth import OidcAuthProvider
+from flask import Flask
 
 from .healthz_view import HealthzGroupApi
-from .root_view import RootGroupApi
 from .principals_group_api import PrincipalsGroupApi
+from .root_view import RootGroupApi
+from .view_base import ViewBase
 
 
 @dataclass

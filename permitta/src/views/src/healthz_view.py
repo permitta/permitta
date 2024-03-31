@@ -1,6 +1,6 @@
 from flask import jsonify
-from .view_base import ViewBase
 
+from .view_base import ViewBase
 
 # these should be *ItemApi or *GroupApi
 # GroupApi is for those which don't have an id (get all / post)

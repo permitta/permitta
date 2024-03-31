@@ -1,5 +1,6 @@
-from ..src import sql_alchemy
 from sqlalchemy.orm import Mapped, mapped_column
+
+from ..src import sql_alchemy
 
 
 class PrincipalDbo(sql_alchemy.Model):
