@@ -26,14 +26,12 @@ pip install -r requirements.txt
 kill $(pgrep -f flask)
 ```
 
-## Front End
-https://github.com/coreui/coreui-free-bootstrap-admin-template
-
 ```bash
 # tailwind
 npm install -D tailwindcss
 
-npx tailwindcss -i ./permitta/css/input.css -o ./permitta/static/css/output.css --watch
+cd permitta/ui
+npx tailwindcss -i ./css/input.css -o ./static/css/output.css --watch
 ```
 
 ## Data Model

@@ -5,7 +5,11 @@ from views import ApiRegistrar
 from auth import OidcAuthProvider
 from models import PrincipalDbo
 
-flask_app = Flask(__name__)
+flask_app = Flask(__name__,
+            static_url_path='',
+            static_folder='../ui/static',
+            template_folder='../ui/templates'
+                  )
 flask_app.secret_key = "jhfreakjwsdnfkjlsnd"  # SECRET_KEY
 
 

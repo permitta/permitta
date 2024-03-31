@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./permitta/templates/**/*.{html,js}",
+    "./templates/**/*.{html,js}",
     './src/*.js',
-    './node_modules/flowbite/**/*.js'
+    '../../node_modules/flowbite/**/*.js'
   ],
   safelist: [
     'w-64',
