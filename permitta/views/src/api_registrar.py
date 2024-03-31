@@ -20,11 +20,11 @@ class ApiRegistrar:
 
     # TODO build this into the API class and load register all that inherit from base class
     apis: list[Api] = [
-        Api(
-            model=None,
-            item_api_class=None,
-            group_api_class=RootGroupApi,
-        ),
+        # Api(
+        #     model=None,
+        #     item_api_class=None,
+        #     group_api_class=RootGroupApi,
+        # ),
         Api(
             model=None,
             item_api_class=None,

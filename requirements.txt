@@ -2,3 +2,5 @@ flask
 flask-pyoidc
 black
 flask-sqlalchemy
+pyyaml
+pytest

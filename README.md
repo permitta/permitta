@@ -34,11 +34,71 @@ https://github.com/coreui/coreui-free-bootstrap-admin-template
 npm install -D tailwindcss
 
 npx tailwindcss -i ./permitta/css/input.css -o ./permitta/static/css/output.css --watch
+```
+
+## Data Model
+* Properties are key-value pairs
+* Tags are only values
+* Either can be time-bound (from/to)
+* Each of the model tables have a staging table
+```yaml
+ingestion_job_log:
+  - process_id
+  - job_type
+  - source
+  - records_retrieved
+  - records_ingested
+  - records_updated
+  - records_deactivated
+
+base:
+  - process_id
+  - active
+  - ingested_at
+  - deactivated_at
+
+principal:
+  - first_name
+  - last_name
+  - user_name
+
+property:
+  - name
+  - value
+    
+tag: 
+  - value
+
+object:
+  - platform
+  - environment
+  - name
+
 
 ```
 
+## Ingestion
+### Requirements
+* Ingestion jobs are able to run in parallel
+* Ingestion jobs can be run on different cadences
+* Status / Failures are logged in the DB
+* Permission changes are logged to a specific output (splunk etc)
+* A bad ingestion job can be undone(!)
+* Ingestion jobs can be run in separate pods under K8S CronJobs 
+
+### Process
+* Create temporary table
+* Load records from source system (e.g. AD / i-now / starburst)
+* Merge into main table with source-system filter
+  * Insert records missing or deactivated 
+  * Deactivate records missing from source
+  * Deactivate and insert changed records (all columns are keys?)
+  * Ignore unchanged records (leave dates as-is) 
+
+
 ## Run OPA
 OPA doesn't automatically update its own policies, it needs a restart
+Can be run with `-w` to watch for policy changes
 ```bash
 docker-compose up
 ```

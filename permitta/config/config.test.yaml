@@ -1,0 +1,2 @@
+common.db_connection_string: "sqlite:///:memory:"
+connector.json_file.principals.file_path: "config/principals.json"

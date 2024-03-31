@@ -42,7 +42,22 @@ with flask_app.app_context():
 api_registrar: ApiRegistrar = ApiRegistrar()
 api_registrar.init_app(flask_app=flask_app, oidc_auth_provider=oidc_auth_provider)
 
+@flask_app.route("/")
+def dashboard():
+    return render_template("views/dashboard.html")
 
+@flask_app.route("/policies")
+def policies():
+    return render_template("views/policies.html")
+
+@flask_app.route("/principals")
+def principals():
+    return render_template("views/principals.html")
+
+@flask_app.route("/attributes")
+@flask_app.route("/")
+def attributes():
+    return render_template("views/attributes.html")
 
 @flask_app.route("/logout")
 @oidc_auth_provider.auth.oidc_logout
