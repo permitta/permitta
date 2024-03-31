@@ -1,2 +1,3 @@
 common.db_connection_string: "sqlite:///:memory:"
+common.super_secret: "https:/domain?username=$SUPER_SECRET_VALUE"
 connector.json_file.principals.file_path: "config/principals.json"

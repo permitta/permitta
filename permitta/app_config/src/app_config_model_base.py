@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 
 class AppConfigModelBase:
@@ -25,6 +26,11 @@ class AppConfigModelBase:
         instance = cls()
         for key, value in config_content.items():
             attr_name: str = key.removeprefix(f"{cls.CONFIG_PREFIX}.")
+
+            # support merging in $ENV_VAR syntax
+            for match in re.findall(r"(\$[A-Z_]*)", value):
+                value = value.replace(match, os.getenv(match[1:], ""))
+
             if hasattr(instance, attr_name):
                 setattr(instance, attr_name, value)
         return instance
