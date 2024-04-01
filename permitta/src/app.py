@@ -5,6 +5,7 @@ from models import PrincipalDbo, sql_alchemy
 from views import ApiRegistrar
 from app_config import AppConfigModelBase
 
+
 class FlaskConfig(AppConfigModelBase):
     CONFIG_PREFIX: str = "flask"
     secret_key: str = None

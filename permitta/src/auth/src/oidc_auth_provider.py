@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ClientMetadata, ProviderConfiguration
+from .oidc_auth_provider_config import OidcAuthProviderConfig
 
 
 class OidcAuthProvider:
@@ -8,12 +9,15 @@ class OidcAuthProvider:
     auth: OIDCAuthentication
 
     def init_app(self, flask_app: Flask):
-        # TODO get from config
+        oidc_auth_provider_config: OidcAuthProviderConfig = (
+            OidcAuthProviderConfig.load()
+        )
+
         provider_config: ProviderConfiguration = ProviderConfiguration(
-            issuer="http://localhost:8080/realms/permitta",
+            issuer=oidc_auth_provider_config.issuer,
             client_metadata=ClientMetadata(
-                client_id="permitta-client",
-                client_secret="AuSlZ8hJoEPcwX6jjTsIx6JXHIYbZLkE",
+                client_id=oidc_auth_provider_config.client_id,
+                client_secret=oidc_auth_provider_config.client_secret,
             ),
         )
         self.auth = OIDCAuthentication({self.PROVIDER_NAME: provider_config})

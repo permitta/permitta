@@ -1,1 +1,4 @@
 flask.secret_key: "$FLASK_SECRET_KEY"
+oidc_auth_provider.issuer: "http://localhost:8080/realms/permitta"
+oidc_auth_provider.client_id: "permitta-client"
+oidc_auth_provider.client_secret: "$OIDC_AUTH_PROVIDER_CLIENT_SECRET"

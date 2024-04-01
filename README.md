@@ -21,9 +21,10 @@ pip install -r requirements.txt
 ```
 
 ### Environment Variables
-| Name             | Example | Purpose              |
-|------------------|---------|----------------------|
-| FLASK_SECRET_KEY | <uuid>  | Encrypts the cookies |
+| Name                             | Example | Purpose                                       |
+|----------------------------------|---------|-----------------------------------------------|
+| FLASK_SECRET_KEY                 | <uuid>  | Encrypts the cookies                          |
+| OIDC_AUTH_PROVIDER_CLIENT_SECRET |         | The client secret provided by the OIDC server |
 
 
 ## Formatting
