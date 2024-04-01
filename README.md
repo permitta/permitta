@@ -20,6 +20,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Environment Variables
+| Name             | Example | Purpose              |
+|------------------|---------|----------------------|
+| FLASK_SECRET_KEY | <uuid>  | Encrypts the cookies |
+
+
 ## Formatting
 ```bash
 # in project root
@@ -34,6 +40,8 @@ kill $(pgrep -f flask)
 ```
 
 ## Front end
+* https://flowbite.com/icons/
+
 ```bash
 # tailwind
 npm install -D tailwindcss
@@ -47,6 +55,8 @@ npx tailwindcss -i ./css/input.css -o ./static/css/output.css --watch
 * Tags are only values
 * Either can be time-bound (from/to)
 * Each of the model tables have a staging table
+
+
 ```yaml
 ingestion_job_log:
   - process_id

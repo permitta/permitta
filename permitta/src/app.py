@@ -1,7 +1,16 @@
+import os
 from auth import OidcAuthProvider
 from flask import Flask, jsonify, render_template, session
 from models import PrincipalDbo, sql_alchemy
 from views import ApiRegistrar
+from app_config import AppConfigModelBase
+
+class FlaskConfig(AppConfigModelBase):
+    CONFIG_PREFIX: str = "flask"
+    secret_key: str = None
+
+
+flask_config = FlaskConfig.load()
 
 flask_app = Flask(
     __name__,
@@ -9,7 +18,7 @@ flask_app = Flask(
     static_folder="../ui/static",
     template_folder="../ui/templates",
 )
-flask_app.secret_key = "jhfreakjwsdnfkjlsnd"  # SECRET_KEY
+flask_app.secret_key = flask_config.secret_key
 
 
 # TODO add this to the oidc thing

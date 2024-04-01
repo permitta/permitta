@@ -1,0 +1,1 @@
+flask.secret_key: "$FLASK_SECRET_KEY"

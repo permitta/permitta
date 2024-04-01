@@ -21,7 +21,7 @@ class AppConfigModelBase:
 
     @classmethod
     def load(cls) -> "AppConfigModelBase":
-        config_file_path: str = os.getenv("CONFIG_FILE_PATH", "config.yaml")
+        config_file_path: str = os.getenv("CONFIG_FILE_PATH", "permitta/config/config.yaml")
         with open(config_file_path, "r") as f:
             config_content: dict = yaml.load(f, Loader=yaml.FullLoader)
 
