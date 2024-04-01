@@ -1,9 +1,10 @@
 import os
+
+from app_config import AppConfigModelBase
 from auth import OidcAuthProvider
 from flask import Flask, jsonify, render_template, session
 from models import PrincipalDbo, sql_alchemy
 from views import ApiRegistrar
-from app_config import AppConfigModelBase
 
 
 class FlaskConfig(AppConfigModelBase):

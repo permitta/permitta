@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ClientMetadata, ProviderConfiguration
+
 from .oidc_auth_provider_config import OidcAuthProviderConfig
 
 

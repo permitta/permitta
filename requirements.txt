@@ -5,3 +5,4 @@ flask-sqlalchemy
 pyyaml
 pytest
 isort
+trino
