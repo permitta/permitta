@@ -1,13 +1,13 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, Column, String
+from .common_mixin_dbo import CommonMixinDbo
+from database import BaseModel
 
-from ..src import sql_alchemy
 
+class PrincipalDbo(CommonMixinDbo, BaseModel):
+    __tablename__ = "principals"
 
-class PrincipalDbo(sql_alchemy.Model):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    first_name: Mapped[str] = mapped_column()
-    last_name: Mapped[str] = mapped_column()
-    user_name: Mapped[str] = mapped_column()
-    job_title: Mapped[str] = mapped_column()
-    tag_name: Mapped[str] = mapped_column()
-    tag_value: Mapped[str] = mapped_column()
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    first_name: str = Column(String)
+    last_name: str = Column(String)
+    user_name: str = Column(String)
+    job_title: str = Column(String)

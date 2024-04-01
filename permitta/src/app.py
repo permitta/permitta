@@ -3,7 +3,7 @@ import os
 from app_config import AppConfigModelBase
 from auth import OidcAuthProvider
 from flask import Flask, jsonify, render_template, session
-from models import PrincipalDbo, sql_alchemy
+from models import PrincipalDbo
 from views import ApiRegistrar
 
 
@@ -28,33 +28,47 @@ flask_app.config.update(OIDC_REDIRECT_URI="http://127.0.0.1:5000/oidccallback")
 oidc_auth_provider: OidcAuthProvider = OidcAuthProvider()
 oidc_auth_provider.init_app(flask_app=flask_app)
 
-flask_app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///permitta.db"
-sql_alchemy.init_app(flask_app)
+# flask_app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///permitta.db"
+# sql_alchemy.init_app(flask_app)
 
-with flask_app.app_context():
-    sql_alchemy.create_all()
+# with flask_app.app_context():
+#     sql_alchemy.create_all()
 
-    # sql_alchemy.session.add(PrincipalDbo(
-    #     first_name="John",
-    #     last_name="BonJovi",
-    #     user_name="johnbonjovi",
-    #     job_title="Vocalist",
-    #     tag_name="LDS",
-    #     tag_value="Application & Software",
-    # ))
-    #
-    # sql_alchemy.session.add(PrincipalDbo(
-    #     first_name="Ritchie",
-    #     last_name="Sambora",
-    #     user_name="ritchiesambora",
-    #     job_title="Axeman",
-    #     tag_name="LDS",
-    #     tag_value="Fixed Assets",
-    # ))
-    # sql_alchemy.session.commit()
+# sql_alchemy.session.add(PrincipalDbo(
+#     first_name="John",
+#     last_name="BonJovi",
+#     user_name="johnbonjovi",
+#     job_title="Vocalist",
+#     tag_name="LDS",
+#     tag_value="Application & Software",
+# ))
+#
+# sql_alchemy.session.add(PrincipalDbo(
+#     first_name="Ritchie",
+#     last_name="Sambora",
+#     user_name="ritchiesambora",
+#     job_title="Axeman",
+#     tag_name="LDS",
+#     tag_value="Fixed Assets",
+# ))
+# sql_alchemy.session.commit()
 
 api_registrar: ApiRegistrar = ApiRegistrar()
 api_registrar.init_app(flask_app=flask_app, oidc_auth_provider=oidc_auth_provider)
+
+
+@flask_app.before_request
+def before_request():
+    # OIDC token check
+    # load user object?
+    pass
+
+
+@flask_app.teardown_request
+def teardown_request(request):
+    # close DB session
+    # must use try/catch here
+    pass
 
 
 @flask_app.route("/")

@@ -1,3 +1,4 @@
+database.connection_string: "sqlite:///permitta/instance/permitta.db"
 flask.secret_key: "$FLASK_SECRET_KEY"
 oidc_auth_provider.issuer: "http://localhost:8080/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"
