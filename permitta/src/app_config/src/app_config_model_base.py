@@ -8,7 +8,7 @@ class AppConfigModelBase:
     """
     Configuration parameter syntax:
     <module>.<submodule>.<property_name>: <value>
-    ingestor.json_file.file_path: ./data.json
+    ingestor.json_file_connector.file_path: ./data.json
 
     Each module will request its own configuration values and bind them
     to a model class they own

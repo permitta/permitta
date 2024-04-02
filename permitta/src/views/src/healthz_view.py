@@ -1,13 +1,8 @@
-from flask import jsonify
+from flask import Blueprint, jsonify, session as flask_session
 
-from .view_base import ViewBase
-
-# these should be *ItemApi or *GroupApi
-# GroupApi is for those which don't have an id (get all / post)
+bp = Blueprint('healthz', __name__, url_prefix='/healthz')
 
 
-class HealthzGroupApi(ViewBase):
-    ROUTE_PREFIX: str = "healthz"
-
-    def get(self):
-        return jsonify(self.session.as_dict())
+@bp.route('/', methods=['GET'])
+def get():
+    return jsonify(flask_session)

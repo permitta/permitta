@@ -2,9 +2,9 @@ import os
 
 from app_config import AppConfigModelBase
 from auth import OidcAuthProvider
-from flask import Flask, jsonify, render_template, session
+from flask import Flask, jsonify, render_template, session, g
 from models import PrincipalDbo
-from views import ApiRegistrar
+from database import Database
 
 
 class FlaskConfig(AppConfigModelBase):
@@ -53,22 +53,30 @@ oidc_auth_provider.init_app(flask_app=flask_app)
 # ))
 # sql_alchemy.session.commit()
 
-api_registrar: ApiRegistrar = ApiRegistrar()
-api_registrar.init_app(flask_app=flask_app, oidc_auth_provider=oidc_auth_provider)
+# Database
+database: Database = Database()
+database.connect()
 
+# blueprints
+from views.src.principals_view import bp as principals_bp
+flask_app.register_blueprint(principals_bp)
 
 @flask_app.before_request
 def before_request():
     # OIDC token check
-    # load user object?
-    pass
+    # connect DB
+    g.database = database
 
 
-@flask_app.teardown_request
-def teardown_request(request):
-    # close DB session
-    # must use try/catch here
-    pass
+# @flask_app.teardown_request
+# def teardown_request(request):
+#     try:
+#         # close DB session
+#         # g.database.disconnect()
+#         pass
+#     except Exception as e:
+#         # TODO log me
+#         pass
 
 
 @flask_app.route("/")
