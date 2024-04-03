@@ -1,7 +1,9 @@
 import uuid
 from textwrap import dedent
-from .repository_base import RepositoryBase
+
 from models import BaseDbo, PrincipalDbo
+
+from .repository_base import RepositoryBase
 
 
 class PrincipalRepository(RepositoryBase):

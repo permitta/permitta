@@ -1,2 +1,1 @@
-from .src.database import Database
-from .src.database import BaseModel
+from .src.database import BaseModel, Database

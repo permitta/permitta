@@ -1,7 +1,8 @@
-from .database_config import DatabaseConfig
-from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+from .database_config import DatabaseConfig
 
 BaseModel = declarative_base()
 
@@ -25,7 +26,7 @@ class Database:
             database_config.connection_string,
             echo=True,
             pool_pre_ping=True,
-            pool_recycle=3600
+            pool_recycle=3600,
         )
         self.Session = sessionmaker(self.engine)
         BaseModel.metadata.create_all(self.engine)

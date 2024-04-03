@@ -1,6 +1,7 @@
-from sqlalchemy import Integer, Column, String
-from .common_mixin_dbo import CommonMixinDbo
 from database import BaseModel
+from sqlalchemy import Column, Integer, String
+
+from .common_mixin_dbo import CommonMixinDbo
 
 
 class PrincipalDbo(CommonMixinDbo, BaseModel):

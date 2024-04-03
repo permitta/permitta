@@ -1,65 +1,42 @@
-import os
-
 from app_config import AppConfigModelBase
 from auth import OidcAuthProvider
-from flask import Flask, jsonify, render_template, session, g
-from models import PrincipalDbo
 from database import Database
+from flask import Flask, g, render_template
 
 
 class FlaskConfig(AppConfigModelBase):
     CONFIG_PREFIX: str = "flask"
     secret_key: str = None
+    static_url_path: str = ""
+    static_folder: str = "../ui/static"
+    template_folder: str = "../ui/templates"
 
 
 flask_config = FlaskConfig.load()
 
 flask_app = Flask(
     __name__,
-    static_url_path="",
-    static_folder="../ui/static",
-    template_folder="../ui/templates",
+    static_url_path=flask_config.static_url_path,
+    static_folder=flask_config.static_folder,
+    template_folder=flask_config.template_folder,
 )
 flask_app.secret_key = flask_config.secret_key
 
+# blueprints
+from views import healthz_bp, principals_bp
+
+flask_app.register_blueprint(principals_bp)
+flask_app.register_blueprint(healthz_bp)
 
 # TODO add this to the oidc thing
 flask_app.config.update(OIDC_REDIRECT_URI="http://127.0.0.1:5000/oidccallback")
 oidc_auth_provider: OidcAuthProvider = OidcAuthProvider()
 oidc_auth_provider.init_app(flask_app=flask_app)
 
-# flask_app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///permitta.db"
-# sql_alchemy.init_app(flask_app)
-
-# with flask_app.app_context():
-#     sql_alchemy.create_all()
-
-# sql_alchemy.session.add(PrincipalDbo(
-#     first_name="John",
-#     last_name="BonJovi",
-#     user_name="johnbonjovi",
-#     job_title="Vocalist",
-#     tag_name="LDS",
-#     tag_value="Application & Software",
-# ))
-#
-# sql_alchemy.session.add(PrincipalDbo(
-#     first_name="Ritchie",
-#     last_name="Sambora",
-#     user_name="ritchiesambora",
-#     job_title="Axeman",
-#     tag_name="LDS",
-#     tag_value="Fixed Assets",
-# ))
-# sql_alchemy.session.commit()
-
 # Database
 database: Database = Database()
 database.connect()
 
-# blueprints
-from views.src.principals_view import bp as principals_bp
-flask_app.register_blueprint(principals_bp)
 
 @flask_app.before_request
 def before_request():
@@ -68,15 +45,13 @@ def before_request():
     g.database = database
 
 
-# @flask_app.teardown_request
-# def teardown_request(request):
-#     try:
-#         # close DB session
-#         # g.database.disconnect()
-#         pass
-#     except Exception as e:
-#         # TODO log me
-#         pass
+@flask_app.teardown_request
+def teardown_request(request):
+    try:
+        pass
+    except Exception as e:
+        # TODO log me
+        pass
 
 
 @flask_app.route("/")
