@@ -30,7 +30,7 @@ def principals_table():
         principal_count: int = session.query(PrincipalDbo).count()
 
         return render_template(
-            template_name_or_list="partials/principals-table.html",
+            template_name_or_list="partials/principals/principals-table.html",
             principals=principals,
             principal_count=principal_count,
         )

@@ -23,10 +23,11 @@ flask_app = Flask(
 flask_app.secret_key = flask_config.secret_key
 
 # blueprints
-from views import healthz_bp, principals_bp
+from views import healthz_bp, principals_bp, data_objects_bp
 
 flask_app.register_blueprint(principals_bp)
 flask_app.register_blueprint(healthz_bp)
+flask_app.register_blueprint(data_objects_bp)
 
 # TODO add this to the oidc thing
 flask_app.config.update(OIDC_REDIRECT_URI="http://127.0.0.1:5000/oidccallback")
@@ -69,10 +70,10 @@ def principals():
     return render_template("views/principals.html")
 
 
-@flask_app.route("/attributes")
+@flask_app.route("/data_objects")
 @flask_app.route("/")
-def attributes():
-    return render_template("views/attributes.html")
+def data_objects():
+    return render_template("views/data-objects.html")
 
 
 @flask_app.route("/logout")

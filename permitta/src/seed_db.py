@@ -4,6 +4,8 @@ from datetime import datetime
 
 from database import Database
 from models import PrincipalDbo, PrincipalAttributeDbo
+from models.src.data_object_table_dbo import DataObjectTableDbo
+from models.src.platform_dbo import PlatformDbo
 
 process_id: str = str(uuid.uuid4())
 
@@ -45,9 +47,35 @@ principals: list[PrincipalDbo] = [
     for mock_user in mock_users
 ]
 
+# Platforms
+def _get_platform_dbo(mock_data: dict) -> PlatformDbo:
+    platform_dbo: PlatformDbo = PlatformDbo()
+    platform_dbo.platform_display_name = mock_data["display_name"]
+
+    data_object_table_dbos: list[DataObjectTableDbo] = []
+    for table in mock_data["tables"]:
+        # add source tag
+        data_object_table_dbo: DataObjectTableDbo = DataObjectTableDbo()
+        data_object_table_dbo.database_name = table.get("database_name")
+        data_object_table_dbo.schema_name = table.get("schema_name")
+        data_object_table_dbo.object_name = table.get("object_name")
+        data_object_table_dbos.append(data_object_table_dbo)
+        data_object_table_dbo.search_value = f"{table.get('database_name')}.{table.get('schema_name')}.{table.get('object_name')}"
+
+    platform_dbo.data_object_tables = data_object_table_dbos
+    return platform_dbo
+
+
+with open("permitta/mock_data/platforms.json") as platforms_file:
+    platforms: list[PlatformDbo] = [
+        _get_platform_dbo(mock_data)
+        for mock_data in json.load(platforms_file)
+    ]
+
 db = Database()
 db.connect()
 
 with db.Session.begin() as session:
     session.add_all(principals)
+    session.add_all(platforms)
     session.commit()
