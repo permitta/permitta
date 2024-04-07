@@ -8,6 +8,47 @@ Authorise all the things
 * https://www.adaltas.com/en/2020/01/22/intro-open-policy-agent-with-kafka/
 * https://trino.io/docs/current/develop/system-access-control.html
 
+## User Stories
+### As a data owner
+#### Required
+* I can quickly identify the objects I am responsible for
+* I can see the policies I am responsible for
+* I can see the objects and users the policy applies to and how policy changes can affect that
+ 
+#### Stretch
+* I can see which users have accessed which objects, when and from what tool
+* I can see which users have attempted and failed to access an object
+
+### As a data classifier
+#### Required
+* I can see the objects which are unclassified
+
+#### Stretch
+* I can create new classifications
+* I can apply and change the classification of objects
+* I can be notified when unclassified objects are present, and i can mute these on a per-object/schema basis
+* I can see objects for which the classification is disputed
+
+### As a data consumer
+#### Required
+* I can see what I have access to
+* I can see a timeline of how my access changed
+* I can see what I don't have access to, and how to get access to it
+
+#### Stretch
+* I can request elevated privileges for a limited time 
+
+### As a system administrator
+#### Stretch
+* Classifications herein can be pushed to downstream platforms (OMD)
+* Classifications can be accessed programatically (API / DB view schema)
+
+### As a CDO
+* I have confidence that data owners have full control
+* I have confidence that data owners have deep visibility
+* I have confidence that data will not be leaked to incorrect users 
+
+
 ## Setup
 `venv` and `node_modules` should both be at the project root
 ```bash
@@ -57,16 +98,31 @@ npx tailwindcss -i ./css/input.css -o ./static/css/output.css --watch
 * Either can be time-bound (from/to)
 * Each of the model tables have a staging table
 
-
+* https://dbdiagram.io/d/permitta-661069f303593b6b61501dd3
 ```yaml
 ingestion_job_log:
   - process_id
   - job_type
+  - data_source_id
   - source
   - records_retrieved
   - records_ingested
   - records_updated
   - records_deactivated
+    
+platform: # does this need to be in DB?
+  - type (trino, kafka, api, generic-opa)
+  - instance (api-name, trino-cluster)
+  - environment
+    
+data_sources: # table per type? does this need to be in DB?
+  - type (OMD, trino, LDAP)
+  - url etc
+
+bundle_apis:
+  - platform
+  - bundle_endpoint
+  - bundle_creds
 
 base:
   - process_id
@@ -79,18 +135,30 @@ principal:
   - last_name
   - user_name
 
-property:
+principal_property:
+  - name
+  - value
+
+principal_tag: 
+  - value
+    
+principal_group:
+  - principal_id
+  - group_name
+  - source
+
+data_object_trino:
+  - platform_id
+  - catalog
+  - schema
+  - table
+
+object_property:
   - name
   - value
     
-tag: 
+object_tag: 
   - value
-
-object:
-  - platform
-  - environment
-  - name
-
 
 ```
 
