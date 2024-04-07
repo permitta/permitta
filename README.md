@@ -99,68 +99,6 @@ npx tailwindcss -i ./css/input.css -o ./static/css/output.css --watch
 * Each of the model tables have a staging table
 
 * https://dbdiagram.io/d/permitta-661069f303593b6b61501dd3
-```yaml
-ingestion_job_log:
-  - process_id
-  - job_type
-  - data_source_id
-  - source
-  - records_retrieved
-  - records_ingested
-  - records_updated
-  - records_deactivated
-    
-platform: # does this need to be in DB?
-  - type (trino, kafka, api, generic-opa)
-  - instance (api-name, trino-cluster)
-  - environment
-    
-data_sources: # table per type? does this need to be in DB?
-  - type (OMD, trino, LDAP)
-  - url etc
-
-bundle_apis:
-  - platform
-  - bundle_endpoint
-  - bundle_creds
-
-base:
-  - process_id
-  - active
-  - ingested_at
-  - deactivated_at
-
-principal:
-  - first_name
-  - last_name
-  - user_name
-
-principal_property:
-  - name
-  - value
-
-principal_tag: 
-  - value
-    
-principal_group:
-  - principal_id
-  - group_name
-  - source
-
-data_object_trino:
-  - platform_id
-  - catalog
-  - schema
-  - table
-
-object_property:
-  - name
-  - value
-    
-object_tag: 
-  - value
-
-```
 
 ## Ingestion
 ### Requirements
