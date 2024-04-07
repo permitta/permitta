@@ -29,20 +29,6 @@ def principals_table():
         )
         principal_count: int = session.query(PrincipalDbo).count()
 
-        for principal in principals:
-            principal.tag_list = [
-                "Application and software",
-                "Finance",
-                "HR",
-                "Fixed Assets",
-                "Investments",
-                "Marketing",
-                "Farming",
-                "Crime",
-                "Economics",
-                "Larceny"
-            ]
-
         return render_template(
             template_name_or_list="partials/principals-table.html",
             principals=principals,

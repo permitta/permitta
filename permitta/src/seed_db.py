@@ -31,7 +31,7 @@ def get_principal_attribute_dbos(mock_data: dict) -> list[PrincipalAttributeDbo]
         principal_attribute_dbo.process_id = process_id
         principal_attribute_dbo.activated_at = datetime.now()
         principal_attribute_dbo.deactivated_at = None
-        principal_attribute_dbo.attribute_key = key
+        principal_attribute_dbo.attribute_key = key if key != "gender" else None    # tag, not property
         principal_attribute_dbo.attribute_value = mock_data.get(key, "")
         principal_attribute_dbos.append(principal_attribute_dbo)
     return principal_attribute_dbos
