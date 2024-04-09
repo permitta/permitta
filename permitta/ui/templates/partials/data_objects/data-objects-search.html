@@ -34,9 +34,12 @@
                 <form class="sm:pr-3">
                     <label for="products-search" class="sr-only">Search</label>
                     <div class="relative w-48 mt-1 sm:w-64 xl:w-96">
-                        <input type="text" name="searchTerm" id="data-objects-search"
+                            <input type="text" name="searchTerm"
+                               id="data-objects-search"
                                onkeydown="return event.key != 'Enter';"
-                               hx-get="/data_objects/" hx-trigger="load, keyup changed delay:0.2s" hx-target="#data-objects-table"
+                               hx-get="/data-objects/"
+                               hx-trigger="load, keyup changed delay:0.2s"
+                               hx-target="#data-objects-table"
                                hx-swap="innerHTML"
                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                placeholder="Search by name or tag">

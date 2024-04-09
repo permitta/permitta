@@ -49,6 +49,109 @@ Authorise all the things
 * I have confidence that data will not be leaked to incorrect users 
 
 
+## Requirements as per Chris
+* Data tags:
+  * Domain: Location, RSP Interactions, Customer insights and forecasts
+  * Security Label: nbn-COMMERCIAL, nbn-PRIVACY, nbn-RESTRICTED, nbn-PROTECTED
+* Roles:
+  * Location analyst
+  * Location supervisor
+  * Field work technician
+  * Field work supervisor
+  * Payroll analyst
+  * Payroll supervisor
+  * CPM analyst
+  * CPM supervisor
+  * All users
+
+* Roles need to be assigned specific tags
+* Columns assume the table tags unless replaced (remove?)
+* Tags need to be <domain>:<access-rule> :: location:nbn-COMMERCIAL
+  
+| Role             | Domain                 | nbn-COMMERCIAL | nbn-PRIVACY | nbn-RESTRICTED | nbn-PROTECTED |
+|------------------|------------------------|----------------|-------------|----------------|---------------|
+| Location Analyst | Location               | X              |             | X              |               |
+|                  | Services and assurance | X              |             |                |               |
+
+* Policy examples
+  * A location analyst can access location commercial and restricted but nothing else
+  * Read / Write?
+
+
+## OPA Data Model for ABAC
+https://play.openpolicyagent.org/
+```jsonc
+# input
+{
+    "data_object": "table_a",
+    "principal": "borisyeltsin"
+}
+
+# data
+{
+    "data_objects": {
+        "table_a": {
+            "location": "commercial"
+        }
+    },
+    "principals": {
+        "borisyeltsin": {
+            "location": "commercial",
+            "customer": "privacy"
+        },
+        "johnfkennedy": {
+            "network": "commercial",
+            "location": "commercial"            
+        },
+        "kevinrudd": {
+            "location": "commercial"
+        }
+    }
+}
+
+```
+
+### Policy
+```
+package play
+
+import rego.v1
+
+default permit := false
+# deny everything by default
+default allow := false
+
+permit if {
+	# evaluates to true if the principal exists in the array
+	data.principals[input.principal]
+    
+	# check the tags on the user match those of the object
+	every k, v in data.data_objects[input.data_object] {
+    	k, v in data.principals[input.principal]
+    }
+}
+
+# user cannot see location commercial if they have network commercial
+deny if {
+	"location", "commercial" in data.data_objects[input.data_object]
+    "network", "commercial" in data.principals[input.principal]
+}
+
+deny if {
+	input.principal == "kevinrudd"
+}
+
+# allow if deny is false/undefined and permit is true
+allow if {
+    permit
+    not deny
+}
+
+
+
+```
+
+
 ## Setup
 `venv` and `node_modules` should both be at the project root
 ```bash

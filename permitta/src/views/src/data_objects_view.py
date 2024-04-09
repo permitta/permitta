@@ -1,18 +1,19 @@
 from typing import Type
-
+from dataclasses import dataclass
 from flask import Blueprint, g, render_template, request
 from models import PlatformDbo, DataObjectTableDbo
 
-bp = Blueprint("data_objects", __name__, url_prefix="/data_objects")
+bp = Blueprint("data_objects", __name__, url_prefix="/data-objects")
 
 
 @bp.route("/", methods=["GET"])
 def data_objects_table():
     search_term: str = request.args.get("searchTerm", "")
-    sort_key: str = request.args.get("sortKey", "")
+    sort_key: str = request.args.get("sort-key", "")
 
     if sort_key == "platform":
-        order_column = DataObjectTableDbo.platform.platform_display_name
+        order_column = DataObjectTableDbo.database_name
+        #order_column = DataObjectTableDbo.platform.platform_display_name
     elif sort_key == "database":
         order_column = DataObjectTableDbo.database_name
     elif sort_key == "schema":
@@ -32,6 +33,17 @@ def data_objects_table():
 
         data_objects: list[DataObjectTableDbo] = query.all()
         data_object_count: int = query.count()
+
+        @dataclass
+        class Dumb:
+            attribute_key: str
+            attribute_value: str
+
+        for data_object in data_objects:
+            data_object.data_object_attributes = [
+                Dumb(attribute_key="Key", attribute_value="Value"),
+                Dumb(attribute_key=None, attribute_value="Tag")
+            ]
 
         return render_template(
             template_name_or_list="partials/data_objects/data-objects-table.html",
