@@ -22,12 +22,12 @@
                                       clip-rule="evenodd"></path>
                             </svg>
                             <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500"
-                                  aria-current="page">Data Objects</span>
+                                  aria-current="page">Policies</span>
                         </div>
                     </li>
                 </ol>
             </nav>
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Data Objects</h1>
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Policies</h1>
         </div>
         <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
             <div class="flex items-center mb-4 sm:mb-0">
@@ -37,9 +37,9 @@
                             <input type="text" name="searchTerm"
                                id="data-objects-search"
                                onkeydown="return event.key != 'Enter';"
-                               hx-get="/data-objects/"
+                               hx-get="/policies/"
                                hx-trigger="load, keyup changed delay:0.2s"
-                               hx-target="#data-objects-table"
+                               hx-target="#policies-table"
                                hx-swap="innerHTML"
                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                placeholder="Search by name or tag">
@@ -90,6 +90,6 @@
         </div>
     </div>
 </div>
-<div id="data-objects-table">
-    {% include 'partials/data_objects/data-objects-table.html' %}
+<div id="policies-table">
+    {% include 'partials/policies/policies-table.html' %}
 </div>

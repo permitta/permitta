@@ -1,7 +1,7 @@
 from app_config import AppConfigModelBase
-from auth import OidcAuthProvider
 from database import Database
-from flask import Flask, g, render_template
+from extensions import oidc, oidc_auth_provider
+from flask import Blueprint, Flask, g, render_template
 
 
 class FlaskConfig(AppConfigModelBase):
@@ -12,71 +12,57 @@ class FlaskConfig(AppConfigModelBase):
     template_folder: str = "../ui/templates"
 
 
-flask_config = FlaskConfig.load()
-
-flask_app = Flask(
-    __name__,
-    static_url_path=flask_config.static_url_path,
-    static_folder=flask_config.static_folder,
-    template_folder=flask_config.template_folder,
-)
-flask_app.secret_key = flask_config.secret_key
-
-# blueprints
-from views import healthz_bp, principals_bp, data_objects_bp
-
-flask_app.register_blueprint(principals_bp)
-flask_app.register_blueprint(healthz_bp)
-flask_app.register_blueprint(data_objects_bp)
-
-# TODO add this to the oidc thing
-flask_app.config.update(OIDC_REDIRECT_URI="http://127.0.0.1:5000/oidccallback")
-oidc_auth_provider: OidcAuthProvider = OidcAuthProvider()
-oidc_auth_provider.init_app(flask_app=flask_app)
-
-# Database
-database: Database = Database()
-database.connect()
+# bp = Blueprint("a", __name__, url_prefix="/temp")
 
 
-@flask_app.before_request
-def before_request():
-    # OIDC token check
-    # connect DB
-    g.database = database
+def create_app() -> Flask:
+    # global oidc
+
+    flask_config = FlaskConfig.load()
+
+    flask_app = Flask(
+        __name__,
+        static_url_path=flask_config.static_url_path,
+        static_folder=flask_config.static_folder,
+        template_folder=flask_config.template_folder,
+    )
+    flask_app.secret_key = flask_config.secret_key
+
+    # OIDC
+
+    flask_app.config.update(
+        OIDC_REDIRECT_URI=oidc_auth_provider.oidc_auth_provider_config.redirect_uri
+    )
+    oidc.init_app(flask_app)
+
+    # blueprints
+    from views import data_objects_bp, healthz_bp, policies_bp, principals_bp, root_bp
+
+    flask_app.register_blueprint(root_bp)
+    flask_app.register_blueprint(principals_bp)
+    flask_app.register_blueprint(healthz_bp)
+    flask_app.register_blueprint(data_objects_bp)
+    flask_app.register_blueprint(policies_bp)
+    # flask_app.register_blueprint(bp)
+
+    # Database
+    database: Database = Database()
+    database.connect()
+
+    @flask_app.before_request
+    def before_request():
+        # connect DB
+        g.database = database
+
+    @flask_app.route("/logout")
+    @oidc.oidc_logout
+    def logout():
+        return "logged out"
+
+    return flask_app
 
 
-@flask_app.teardown_request
-def teardown_request(request):
-    try:
-        pass
-    except Exception as e:
-        # TODO log me
-        pass
-
-
-@flask_app.route("/")
-def dashboard():
-    return render_template("views/dashboard.html")
-
-
-@flask_app.route("/policies")
-def policies():
-    return render_template("views/policies.html")
-
-
-@flask_app.route("/principals")
-def principals():
-    return render_template("views/principals.html")
-
-
-@flask_app.route("/data_objects")
-@flask_app.route("/")
-def data_objects():
-    return render_template("views/data-objects.html")
-
-
-@flask_app.route("/logout")
-@oidc_auth_provider.auth.oidc_logout
-def logout():
-    return "logged out"
+# @bp.route("/")
+# @oidc.oidc_auth("default")
+# def dashboard():
+#     return render_template("views/dashboard.html")

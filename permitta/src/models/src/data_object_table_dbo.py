@@ -1,11 +1,12 @@
 from database import BaseModel
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .common_mixin_dbo import CommonMixinDbo
 
 
 class DataObjectTableDbo(CommonMixinDbo, BaseModel):
-    __tablename__ = 'data_object_tables'
+    __tablename__ = "data_object_tables"
 
     data_object_table_id = Column(Integer, primary_key=True)
     database_name: str = Column(String)

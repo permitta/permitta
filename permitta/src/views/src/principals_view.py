@@ -1,5 +1,6 @@
 from typing import Type
 
+from extensions import oidc
 from flask import Blueprint, g, render_template, request
 from models import PrincipalDbo
 
@@ -7,6 +8,7 @@ bp = Blueprint("principals", __name__, url_prefix="/principals")
 
 
 @bp.route("/", methods=["GET"])
+@oidc.oidc_auth("default")
 def principals_table():
     search_term: str = request.args.get("searchTerm", "")
     sort_key: str = request.args.get("sortKey", "")

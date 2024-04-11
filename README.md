@@ -8,6 +8,11 @@ Authorise all the things
 * https://www.adaltas.com/en/2020/01/22/intro-open-policy-agent-with-kafka/
 * https://trino.io/docs/current/develop/system-access-control.html
 
+### Grants:
+* https://www.sqlmaestro.com/products/mysql/maestro/help/01_02_02_02_grants/
+* https://www.reddit.com/r/snowflake/comments/zlcson/what_are_you_using_to_manage_rolesgrants_in/
+* Snowflake only: https://gitlab.com/gitlab-data/permifrost/
+
 ## User Stories
 ### As a data owner
 #### Required
@@ -68,15 +73,26 @@ Authorise all the things
 * Columns assume the table tags unless replaced (remove?)
 * Tags need to be <domain>:<access-rule> :: location:nbn-COMMERCIAL
   
-| Role             | Domain                 | nbn-COMMERCIAL | nbn-PRIVACY | nbn-RESTRICTED | nbn-PROTECTED |
-|------------------|------------------------|----------------|-------------|----------------|---------------|
-| Location Analyst | Location               | X              |             | X              |               |
-|                  | Services and assurance | X              |             |                |               |
+| Role             | Domain                 | Owner | nbn-COMMERCIAL | nbn-PRIVACY | nbn-RESTRICTED | nbn-PROTECTED |
+|------------------|------------------------|-------|----------------|-------------|----------------|---------------|
+| Location Analyst | Location               |       | X              |             | X              |               |
+|                  | Services and assurance |       | X              |             |                |               |
+| Location Owner   | Location               | X     |                |             |                |               |
 
 * Policy examples
   * A location analyst can access location commercial and restricted but nothing else
   * Read / Write?
 
+
+### Questions
+* Where do the roles come from? Are they iNow profiles which resolve to AD groups?
+  * Do we define the tags associated with the roles?
+  * Who can change them and what allows them to do so?
+* How are data owners identified and assigned? Manual in UI?
+* Does each data object only have one domain? (this is nonsense!)
+* Policy complexity:
+  * allow when: all principal tags == all object tags
+  * deny when: any deny principal tag in all object tags  <-- not quite
 
 ## OPA Data Model for ABAC
 https://play.openpolicyagent.org/
@@ -179,6 +195,7 @@ black permitta/src
 ```
 
 ## Flask
+* Run flask on 8000, or it clashes with airplay
 ```bash
 # nuking a bad flask process
 kill $(pgrep -f flask)
@@ -233,13 +250,13 @@ docker-compose up
 Settings:
 * Realm: permitta
 * Client ID: permitta-client
-* OIDC_REDIRECT_URI="http://127.0.0.1:5000/oidccallback"
-* Root URL: http://localhost:5000
-* Home URL: http://localhost:5000
-* Valid redirect URIs: http://127.0.0.1:5000/oidccallback
-* Valid post logout redirect URIs: http://127.0.0.1:5000/*
-* Web origins: http://localhost:5000/*
-* Admin URL: http://localhost:5000
+* OIDC_REDIRECT_URI="http://127.0.0.1:8000/oidccallback"
+* Root URL: http://localhost:8000
+* Home URL: http://localhost:8000
+* Valid redirect URIs: http://127.0.0.1:8000/oidccallback
+* Valid post logout redirect URIs: http://127.0.0.1:8000/*
+* Web origins: http://localhost:8000/*
+* Admin URL: http://localhost:8000
 
 Capability Config:
 * Client authentication: On

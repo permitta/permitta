@@ -6,3 +6,4 @@ class OidcAuthProviderConfig(AppConfigModelBase):
     issuer: str = None
     client_id: str = None
     client_secret: str = None
+    redirect_uri: str = "http://127.0.0.1:8000/oidccallback"

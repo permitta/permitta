@@ -1,4 +1,3 @@
-from flask import Flask
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ClientMetadata, ProviderConfiguration
 
@@ -7,25 +6,25 @@ from .oidc_auth_provider_config import OidcAuthProviderConfig
 
 class OidcAuthProvider:
     PROVIDER_NAME: str = "default"
-    auth: OIDCAuthentication
 
-    def init_app(self, flask_app: Flask):
-        oidc_auth_provider_config: OidcAuthProviderConfig = (
+    @property
+    def oidc_auth(self) -> OIDCAuthentication:
+        if not self._oidc_auth:
+            self._oidc_auth = self._get_oidc_auth()
+        return self._oidc_auth
+
+    def __init__(self):
+        self._oidc_auth: OIDCAuthentication | None = None
+        self.oidc_auth_provider_config: OidcAuthProviderConfig = (
             OidcAuthProviderConfig.load()
         )
 
+    def _get_oidc_auth(self) -> OIDCAuthentication:
         provider_config: ProviderConfiguration = ProviderConfiguration(
-            issuer=oidc_auth_provider_config.issuer,
+            issuer=self.oidc_auth_provider_config.issuer,
             client_metadata=ClientMetadata(
-                client_id=oidc_auth_provider_config.client_id,
-                client_secret=oidc_auth_provider_config.client_secret,
+                client_id=self.oidc_auth_provider_config.client_id,
+                client_secret=self.oidc_auth_provider_config.client_secret,
             ),
         )
-        self.auth = OIDCAuthentication({self.PROVIDER_NAME: provider_config})
-        self.auth.init_app(flask_app)
-
-    def require_oidc_auth(self):
-        return self.auth.oidc_auth
-
-    def oidc_logout(self):
-        return self.auth.oidc_logout
+        return OIDCAuthentication({self.PROVIDER_NAME: provider_config})

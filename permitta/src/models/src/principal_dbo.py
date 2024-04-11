@@ -1,6 +1,7 @@
 from database import BaseModel
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship, Mapped
+from sqlalchemy.orm import Mapped, relationship
+
 from .common_mixin_dbo import CommonMixinDbo
 
 
@@ -13,4 +14,6 @@ class PrincipalDbo(CommonMixinDbo, BaseModel):
     user_name: str = Column(String)
     job_title: str = Column(String)
 
-    principal_attributes: Mapped[list["PrincipalAttributeDbo"]] = relationship(back_populates="principal")
+    principal_attributes: Mapped[list["PrincipalAttributeDbo"]] = relationship(
+        back_populates="principal"
+    )
