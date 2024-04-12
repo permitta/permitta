@@ -37,17 +37,6 @@ def data_objects_table():
         data_objects: list[DataObjectTableDbo] = query.all()
         data_object_count: int = query.count()
 
-        @dataclass
-        class Dumb:
-            attribute_key: str
-            attribute_value: str
-
-        for data_object in data_objects:
-            data_object.data_object_attributes = [
-                Dumb(attribute_key="Key", attribute_value="Value"),
-                Dumb(attribute_key=None, attribute_value="Tag"),
-            ]
-
         return render_template(
             template_name_or_list="partials/data_objects/data-objects-table.html",
             data_objects=data_objects,

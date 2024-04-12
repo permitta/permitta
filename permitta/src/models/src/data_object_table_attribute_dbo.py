@@ -5,14 +5,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .common_mixin_dbo import IngestionDboMixin
 
 
-class PrincipalAttributeDbo(IngestionDboMixin, BaseModel):
-    __tablename__ = "principal_attributes"
+class DataObjectTableAttributeDbo(IngestionDboMixin, BaseModel):
+    __tablename__ = "data_object_table_attributes"
 
     principal_attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
     attribute_key: str = Column(String)
     attribute_value: str = Column(String)
 
-    principal_id: Mapped[int] = mapped_column(ForeignKey("principals.principal_id"))
-    principal: Mapped["PrincipalDbo"] = relationship(
-        back_populates="principal_attributes"
+    data_object_table_id: Mapped[int] = mapped_column(
+        ForeignKey("data_object_tables.data_object_table_id")
+    )
+    data_object_table: Mapped["DataObjectTableDbo"] = relationship(
+        back_populates="data_object_table_attributes"
     )

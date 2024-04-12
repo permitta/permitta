@@ -1,23 +1,5 @@
 [
   {
-    "email": "سارینا.کوتی@example.com",
-    "gender": "female",
-    "phone_number": "0997-267-1133",
-    "birthdate": 1077518239,
-    "location": {
-      "street": "5273 سمیه",
-      "city": "بیرجند",
-      "state": "تهران",
-      "postcode": 99854
-    },
-    "username": "yellowpeacock139",
-    "password": "chopper",
-    "first_name": "سارینا",
-    "last_name": "کوتی",
-    "title": "mrs",
-    "picture": "women/38.jpg"
-  },
-  {
     "email": "melissa.fleming@example.com",
     "gender": "female",
     "phone_number": "0740-304-475",
@@ -304,24 +286,6 @@
     "last_name": "harcourt",
     "title": "mr",
     "picture": "men/26.jpg"
-  },
-  {
-    "email": "باران.پارسا@example.com",
-    "gender": "female",
-    "phone_number": "0994-542-1811",
-    "birthdate": 828860373,
-    "location": {
-      "street": "3361 شهید ثانی",
-      "city": "نجف‌آباد",
-      "state": "اردبیل",
-      "postcode": 84147
-    },
-    "username": "purpleostrich818",
-    "password": "pumper",
-    "first_name": "باران",
-    "last_name": "پارسا",
-    "title": "miss",
-    "picture": "women/31.jpg"
   },
   {
     "email": "noah.bonnet@example.com",
@@ -736,24 +700,6 @@
     "last_name": "allen",
     "title": "mr",
     "picture": "men/3.jpg"
-  },
-  {
-    "email": "پرنیا.جعفری@example.com",
-    "gender": "female",
-    "phone_number": "0901-034-5061",
-    "birthdate": 160836346,
-    "location": {
-      "street": "4435 شهید ثانی",
-      "city": "قزوین",
-      "state": "سمنان",
-      "postcode": 39241
-    },
-    "username": "heavyladybug712",
-    "password": "jerome",
-    "first_name": "پرنیا",
-    "last_name": "جعفری",
-    "title": "ms",
-    "picture": "women/13.jpg"
   },
   {
     "email": "gilbert.willis@example.com",
@@ -1800,24 +1746,6 @@
     "picture": "men/8.jpg"
   },
   {
-    "email": "اميرمحمد.جعفری@example.com",
-    "gender": "male",
-    "phone_number": "0999-396-3738",
-    "birthdate": 96378384,
-    "location": {
-      "street": "8409 مقدس اردبیلی",
-      "city": "گلستان",
-      "state": "مازندران",
-      "postcode": 61121
-    },
-    "username": "lazyostrich947",
-    "password": "qwert1",
-    "first_name": "اميرمحمد",
-    "last_name": "جعفری",
-    "title": "mr",
-    "picture": "algolia/men/jeremy.png"
-  },
-  {
     "email": "julie.cole@example.com",
     "gender": "female",
     "phone_number": "0790-578-725",
@@ -1942,24 +1870,6 @@
     "last_name": "riviere",
     "title": "mr",
     "picture": "men/72.jpg"
-  },
-  {
-    "email": "آنیتا.كامياران@example.com",
-    "gender": "female",
-    "phone_number": "0995-752-6408",
-    "birthdate": 452998355,
-    "location": {
-      "street": "2794 داودی",
-      "city": "قم",
-      "state": "آذربایجان شرقی",
-      "postcode": 70713
-    },
-    "username": "blueduck902",
-    "password": "puppet",
-    "first_name": "آنیتا",
-    "last_name": "كامياران",
-    "title": "mrs",
-    "picture": "women/67.jpg"
   },
   {
     "email": "rita.rezende@example.com",
@@ -2212,42 +2122,6 @@
     "last_name": "walker",
     "title": "mr",
     "picture": "men/82.jpg"
-  },
-  {
-    "email": "عسل.مرادی@example.com",
-    "gender": "female",
-    "phone_number": "0925-326-2063",
-    "birthdate": 417058382,
-    "location": {
-      "street": "4981 شهید بهشتی",
-      "city": "پاکدشت",
-      "state": "مرکزی",
-      "postcode": 68555
-    },
-    "username": "ticklishfish813",
-    "password": "zaq12wsx",
-    "first_name": "عسل",
-    "last_name": "مرادی",
-    "title": "mrs",
-    "picture": "women/65.jpg"
-  },
-  {
-    "email": "باران.یاسمی@example.com",
-    "gender": "female",
-    "phone_number": "0908-264-0594",
-    "birthdate": 1095446730,
-    "location": {
-      "street": "3192 دکتر مفتح",
-      "city": "پاکدشت",
-      "state": "خوزستان",
-      "postcode": 28471
-    },
-    "username": "ticklishfrog180",
-    "password": "satan666",
-    "first_name": "باران",
-    "last_name": "یاسمی",
-    "title": "ms",
-    "picture": "women/21.jpg"
   },
   {
     "email": "noah.poulsen@example.com",
@@ -2682,24 +2556,6 @@
     "picture": "women/87.jpg"
   },
   {
-    "email": "آرمیتا.سلطانینژاد@example.com",
-    "gender": "female",
-    "phone_number": "0904-946-2757",
-    "birthdate": 1282460030,
-    "location": {
-      "street": "5379 شیخ فضل الله نوری",
-      "city": "زنجان",
-      "state": "آذربایجان غربی",
-      "postcode": 67937
-    },
-    "username": "blueswan165",
-    "password": "nudes",
-    "first_name": "آرمیتا",
-    "last_name": "سلطانی نژاد",
-    "title": "mrs",
-    "picture": "women/8.jpg"
-  },
-  {
     "email": "stefan.siebert@example.com",
     "gender": "male",
     "phone_number": "0175-8081099",
@@ -2896,24 +2752,6 @@
     "last_name": "hayes",
     "title": "ms",
     "picture": "women/59.jpg"
-  },
-  {
-    "email": "شایان.حسینی@example.com",
-    "gender": "male",
-    "phone_number": "0946-021-2412",
-    "birthdate": 728429297,
-    "location": {
-      "street": "2818 میدان انقلاب",
-      "city": "ساوه",
-      "state": "لرستان",
-      "postcode": 61418
-    },
-    "username": "heavybird362",
-    "password": "instant",
-    "first_name": "شایان",
-    "last_name": "حسینی",
-    "title": "mr",
-    "picture": "men/58.jpg"
   },
   {
     "email": "konrad.siebert@example.com",
@@ -3238,42 +3076,6 @@
     "last_name": "van limpt",
     "title": "mrs",
     "picture": "women/12.jpg"
-  },
-  {
-    "email": "نيما.جعفری@example.com",
-    "gender": "male",
-    "phone_number": "0912-030-9784",
-    "birthdate": 532295794,
-    "location": {
-      "street": "7577 میدان 7 تیر",
-      "city": "همدان",
-      "state": "اردبیل",
-      "postcode": 57685
-    },
-    "username": "beautifullion345",
-    "password": "insert",
-    "first_name": "نيما",
-    "last_name": "جعفری",
-    "title": "mr",
-    "picture": "men/42.jpg"
-  },
-  {
-    "email": "ستایش.یاسمی@example.com",
-    "gender": "female",
-    "phone_number": "0930-256-0917",
-    "birthdate": 1394744991,
-    "location": {
-      "street": "1897 هویزه",
-      "city": "بجنورد",
-      "state": "لرستان",
-      "postcode": 21321
-    },
-    "username": "silverostrich141",
-    "password": "kill",
-    "first_name": "ستایش",
-    "last_name": "یاسمی",
-    "title": "miss",
-    "picture": "women/10.jpg"
   },
   {
     "email": "marcus.rasmussen@example.com",

@@ -1,0 +1,122 @@
+[
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "employees"
+  },
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "employee_territories"
+  },
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "shippers"
+  },
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "territories"
+  },
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "region"
+  },
+  {
+    "platform_id": 1,
+    "database": "erp",
+    "schema": "hr",
+    "table": "suppliers"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "products"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "orders"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "products"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "customers"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "customer_demographics"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "demos"
+  },
+  {
+    "platform_id": 2,
+    "database": "sal",
+    "schema": "sales",
+    "table": "order_details"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "products"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "orders"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "products"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "customers"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "customer_demographics"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "demos"
+  },
+  {
+    "platform_id": 3,
+    "database": "public",
+    "schema": "sales",
+    "table": "order_details"
+  }
+]

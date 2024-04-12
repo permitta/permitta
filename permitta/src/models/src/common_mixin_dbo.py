@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import declared_attr
 
 
-class CommonMixinDbo:
+class IngestionDboMixin:
     @declared_attr.directive
     def __tablename__(cls) -> str:
         return cls.__name__.lower()

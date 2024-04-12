@@ -1,32 +1,17 @@
 [
   {
-    "display_name": "trino a",
-    "tables":[
-      {
-        "database_name": "hive",
-        "schema_name": "ecommerce",
-        "object_name": "products",
-        "properties": {
-          "pii": "false"
-        },
-        "tags": [
-          "sensitive",
-          "finance",
-          "ecommerce"
-        ]
-      },
-      {
-        "database_name": "hive",
-        "schema_name": "ecommerce",
-        "object_name": "customers",
-        "properties": {
-          "pii": "true"
-        },
-        "tags": [
-          "users",
-          "ecommerce"
-        ]
-      }
-    ]
+    "platform_id": 1,
+    "display_name": "Trino",
+    "type": "Trino"
+  },
+  {
+    "platform_id": 2,
+    "display_name": "Warehouse",
+    "type": "Redshift"
+  },
+  {
+    "platform_id": 3,
+    "display_name": "Transactional",
+    "type": "Postgres"
   }
 ]

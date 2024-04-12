@@ -2,10 +2,10 @@ from database import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Mapped, relationship
 
-from .common_mixin_dbo import CommonMixinDbo
+from .common_mixin_dbo import IngestionDboMixin
 
 
-class PrincipalDbo(CommonMixinDbo, BaseModel):
+class PrincipalDbo(IngestionDboMixin, BaseModel):
     __tablename__ = "principals"
 
     principal_id: int = Column(Integer, primary_key=True, autoincrement=True)
