@@ -9,6 +9,12 @@ bp = Blueprint("principals", __name__, url_prefix="/principals")
 
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
+def index():
+    return render_template("partials/principals/principals-search.html")
+
+
+@bp.route("/table", methods=["GET"])
+@oidc.oidc_auth("default")
 def principals_table():
     search_term: str = request.args.get("searchTerm", "")
     sort_key: str = request.args.get("sortKey", "")

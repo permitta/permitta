@@ -10,6 +10,12 @@ bp = Blueprint("data_objects", __name__, url_prefix="/data-objects")
 
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
+def index():
+    return render_template("partials/data_objects/data-objects-search.html")
+
+
+@bp.route("/table", methods=["GET"])
+@oidc.oidc_auth("default")
 def data_objects_table():
     search_term: str = request.args.get("searchTerm", "")
     sort_key: str = request.args.get("sort-key", "")

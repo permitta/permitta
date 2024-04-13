@@ -37,7 +37,7 @@
                             <input type="text" name="searchTerm"
                                id="groups-search"
                                onkeydown="return event.key != 'Enter';"
-                               hx-get="/groups/"
+                               hx-get="/groups/table"
                                hx-trigger="load, keyup changed delay:0.2s"
                                hx-target="#groups-table"
                                hx-swap="innerHTML"

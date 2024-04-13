@@ -36,7 +36,14 @@ def create_app() -> Flask:
     oidc.init_app(flask_app)
 
     # blueprints
-    from views import data_objects_bp, healthz_bp, policies_bp, principals_bp, root_bp, groups_bp
+    from views import (
+        data_objects_bp,
+        groups_bp,
+        healthz_bp,
+        policies_bp,
+        principals_bp,
+        root_bp,
+    )
 
     flask_app.register_blueprint(root_bp)
     flask_app.register_blueprint(principals_bp)

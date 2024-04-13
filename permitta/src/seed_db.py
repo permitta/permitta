@@ -5,14 +5,14 @@ from datetime import datetime
 
 from database import Database
 from models import (
+    DataObjectTableAttributeDbo,
+    DataObjectTableDbo,
+    IngestionProcessDbo,
+    PlatformDbo,
     PrincipalAttributeDbo,
     PrincipalDbo,
-    DataObjectTableDbo,
-    PlatformDbo,
-    IngestionProcessDbo,
-    DataObjectTableAttributeDbo,
-    PrincipalGroupDbo,
     PrincipalGroupAttributeDbo,
+    PrincipalGroupDbo,
 )
 
 try:

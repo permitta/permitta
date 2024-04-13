@@ -37,7 +37,7 @@
                             <input type="text" name="searchTerm"
                                id="data-objects-search"
                                onkeydown="return event.key != 'Enter';"
-                               hx-get="/data-objects/"
+                               hx-get="/data-objects/table"
                                hx-trigger="load, keyup changed delay:0.2s"
                                hx-target="#data-objects-table"
                                hx-swap="innerHTML"

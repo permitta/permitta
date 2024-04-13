@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from database import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 
 
 class IngestionProcessDbo(BaseModel):
