@@ -10,6 +10,12 @@ def dashboard():
     return render_template("views/dashboard.html")
 
 
+@bp.route("/groups")
+@oidc.oidc_auth("default")
+def groups():
+    return render_template("views/groups.html")
+
+
 @bp.route("/policies")
 @oidc.oidc_auth("default")
 def policies():

@@ -11,6 +11,8 @@ from models import (
     PlatformDbo,
     IngestionProcessDbo,
     DataObjectTableAttributeDbo,
+    PrincipalGroupDbo,
+    PrincipalGroupAttributeDbo,
 )
 
 try:
@@ -20,6 +22,7 @@ except FileNotFoundError:
 
 db = Database()
 db.connect()
+
 
 def get_principals() -> list[PrincipalDbo]:
     with open("permitta/mock_data/principals.json") as json_file:
@@ -32,46 +35,54 @@ def get_principals() -> list[PrincipalDbo]:
             principal_dbo.first_name = mock_user.get("first_name")
             principal_dbo.last_name = mock_user.get("last_name")
             principal_dbo.user_name = (
-                    mock_user.get("first_name") + mock_user.get("last_name")
+                mock_user.get("first_name") + mock_user.get("last_name")
             ).lower()
             principal_dbo.job_title = random.choice([""])
 
-            # randomly apply tags
-            with open("permitta/mock_data/data_tags.json") as tags_file:
-                all_props = json.load(tags_file).get("properties")
-                for i in range(0, 2):
-                    prop: dict = random.choice(all_props)
-                    principal_attribute_dbo = PrincipalAttributeDbo()
-                    principal_attribute_dbo.attribute_key = prop["key"]
-                    principal_attribute_dbo.attribute_value = prop["value"]
-                    principal_attribute_dbo.activated_at = datetime.utcnow()
-                    principal_dbo.principal_attributes.append(principal_attribute_dbo)
+            # randomly apply groups
+            with open("permitta/mock_data/principal_groups.json") as tags_file:
+                all_props = [
+                    g.get("membership_property")
+                    for g in json.load(tags_file).get("groups")
+                ]
+
+                prop: dict = random.choice(all_props)
+                principal_attribute_dbo = PrincipalAttributeDbo()
+                principal_attribute_dbo.attribute_key = prop["key"]
+                principal_attribute_dbo.attribute_value = prop["value"]
+                principal_attribute_dbo.activated_at = datetime.utcnow()
+                principal_dbo.principal_attributes.append(principal_attribute_dbo)
 
             principals.append(principal_dbo)
         return principals
 
 
-    # def get_principal_attribute_dbos(mock_data: dict) -> list[PrincipalAttributeDbo]:
-    #     keys: list[str] = [
-    #         "email",
-    #         "gender",
-    #         "phone_number",
-    #         "birthdate",
-    #         "title",
-    #         "picture",
-    #     ]
-    #
-    #     principal_attribute_dbos: list[PrincipalAttributeDbo] = []
-    #     for key in keys:
-    #         principal_attribute_dbo: PrincipalAttributeDbo = PrincipalAttributeDbo()
-    #         principal_attribute_dbo.activated_at = datetime.now()
-    #         principal_attribute_dbo.deactivated_at = None
-    #         principal_attribute_dbo.attribute_key = (
-    #             key if key != "gender" else None
-    #         )  # tag, not property
-    #         principal_attribute_dbo.attribute_value = mock_data.get(key, "")
-    #         principal_attribute_dbos.append(principal_attribute_dbo)
-    #     return principal_attribute_dbos
+def get_groups() -> list:
+    with open("permitta/mock_data/principal_groups.json") as json_file:
+        principal_group_mock_data: list[dict] = json.load(json_file).get("groups")
+        principal_groups: list[PrincipalGroupDbo] = []
+        for principal_group in principal_group_mock_data:
+            principal_group_dbo = PrincipalGroupDbo()
+            principal_group_dbo.name = principal_group.get("name")
+            principal_group_dbo.description = principal_group.get("description", "")
+            principal_group_dbo.membership_attribute_key = principal_group.get(
+                "membership_property"
+            ).get("key")
+            principal_group_dbo.membership_attribute_value = principal_group.get(
+                "membership_property"
+            ).get("value")
+
+            for inheriting_property in principal_group.get("inheriting_properties", []):
+                principal_group_attr_dbo = PrincipalGroupAttributeDbo()
+                principal_group_attr_dbo.attribute_key = inheriting_property.get("key")
+                principal_group_attr_dbo.attribute_value = inheriting_property.get(
+                    "value"
+                )
+                principal_group_dbo.principal_group_attributes.append(
+                    principal_group_attr_dbo
+                )
+            principal_groups.append(principal_group_dbo)
+    return principal_groups
 
 
 # Platforms
@@ -115,7 +126,9 @@ def get_data_objects():
                     data_object_table_attribute_dbo.attribute_key = prop["key"]
                     data_object_table_attribute_dbo.attribute_value = prop["value"]
                     data_object_table_attribute_dbo.activated_at = datetime.utcnow()
-                    data_object_table_dbo.data_object_table_attributes.append(data_object_table_attribute_dbo)
+                    data_object_table_dbo.data_object_table_attributes.append(
+                        data_object_table_attribute_dbo
+                    )
 
             data_object_table_dbos.append(data_object_table_dbo)
     return data_object_table_dbos
@@ -164,4 +177,5 @@ def print_status():
 ingest_platforms()
 ingest_objects("Data Object", get_data_objects())
 ingest_objects("Principal", get_principals())
+ingest_objects("Principal Groups", get_groups())
 print_status()

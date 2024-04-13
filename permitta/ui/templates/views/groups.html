@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" class="dark">
+{% include 'partials/head.html' %}
+<body class="bg-white dark:bg-gray-900bg-gray-50 dark:bg-gray-800">
+
+{% include 'partials/navbar-dashboard.html' %}
+
+<div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+    {% include 'partials/sidebar.html' %}
+    <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+        <main>
+            {% include 'partials/groups/groups-search.html' %}
+        </main>
+        {% include 'partials/footer-dashboard.html' %}
+    </div>
+</div>
+<script type="module" src={{ url_for('static', filename='js/flowbite.js') }}></script>
+</body>
+</html>

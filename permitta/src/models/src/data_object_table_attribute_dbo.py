@@ -8,7 +8,9 @@ from .common_mixin_dbo import IngestionDboMixin
 class DataObjectTableAttributeDbo(IngestionDboMixin, BaseModel):
     __tablename__ = "data_object_table_attributes"
 
-    principal_attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
+    data_object_attribute_id: int = Column(
+        Integer, primary_key=True, autoincrement=True
+    )
     attribute_key: str = Column(String)
     attribute_value: str = Column(String)
 
