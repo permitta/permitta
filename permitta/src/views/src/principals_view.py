@@ -2,7 +2,7 @@ from typing import Type
 
 from extensions import oidc
 from flask import Blueprint, g, render_template, request
-from models import PrincipalDbo
+from models import PrincipalDbo, PrincipalGroupDbo, PrincipalGroupAttributeDbo
 
 bp = Blueprint("principals", __name__, url_prefix="/principals")
 
@@ -36,6 +36,7 @@ def principals_table():
             .all()
         )
         principal_count: int = session.query(PrincipalDbo).count()
+        # attributes: list = principals
 
         return render_template(
             template_name_or_list="partials/principals/principals-table.html",

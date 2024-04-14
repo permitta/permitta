@@ -1,7 +1,7 @@
+from typing import ClassVar
 from database import BaseModel
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped, relationship
-
+from sqlalchemy.orm import Mapped, relationship, column_property
 from .common_mixin_dbo import IngestionDboMixin
 
 

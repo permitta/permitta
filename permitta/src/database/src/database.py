@@ -24,7 +24,7 @@ class Database:
         database_config: DatabaseConfig = DatabaseConfig.load()
         self.engine: Engine = create_engine(
             database_config.connection_string,
-            echo=True,
+            # echo=True,
             pool_pre_ping=True,
             pool_recycle=3600,
         )

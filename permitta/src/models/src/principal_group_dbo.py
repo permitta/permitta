@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
 from database import BaseModel
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped, relationship
-
+from sqlalchemy import Column, Integer, String, select
+from sqlalchemy.orm import Mapped, relationship, column_property
+from sqlalchemy.ext.hybrid import hybrid_property
 from .common_mixin_dbo import IngestionDboMixin
+from .principal_dbo import PrincipalDbo
 
 
 @dataclass
@@ -16,6 +17,7 @@ class Attribute:
 class PrincipalGroupDbo(IngestionDboMixin, BaseModel):
     __tablename__ = "principal_groups"
 
+    # HACK this is for the UI and should be on a viewmodel
     @property
     def membership_attribute(self) -> Attribute:
         return Attribute(
