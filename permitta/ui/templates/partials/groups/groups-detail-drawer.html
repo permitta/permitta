@@ -1,0 +1,66 @@
+<div id="groups-detail-drawer"
+     class="fixed top-0 right-0 z-40 w-full h-screen max-w-xs p-4 overflow-y-auto transition-transform translate-x-full bg-white dark:bg-gray-800"
+     tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+    <h5 id="drawer-label"
+        class="inline-flex items-center mb-6 text-sm font-semibold text-gray-500 uppercase dark:text-gray-400">
+        Group Detail
+    </h5>
+    <button type="button" data-drawer-dismiss="groups-detail-drawer"
+            aria-controls="drawer-create-product-default"
+            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+        </svg>
+        <span class="sr-only">Close menu</span>
+    </button>
+    <form action="#">
+        <div class="space-y-4">
+            <div>
+                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                <input type="text" name="title" id="name"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                       placeholder="Type product name" required="">
+            </div>
+
+            <div>
+                <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+                <input type="number" name="price" id="price"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                       placeholder="$2999" required="">
+            </div>
+            <div>
+                <label for="category-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Technology</label>
+                <select id="category-create"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <option selected="">Select category</option>
+                    <option value="FL">Flowbite</option>
+                    <option value="RE">React</option>
+                    <option value="AN">Angular</option>
+                    <option value="VU">Vue</option>
+                </select>
+            </div>
+            <div>
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea id="description" rows="4"
+                          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                          placeholder="Enter event description here"></textarea>
+            </div>
+            <div>
+                <label for="discount-create" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount</label>
+                <select id="discount-create"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <option selected="">No</option>
+                    <option value="5">5%</option>
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>

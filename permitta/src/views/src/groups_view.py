@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Type
 
 from extensions import oidc
-from flask import Blueprint, g, render_template, request
+from flask import Blueprint, g, render_template, request, make_response, Response
 from models import PrincipalGroupAttributeDbo, PrincipalGroupDbo
 
 bp = Blueprint("groups", __name__, url_prefix="/groups")
@@ -39,8 +39,23 @@ def groups_table():
         groups: list[PrincipalGroupDbo] = query.all()
         group_count: int = query.count()
 
-        return render_template(
+        response: Response = make_response(render_template(
             template_name_or_list="partials/groups/groups-table.html",
             groups=groups,
             group_count=group_count,
-        )
+        ))
+        response.headers.set("HX-Trigger-After-Settle", "initialiseFlowbite")
+        return response
+
+@bp.route("/detail-modal/<principal_group_id>", methods=["GET"])
+@oidc.oidc_auth("default")
+def group_detail(principal_group_id):
+    with g.database.Session.begin() as session:
+        principal_group: PrincipalGroupDbo = session.query(PrincipalGroupDbo).filter(PrincipalGroupDbo.principal_group_id == principal_group_id).first()
+
+        response: Response = make_response(render_template(
+            template_name_or_list="partials/groups/group-detail-modal.html",
+            principal_group=principal_group,
+        ))
+        response.headers.set("HX-Trigger-After-Settle", "initialiseFlowbite")
+        return response
