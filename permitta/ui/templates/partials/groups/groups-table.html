@@ -20,11 +20,11 @@
                             <div class="flex items-center">
                                 Group Name
                                 <a href="#"
-                                    hx-get="/groups/"
-                                    hx-target="#groups-table"
-                                    hx-swap="innerHTML"
-                                    hx-include="#groups-search"
-                                    hx-vals='{"sort-key": "name"}'
+                                   hx-get="/groups/table"
+                                   hx-target="#groups-table"
+                                   hx-swap="innerHTML"
+                                   hx-include="#app-state-search-term"
+                                   hx-vals='{"sort-key": "name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -38,11 +38,11 @@
                             <div class="flex items-center">
                                 Membership Attribute
                                 <a href="#"
-                                    hx-get="/groups/"
-                                    hx-target="#groups-table"
-                                    hx-swap="innerHTML"
-                                    hx-include="#groups-search"
-                                    hx-vals='{"sort-key": "membership_attribute"}'
+                                   hx-get="/groups/table"
+                                   hx-target="#groups-table"
+                                   hx-swap="innerHTML"
+                                   hx-include="#app-state-search-term"
+                                   hx-vals='{"sort-key": "membership_attribute"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -114,13 +114,12 @@
         </a>
     </div>
 </div>
-{#<div id="default-modal-wrapper">#}
-<div id="default-modal"
-     tabindex="-1"
-     aria-hidden="true"
-     data-modal-backdrop="static"
-     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-</div>
+
+<input type="hidden" id="app-state-sort-key" name="sort-key" value="{{ sort_key }}">
+<input type="hidden" id="app-state-search-term" name="search-term" value="{{ search_term }}">
+
+
+
 {#</div>#}
 {#{% include 'partials/groups/group-detail-modal.html' %}#}
 {#{% include 'partials/groups/groups-detail-drawer.html' %}#}

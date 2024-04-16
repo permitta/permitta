@@ -21,10 +21,7 @@ def groups_table():
     sort_key: str = request.args.get("sort-key", "")
 
     if sort_key == "membership_attribute":
-        order_column = (
-            PrincipalGroupDbo.membership_attribute_key,
-            PrincipalGroupDbo.membership_attribute_value,
-        )
+        order_column = PrincipalGroupDbo.membership_attribute_key
     else:
         order_column = PrincipalGroupDbo.name
 
@@ -43,19 +40,23 @@ def groups_table():
             template_name_or_list="partials/groups/groups-table.html",
             groups=groups,
             group_count=group_count,
+            sort_key=sort_key,
+            search_term=search_term
         ))
-        response.headers.set("HX-Trigger-After-Settle", "initialiseFlowbite")
+        response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
         return response
 
 @bp.route("/detail-modal/<principal_group_id>", methods=["GET"])
 @oidc.oidc_auth("default")
-def group_detail(principal_group_id):
+def group_detail_modal(principal_group_id):
     with g.database.Session.begin() as session:
-        principal_group: PrincipalGroupDbo = session.query(PrincipalGroupDbo).filter(PrincipalGroupDbo.principal_group_id == principal_group_id).first()
+        principal_group: PrincipalGroupDbo = (
+            session.query(PrincipalGroupDbo)
+            .filter(PrincipalGroupDbo.principal_group_id == principal_group_id).first()
+        )
 
         response: Response = make_response(render_template(
             template_name_or_list="partials/groups/group-detail-modal.html",
             principal_group=principal_group,
         ))
-        response.headers.set("HX-Trigger-After-Settle", "initialiseFlowbite")
         return response

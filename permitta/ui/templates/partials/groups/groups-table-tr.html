@@ -18,10 +18,9 @@
         {{ attribute_pill_list(group.principal_group_attributes) }}
     </td>
     <td class="p-4 space-x-2 whitespace-nowrap">
-{#        data-modal-target="default-modal" data-modal-toggle="default-modal"#}
         <button
                 hx-get="/groups/detail-modal/{{ group.principal_group_id }}"
-                hx-target="#default-modal"
+                hx-target="#default-modal-content"
                 hx-swap="innerHTML"
                 type="button"
                 id="detailButton"
