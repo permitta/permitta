@@ -60,3 +60,18 @@ def group_detail_modal(principal_group_id):
             principal_group=principal_group,
         ))
         return response
+
+@bp.route("/edit-modal/<principal_group_id>", methods=["GET"])
+@oidc.oidc_auth("default")
+def group_edit_modal(principal_group_id):
+    with g.database.Session.begin() as session:
+        principal_group: PrincipalGroupDbo = (
+            session.query(PrincipalGroupDbo)
+            .filter(PrincipalGroupDbo.principal_group_id == principal_group_id).first()
+        )
+
+        response: Response = make_response(render_template(
+            template_name_or_list="partials/groups/group-edit-modal.html",
+            principal_group=principal_group,
+        ))
+        return response
