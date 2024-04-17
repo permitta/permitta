@@ -99,5 +99,6 @@ class PrincipalRepository(RepositoryBase):
                 ),
             )
             .filter(PrincipalGroupDbo.principal_group_id == principal_group_id)
+            .order_by(PrincipalDbo.last_name)
         )
         return query.count(), query.all()

@@ -3,7 +3,8 @@ from typing import Type
 
 from extensions import oidc
 from flask import Blueprint, g, render_template, request, make_response, Response
-from models import PrincipalGroupAttributeDbo, PrincipalGroupDbo
+from models import PrincipalGroupAttributeDbo, PrincipalGroupDbo, PrincipalDbo
+from repositories import PrincipalRepository
 
 bp = Blueprint("groups", __name__, url_prefix="/groups")
 
@@ -41,7 +42,7 @@ def groups_table():
             groups=groups,
             group_count=group_count,
             sort_key=sort_key,
-            search_term=search_term
+            search_term=search_term,
         ))
         response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
         return response
@@ -58,6 +59,26 @@ def group_detail_modal(principal_group_id):
         response: Response = make_response(render_template(
             template_name_or_list="partials/groups/group-detail-modal.html",
             principal_group=principal_group,
+        ))
+        return response
+
+@bp.route("/members-modal/<principal_group_id>", methods=["GET"])
+@oidc.oidc_auth("default")
+def group_members_modal(principal_group_id):
+    with g.database.Session.begin() as session:
+        repo: PrincipalRepository = PrincipalRepository()
+        principal_count, principals = repo.get_principal_group_members(session=session, principal_group_id=principal_group_id)
+        group_name, group_description = (
+            session.query(PrincipalGroupDbo.name, PrincipalGroupDbo.description)
+            .filter(PrincipalGroupDbo.principal_group_id == principal_group_id).first()
+        )
+
+        response: Response = make_response(render_template(
+            template_name_or_list="partials/groups/group-members-modal.html",
+            principals=principals,
+            principal_count=principal_count,
+            group_name=group_name,
+            group_description=group_description
         ))
         return response
 
