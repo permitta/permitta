@@ -1,3 +1,4 @@
+{% include "partials/common/table-app-state-vars.html" %}
 {% from "partials/common/macro-attribute-pill-list.html" import attribute_pill_list %}
 <div class="flex flex-col">
     <div class="overflow-x-auto">
@@ -119,8 +120,6 @@
     </div>
 </div>
 
-<input type="hidden" id="app-state-sort-key" name="sort-key" value="{{ sort_key }}">
-<input type="hidden" id="app-state-search-term" name="search-term" value="{{ search_term }}">
 
 
 {#</div>#}

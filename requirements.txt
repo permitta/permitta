@@ -1,5 +1,6 @@
 flask
 flask-pyoidc
+flask-pydantic
 black
 sqlalchemy
 pyyaml

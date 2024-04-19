@@ -1,5 +1,41 @@
 <div class="p-4 md:p-5 space-y-4">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Hello
-    </h3>
+    <input type="hidden" name="principal_group_id" value="{{ principal_group.principal_group_id }}">
+    <div class="mb-6">
+        <div>
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Group
+                Name</label>
+            <input type="text" name="name" value="{{ principal_group.name }}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="e.g: HR Analysts" required/>
+        </div>
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="membership_attribute_key"
+                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Membership Attribute
+                Key</label>
+            <input type="text" name="membership_attribute_key" value="{{ principal_group.membership_attribute_key }}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="e.g: ad_group" required/>
+        </div>
+        <div>
+            <label for="membership_attribute_value"
+                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Membership Attribute
+                Value</label>
+            <input type="text" name="membership_attribute_value"
+                   value="{{ principal_group.membership_attribute_value }}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   placeholder="e.g: HR Analyst" required/>
+        </div>
+    </div>
+    <div class="mb-6">
+        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            Group Description
+        </label>
+        <textarea id="description" name="description"
+                  rows="4"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="This group is...">{{ principal_group.description }}</textarea>
+    </div>
+
 </div>

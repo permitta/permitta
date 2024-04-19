@@ -34,11 +34,11 @@
                 <form class="sm:pr-3">
                     <label for="products-search" class="sr-only">Search</label>
                     <div class="relative w-48 mt-1 sm:w-64 xl:w-96">
-                            <input type="text" name="searchTerm"
+                        <input type="text" name="search_term"
                                id="groups-search"
                                onkeydown="return event.key != 'Enter';"
                                hx-get="/groups/table"
-                               hx-trigger="load, keyup changed delay:0.2s"
+                               hx-trigger="load, keyup changed delay:0.2s, groups-table-updated from:body"
                                hx-target="#groups-table"
                                hx-swap="innerHTML"
                                hx-include="#app-state-sort-key"
@@ -113,7 +113,8 @@
                         data-modal-hide="group-detail-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -149,20 +150,32 @@
                         data-modal-hide="group-edit-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
             <!-- Modal content -->
-            <div id="group-edit-modal-content"></div>
-            <!-- Modal footer -->
-            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button data-modal-hide="group-edit-modal" type="button"
-                        class="w-full px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    Close
-                </button>
-            </div>
+            <form
+                hx-put="/groups/"
+                hx-target="#group-edit-modal-content"
+                hx-swap="innerHTML"
+            >
+                <div id="group-edit-modal-content"></div>
+                <!-- Modal footer -->
+                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <button data-modal-hide="group-edit-modal"
+                            type="submit"
+                            class="text-white bg-blue-700 mr-4 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Save
+                    </button>
+                    <button data-modal-hide="group-edit-modal" type="button"
+                            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -185,7 +198,8 @@
                         data-modal-hide="group-members-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -199,6 +213,7 @@
                     Close
                 </button>
             </div>
+
         </div>
     </div>
 </div>
