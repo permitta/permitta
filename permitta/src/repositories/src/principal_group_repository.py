@@ -18,7 +18,7 @@ from sqlalchemy import and_, Row
 class PrincipalGroupRepository(RepositoryBase):
 
     @staticmethod
-    def get_principal_groups(
+    def get_all(
         session,
         sort_col_name: str,
         page_number: int,

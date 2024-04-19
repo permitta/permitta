@@ -14,7 +14,7 @@ class TableQueryDto(BaseModel):
 
     @property
     def next_page_number(self) -> int:
-        return min(self.page_number + 1, self.page_count - 1)
+        return min(self.page_number + 1, max(self.page_count - 1, 0))
 
     @property
     def page_start_record(self) -> int:

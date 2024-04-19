@@ -20,7 +20,7 @@ def test_get_principal_groups(database: Database) -> None:
     repo: PrincipalGroupRepository = PrincipalGroupRepository()
 
     with database.Session.begin() as session:
-        count, principal_groups = repo.get_principal_groups(
+        count, principal_groups = repo.get_all(
             session=session, sort_col_name="name", page_number=0, page_size=100000
         )
         assert count == 7

@@ -3,6 +3,20 @@ from ..src.table_query_dto import TableQueryDto
 
 def test_props():
     dto = TableQueryDto(
+        sort_key="sort_key"
+    )
+    assert dto.page_count == 0
+    assert dto.page_start_record == 1
+    assert dto.page_end_record == 0
+
+    assert dto.previous_page_number == 0
+    assert dto.previous_page_disabled
+
+    assert dto.next_page_number == 0
+    assert dto.next_page_disabled
+
+
+    dto = TableQueryDto(
         page_number=0,
         page_size=50,
         record_count=244

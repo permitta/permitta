@@ -37,21 +37,15 @@ def index():
 @oidc.oidc_auth("default")
 @validate()
 def groups_table(query: TableQueryDto):
-    if query.sort_key == "membership_attribute":
-        sort_col_name = PrincipalGroupDbo.membership_attribute_key
-    else:
-        sort_col_name = PrincipalGroupDbo.name
-
     with g.database.Session.begin() as session:
-        # TODO move this bit to a repository and test it
-        query = (
-            session.query(PrincipalGroupDbo)
-            # .filter(DataObjectTableDbo.search_value.ilike(f"%{search_term}%"))
-            .order_by(sort_col_name)
+        repo: PrincipalGroupRepository = PrincipalGroupRepository()
+        group_count, groups = repo.get_all(
+            session=session,
+            sort_col_name=query.sort_key,  # TODO is this SQL injection?
+            page_number=query.page_number,
+            page_size=query.page_size,
+            search_term=query.search_term
         )
-
-        groups: list[PrincipalGroupDbo] = query.all()
-        group_count: int = query.count()
 
         response: Response = make_response(
             render_template(

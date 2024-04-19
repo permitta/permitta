@@ -26,7 +26,6 @@ def index():
 @validate()
 def principals_table(query: TableQueryDto):
     with g.database.Session.begin() as session:
-        # TODO move this bit to a repository and test it
         repo: PrincipalRepository = PrincipalRepository()
         principal_count, principals = repo.get_all(
             session=session,
