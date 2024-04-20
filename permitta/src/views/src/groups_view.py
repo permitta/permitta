@@ -25,9 +25,7 @@ bp = Blueprint("groups", __name__, url_prefix="/groups")
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(
-        sort_key="name"
-    )
+    query_state: TableQueryDto = TableQueryDto(sort_key="name")
     return render_template(
         "partials/groups/groups-search.html", query_state=query_state
     )
@@ -44,9 +42,10 @@ def groups_table(query: TableQueryDto):
             sort_col_name=query.sort_key,  # TODO is this SQL injection?
             page_number=query.page_number,
             page_size=query.page_size,
-            search_term=query.search_term
+            search_term=query.search_term,
         )
 
+        query.record_count = group_count
         response: Response = make_response(
             render_template(
                 template_name_or_list="partials/groups/groups-table.html",
@@ -82,7 +81,7 @@ def group_detail_modal(principal_group_id):
 @oidc.oidc_auth("default")
 def group_members_modal(principal_group_id):
     with g.database.Session.begin() as session:
-        repo: PrincipalRepository = PrincipalRepository()
+        repo: PrincipalGroupRepository = PrincipalGroupRepository()
         principal_count, principals = repo.get_principal_group_members(
             session=session, principal_group_id=principal_group_id
         )

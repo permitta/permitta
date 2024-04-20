@@ -32,7 +32,7 @@ class TableQueryDto(BaseModel):
     def previous_page_disabled(self) -> bool:
         return self.page_number == 0
 
-    search_term: str = Field(default="")    # TODO validate to avoid sql injection
+    search_term: str = Field(default="")  # TODO validate to avoid sql injection
     sort_key: str = Field(default="")
     page_number: int = Field(default=0)
     page_size: int = Field(default=20)

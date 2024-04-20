@@ -34,7 +34,8 @@
                 <form class="sm:pr-3">
                     <label for="products-search" class="sr-only">Search</label>
                     <div class="relative w-48 mt-1 sm:w-64 xl:w-96">
-                        <input type="text" name="search_term" id="principals-search"
+                        <input type="text" name="search_term"
+                               id="principals-search"
                                onkeydown="return event.key != 'Enter';"
                                hx-get="/principals/table"
                                hx-trigger="load, keyup changed delay:0.2s"

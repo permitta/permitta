@@ -12,9 +12,7 @@ bp = Blueprint("principals", __name__, url_prefix="/principals")
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(
-        sort_key="user_name"
-    )
+    query_state: TableQueryDto = TableQueryDto(sort_key="user_name")
 
     return render_template(
         "partials/principals/principals-search.html", query_state=query_state
@@ -29,10 +27,10 @@ def principals_table(query: TableQueryDto):
         repo: PrincipalRepository = PrincipalRepository()
         principal_count, principals = repo.get_all(
             session=session,
-            sort_col_name=query.sort_key,   #TODO is this SQL injection?
+            sort_col_name=query.sort_key,  # TODO is this SQL injection?
             page_number=query.page_number,
             page_size=query.page_size,
-            search_term=query.search_term
+            search_term=query.search_term,
         )
         query.record_count = principal_count
         return render_template(
