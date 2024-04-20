@@ -1,31 +1,32 @@
 from dataclasses import dataclass
 from typing import Type
-from pydantic import BaseModel
-from flask_pydantic import validate
 
 from extensions import oidc
 from flask import (
     Blueprint,
+    Response,
     g,
+    make_response,
+    redirect,
     render_template,
     request,
-    make_response,
-    Response,
-    redirect,
     url_for,
 )
-from models import PrincipalGroupAttributeDbo, PrincipalGroupDbo, PrincipalDbo
-from repositories import PrincipalRepository, PrincipalGroupRepository
-
+from flask_pydantic import validate
+from models import PrincipalDbo, PrincipalGroupAttributeDbo, PrincipalGroupDbo
+from pydantic import BaseModel
+from repositories import PrincipalGroupRepository, PrincipalRepository
 from views.models import TableQueryDto
 
 bp = Blueprint("groups", __name__, url_prefix="/groups")
+
+DEFAULT_SORT_KEY: str = "name"
 
 
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key="name")
+    query_state: TableQueryDto = TableQueryDto(sort_key=DEFAULT_SORT_KEY)
     return render_template(
         "partials/groups/groups-search.html", query_state=query_state
     )

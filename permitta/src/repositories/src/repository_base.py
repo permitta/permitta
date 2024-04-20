@@ -1,15 +1,12 @@
-from typing import Type
-from database import Database, BaseModel
-from sqlalchemy.sql.elements import NamedColumn
-from sqlalchemy.orm import class_mapper, ColumnProperty
 import inspect
 from typing import Tuple, Type
-from sqlalchemy.inspection import inspect as sa_inspect
-from sqlalchemy.ext.hybrid import hybrid_property
 
+from database import BaseModel, Database
+from sqlalchemy import Row, and_
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.inspection import inspect as sa_inspect
+from sqlalchemy.orm import ColumnProperty, Query, class_mapper
 from sqlalchemy.sql.elements import NamedColumn
-from sqlalchemy.orm import Query
-from sqlalchemy import and_, Row
 
 
 class RepositoryBase:

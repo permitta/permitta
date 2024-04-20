@@ -2,8 +2,9 @@ from dataclasses import dataclass
 
 from database import BaseModel
 from sqlalchemy import Column, Integer, String, select
-from sqlalchemy.orm import Mapped, relationship, column_property
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, column_property, relationship
+
 from .common_mixin_dbo import IngestionDboMixin
 from .principal_dbo import PrincipalDbo
 

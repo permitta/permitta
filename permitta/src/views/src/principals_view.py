@@ -1,10 +1,9 @@
 from extensions import oidc
 from flask import Blueprint, g, render_template, request
-from models import PrincipalDbo, PrincipalGroupDbo, PrincipalGroupAttributeDbo
-from repositories import PrincipalRepository
 from flask_pydantic import validate
+from models import PrincipalDbo, PrincipalGroupAttributeDbo, PrincipalGroupDbo
+from repositories import PrincipalRepository
 from views.models import TableQueryDto
-
 
 bp = Blueprint("principals", __name__, url_prefix="/principals")
 

@@ -1,10 +1,11 @@
 from database import Database
 from models import (
-    PrincipalDbo,
-    PrincipalGroupDbo,
-    PrincipalGroupAttributeDbo,
     PrincipalAttributeDbo,
+    PrincipalDbo,
+    PrincipalGroupAttributeDbo,
+    PrincipalGroupDbo,
 )
+
 from ..src.principal_repository import PrincipalRepository
 
 

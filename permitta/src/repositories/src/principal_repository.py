@@ -3,16 +3,16 @@ from typing import Tuple, Type
 
 from database import Database
 from models import (
-    PrincipalDbo,
-    PrincipalGroupDbo,
     PrincipalAttributeDbo,
+    PrincipalDbo,
     PrincipalGroupAttributeDbo,
+    PrincipalGroupDbo,
 )
+from sqlalchemy import Row, and_
+from sqlalchemy.orm import Query
+from sqlalchemy.sql.elements import NamedColumn
 
 from .repository_base import RepositoryBase
-from sqlalchemy.sql.elements import NamedColumn
-from sqlalchemy.orm import Query
-from sqlalchemy import and_, Row
 
 
 class PrincipalRepository(RepositoryBase):
