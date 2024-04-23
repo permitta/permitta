@@ -16,3 +16,12 @@ class PrincipalAttributeDbo(IngestionDboMixin, BaseModel):
     principal: Mapped["PrincipalDbo"] = relationship(
         back_populates="principal_attributes"
     )
+
+    principal_groups: Mapped[list["PrincipalGroupDbo"]] = relationship(
+        "PrincipalGroupDbo",
+        primaryjoin="and_(PrincipalAttributeDbo.attribute_key == PrincipalGroupDbo.membership_attribute_key,"
+        "PrincipalAttributeDbo.attribute_value == PrincipalGroupDbo.membership_attribute_value)",
+        foreign_keys=[attribute_key, attribute_value],
+        remote_side="PrincipalGroupDbo.membership_attribute_key, PrincipalGroupDbo.membership_attribute_value",
+        uselist=True,
+    )

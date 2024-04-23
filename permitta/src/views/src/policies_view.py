@@ -99,3 +99,11 @@ def policies_table():
         policies=policies,
         policy_count=1,
     )
+
+
+@bp.route("/<policy_id>", methods=["GET"])
+@oidc.oidc_auth("default")
+def policy_detail(policy_id):
+    return render_template(
+        template_name_or_list="partials/policies/policy-detail.html",
+    )

@@ -10,7 +10,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-permitta/ui/static/css
+permitta/ui/static/css/output.css
 downloads/
 eggs/
 .eggs/

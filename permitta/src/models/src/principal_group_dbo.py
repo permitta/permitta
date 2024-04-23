@@ -6,7 +6,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, column_property, relationship
 
 from .common_mixin_dbo import IngestionDboMixin
-from .principal_dbo import PrincipalDbo
 
 
 @dataclass

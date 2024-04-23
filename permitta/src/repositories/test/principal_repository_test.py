@@ -56,6 +56,32 @@ def test_get_all_paginated(database: Database) -> None:
             for principals_b1_id in principals_b1_ids
         )
 
+        # test group membership attribute join
+        connected_group: PrincipalGroupDbo = (
+            principals_b1[0].principal_attributes[0].principal_groups[0]
+        )
+        assert connected_group.membership_attribute_value == "SALES_SUPERVISORS_GL"
+        assert [
+            f"{pga.attribute_key}: {pga.attribute_value}"
+            for pga in connected_group.principal_group_attributes
+        ] == [
+            "Sales: Commercial",
+            "Sales: Restricted",
+            "Sales: Privacy",
+            "Marketing: Commercial",
+        ]
+
+        # and via the prop on the principal class
+        assert [
+            f"{pga.attribute_key}: {pga.attribute_value}"
+            for pga in principals_b1[0].group_membership_attributes
+        ] == [
+            "Sales: Commercial",
+            "Sales: Restricted",
+            "Sales: Privacy",
+            "Marketing: Commercial",
+        ]
+
 
 def test_get_principal_with_attributes(database: Database) -> None:
     repo: PrincipalRepository = PrincipalRepository()

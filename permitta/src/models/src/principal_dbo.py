@@ -1,14 +1,23 @@
 from typing import ClassVar
 
 from database import BaseModel
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import select, Column, Integer, String
 from sqlalchemy.orm import Mapped, column_property, relationship
-
+from sqlalchemy.ext.hybrid import hybrid_property
 from .common_mixin_dbo import IngestionDboMixin
 
 
 class PrincipalDbo(IngestionDboMixin, BaseModel):
     __tablename__ = "principals"
+
+    @property
+    def group_membership_attributes(self) -> list["PrincipalGroupAttributeDbo"]:
+        for principal_attribute in self.principal_attributes:
+            for principal_group in principal_attribute.principal_groups:
+                for (
+                    principal_group_attribute
+                ) in principal_group.principal_group_attributes:
+                    yield principal_group_attribute
 
     principal_id: int = Column(Integer, primary_key=True, autoincrement=True)
     first_name: str = Column(String)
