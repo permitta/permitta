@@ -1,7 +1,7 @@
 from app_config import AppConfigModelBase
 from database import Database
 from extensions import oidc, oidc_auth_provider
-from flask import Blueprint, Flask, g, render_template
+from flask import Blueprint, Flask, g, render_template, redirect
 
 
 class FlaskConfig(AppConfigModelBase):
@@ -64,7 +64,7 @@ def create_app() -> Flask:
     @flask_app.route("/logout")
     @oidc.oidc_logout
     def logout():
-        return "logged out"
+        return redirect("/")
 
     return flask_app
 
