@@ -7,3 +7,5 @@ pyyaml
 pytest
 isort
 trino
+ldap3
+click

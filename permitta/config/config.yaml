@@ -1,5 +1,23 @@
 database.connection_string: "sqlite:///permitta/instance/permitta.db"
 flask.secret_key: "$FLASK_SECRET_KEY"
+
+
 oidc_auth_provider.issuer: "http://localhost:8080/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"
 oidc_auth_provider.client_secret: "$OIDC_AUTH_PROVIDER_CLIENT_SECRET"
+
+ldap_client.host: localhost
+ldap_client.port: "3890"
+ldap_client.base_dn: dc=example,dc=com
+ldap_client.user_dn: uid=admin,ou=people,dc=example,dc=com
+ldap_client.password: changeme
+ldap_client.user_base_dn: ou=people,dc=example,dc=com
+
+ldap_connector.user_search_base: ou=people,dc=example,dc=com
+ldap_connector.user_search_filter: (&(uid=*)(memberof=cn=permitta_users_gl,ou=groups,dc=example,dc=com))
+ldap_connector.attr_user_name: cn
+ldap_connector.attr_user_id: uid
+ldap_connector.attr_first_name: givenname
+ldap_connector.attr_last_name: sn
+ldap_connector.attr_email: mail
+ldap_connector.attr_groups: memberOf

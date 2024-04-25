@@ -4,12 +4,15 @@ from typing import Tuple, Type
 from database import Database
 from models import (
     PrincipalAttributeDbo,
+    PrincipalAttributeStagingDbo,
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
+    PrincipalStagingDbo,
 )
 from sqlalchemy import Row, and_
 from sqlalchemy.orm import Query
+from sqlalchemy.sql import text
 from sqlalchemy.sql.elements import NamedColumn
 
 from .repository_base import RepositoryBase
@@ -18,7 +21,13 @@ from .repository_base import RepositoryBase
 class PrincipalRepository(RepositoryBase):
 
     @staticmethod
-    def get_all(
+    def truncate_staging_tables(session) -> None:
+        for model in [PrincipalStagingDbo, PrincipalAttributeStagingDbo]:
+            # TODO change this to truncate when we have PG
+            session.execute(text(f"delete from {model.__tablename__}"))
+
+    @staticmethod
+    def get_all_with_search_and_pagination(
         session,
         sort_col_name: str,
         page_number: int,
@@ -26,7 +35,7 @@ class PrincipalRepository(RepositoryBase):
         sort_ascending: bool = True,
         search_term: str = "",
     ) -> Tuple[int, list[PrincipalDbo]]:
-        return RepositoryBase.get_all_with_search_and_pagination(
+        return RepositoryBase._get_all_with_search_and_pagination(
             model=PrincipalDbo,
             session=session,
             sort_col_name=sort_col_name,
@@ -36,6 +45,11 @@ class PrincipalRepository(RepositoryBase):
             search_term=search_term,
             search_column_name="user_name",
         )
+
+    @staticmethod
+    def get_all(session) -> Tuple[int, list[PrincipalDbo]]:
+        query: Query = session.query(PrincipalDbo)
+        return query.count(), query.all()
 
     @staticmethod
     def get_principal_with_attributes(session, principal_id: int) -> PrincipalDbo:

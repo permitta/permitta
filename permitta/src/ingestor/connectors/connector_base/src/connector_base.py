@@ -1,8 +1,10 @@
 from abc import abstractmethod
 
+from database import Database
+
 
 class ConnectorBase:
-    def __init__(self):
+    def __init__(self, database: Database):
         """
         Supports data ingestion for principals, tags and objects
         Each ingestion type maps to a specific model class / table
@@ -19,6 +21,7 @@ class ConnectorBase:
 
         Possibly this will then create a hook which updates the bundle
         """
+        self.database = database
         pass
 
     @abstractmethod

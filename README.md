@@ -187,6 +187,13 @@ pip install -r requirements.txt
 | OIDC_AUTH_PROVIDER_CLIENT_SECRET |         | The client secret provided by the OIDC server |
 
 
+### LLDAP
+* http://localhost:17170/
+* admin / changeme
+```bash
+docker-compose exec lldap /bootstrap/bootstrap.sh
+```
+
 ## Formatting
 ```bash
 # in project root

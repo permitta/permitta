@@ -1,19 +1,41 @@
 from database import Database
 from models import (
     PrincipalAttributeDbo,
+    PrincipalAttributeStagingDbo,
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
+    PrincipalStagingDbo,
 )
 
 from ..src.principal_repository import PrincipalRepository
+
+
+def test_truncate_staging(database: Database) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        session.add(PrincipalStagingDbo())
+        session.add(PrincipalAttributeStagingDbo())
+        session.commit()
+
+    with database.Session.begin() as session:
+        assert session.query(PrincipalStagingDbo).count() == 1
+        assert session.query(PrincipalAttributeStagingDbo).count() == 1
+
+        repo.truncate_staging_tables(session=session)
+        session.commit()
+
+    with database.Session.begin() as session:
+        assert session.query(PrincipalStagingDbo).count() == 0
+        assert session.query(PrincipalAttributeStagingDbo).count() == 0
 
 
 def test_get_all(database: Database) -> None:
     repo: PrincipalRepository = PrincipalRepository()
 
     with database.Session.begin() as session:
-        principal_count, principals = repo.get_all(
+        principal_count, principals = repo.get_all_with_search_and_pagination(
             session=session,
             sort_col_name="first_name",
             page_number=0,
@@ -36,13 +58,13 @@ def test_get_all_paginated(database: Database) -> None:
     repo: PrincipalRepository = PrincipalRepository()
 
     with database.Session.begin() as session:
-        principal_count, principals_b1 = repo.get_all(
+        principal_count, principals_b1 = repo.get_all_with_search_and_pagination(
             session=session, sort_col_name="first_name", page_number=0, page_size=40
         )
         assert principal_count == 198
         assert len(principals_b1) == 40
 
-        principal_count, principals_b2 = repo.get_all(
+        principal_count, principals_b2 = repo.get_all_with_search_and_pagination(
             session=session, sort_col_name="first_name", page_number=1, page_size=40
         )
         assert principal_count == 198

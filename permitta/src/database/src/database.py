@@ -31,5 +31,8 @@ class Database:
         self.Session = sessionmaker(self.engine)
         BaseModel.metadata.create_all(self.engine)
 
+    # def execute(self, statement: str) -> None:
+    #     self.engine.raw_connection().e
+
     def disconnect(self) -> None:
         self.engine.dispose()

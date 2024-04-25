@@ -1,7 +1,7 @@
 from app_config import AppConfigModelBase
 from database import Database
 from extensions import oidc, oidc_auth_provider
-from flask import Blueprint, Flask, g, render_template, redirect
+from flask import Blueprint, Flask, g, redirect, render_template
 
 
 class FlaskConfig(AppConfigModelBase):

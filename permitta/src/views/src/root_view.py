@@ -1,5 +1,6 @@
 from extensions import oidc
-from flask import Blueprint, render_template, session as flask_session
+from flask import Blueprint, render_template
+from flask import session as flask_session
 
 bp = Blueprint("root", __name__, url_prefix="")
 

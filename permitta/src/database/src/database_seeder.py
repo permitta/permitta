@@ -1,6 +1,6 @@
 import json
-import os
 import random
+import uuid
 from datetime import datetime
 
 from database import Database
@@ -38,6 +38,7 @@ class DatabaseSeeder:
 
             for mock_user in mock_users:
                 principal_dbo: PrincipalDbo = PrincipalDbo()
+                principal_dbo.source_uid = str(uuid.uuid4())
                 principal_dbo.activated_at = datetime.now()
                 principal_dbo.deactivated_at = None
                 principal_dbo.first_name = mock_user.get("first_name")

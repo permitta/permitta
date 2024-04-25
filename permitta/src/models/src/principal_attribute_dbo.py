@@ -8,6 +8,8 @@ from .common_mixin_dbo import IngestionDboMixin
 class PrincipalAttributeDbo(IngestionDboMixin, BaseModel):
     __tablename__ = "principal_attributes"
 
+    AD_GROUP_ATTRIBUTE_KEY: str = "ad_group"
+
     principal_attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
     attribute_key: str = Column(String)
     attribute_value: str = Column(String)

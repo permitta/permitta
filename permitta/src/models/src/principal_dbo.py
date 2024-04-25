@@ -1,9 +1,8 @@
-from typing import ClassVar
-
 from database import BaseModel
-from sqlalchemy import select, Column, Integer, String
-from sqlalchemy.orm import Mapped, column_property, relationship
+from sqlalchemy import Column, Integer, String, select
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, column_property, declared_attr, relationship
+
 from .common_mixin_dbo import IngestionDboMixin
 
 
@@ -20,6 +19,7 @@ class PrincipalDbo(IngestionDboMixin, BaseModel):
                     yield principal_group_attribute
 
     principal_id: int = Column(Integer, primary_key=True, autoincrement=True)
+    source_uid: str = Column(String)
     first_name: str = Column(String)
     last_name: str = Column(String)
     user_name: str = Column(String)

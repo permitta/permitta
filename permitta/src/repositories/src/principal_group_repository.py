@@ -26,7 +26,7 @@ class PrincipalGroupRepository(RepositoryBase):
         sort_ascending: bool = True,
         search_term: str = "",
     ) -> Tuple[int, list[PrincipalGroupDbo]]:
-        return RepositoryBase.get_all_with_search_and_pagination(
+        return RepositoryBase._get_all_with_search_and_pagination(
             model=PrincipalGroupDbo,
             session=session,
             sort_col_name=sort_col_name,

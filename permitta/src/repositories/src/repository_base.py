@@ -43,7 +43,7 @@ class RepositoryBase:
         )
 
     @staticmethod
-    def get_all_with_search_and_pagination(
+    def _get_all_with_search_and_pagination(
         session,
         model: Type[BaseModel],
         sort_col_name: str,
