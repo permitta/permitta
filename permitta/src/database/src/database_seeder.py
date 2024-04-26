@@ -19,9 +19,9 @@ from models import (
 class DatabaseSeeder:
     db: Database
 
-    def __init__(self):
-        self.db = Database()
-        self.db.connect()
+    def __init__(self, db: Database):
+        self.db = db
+        # self.db.connect()
 
     @staticmethod
     def _get_principals() -> list[PrincipalDbo]:

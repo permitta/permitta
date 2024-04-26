@@ -175,7 +175,7 @@ brew install nodejs
 npm install
 
 brew install python@3.11
-python3.12 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -191,6 +191,7 @@ pip install -r requirements.txt
 * http://localhost:17170/
 * admin / changeme
 ```bash
+# load the users
 docker-compose exec lldap /bootstrap/bootstrap.sh
 ```
 

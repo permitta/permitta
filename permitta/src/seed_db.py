@@ -1,11 +1,7 @@
-import os
+from database import Database, DatabaseSeeder
 
-from database import DatabaseSeeder
-
-try:
-    os.remove("permitta/instance/permitta.db")
-except FileNotFoundError:
-    pass
-
-database_seeder: DatabaseSeeder = DatabaseSeeder()
+db: Database = Database()
+db.connect()
+db.create_all_tables()
+database_seeder: DatabaseSeeder = DatabaseSeeder(db=db)
 database_seeder.seed()

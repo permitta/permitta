@@ -35,8 +35,7 @@ class IngestionProcessRepository(RepositoryBase):
     def complete_process(session, ingestion_process_id: int) -> None:
         ingestion_process_dbo: IngestionProcessDbo = (
             IngestionProcessRepository.get_by_id(
-                session=session,
-                ingestion_process_id=ingestion_process_id
+                session=session, ingestion_process_id=ingestion_process_id
             )
         )
         ingestion_process_dbo.status = "complete"

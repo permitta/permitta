@@ -1,6 +1,11 @@
-database.connection_string: "sqlite:///permitta/instance/permitta.db"
 flask.secret_key: "$FLASK_SECRET_KEY"
 
+database.protocol: "postgresql+psycopg"
+database.user: "test_user"
+database.password: "test_password"
+database.host: "localhost"
+database.port: "5432"
+database.database: "permitta"
 
 oidc_auth_provider.issuer: "http://localhost:8080/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"

@@ -2,7 +2,9 @@ flask
 flask-pyoidc
 flask-pydantic
 black
+psycopg-binary
 sqlalchemy
+pytest-postgresql
 pyyaml
 pytest
 isort

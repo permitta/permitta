@@ -1,4 +1,5 @@
 import inspect
+from textwrap import dedent
 from typing import Tuple, Type
 
 from database import Database
@@ -23,8 +24,10 @@ class PrincipalRepository(RepositoryBase):
     @staticmethod
     def truncate_staging_tables(session) -> None:
         for model in [PrincipalStagingDbo, PrincipalAttributeStagingDbo]:
-            # TODO change this to truncate when we have PG
-            session.execute(text(f"delete from {model.__tablename__}"))
+            session.execute(text(f"truncate {model.__tablename__}"))
+            session.execute(
+                text(f"alter sequence {model.__tablename__}_id_seq restart with 1")
+            )
 
     @staticmethod
     def get_all_with_search_and_pagination(
@@ -52,6 +55,15 @@ class PrincipalRepository(RepositoryBase):
         return query.count(), query.all()
 
     @staticmethod
+    def get_by_id(session, principal_id: int) -> PrincipalDbo:
+        principal: PrincipalDbo = (
+            session.query(PrincipalDbo)
+            .filter(PrincipalDbo.principal_id == principal_id)
+            .first()
+        )
+        return principal
+
+    @staticmethod
     def get_principal_with_attributes(session, principal_id: int) -> PrincipalDbo:
         principal_query: Query = (
             session.query(PrincipalDbo, PrincipalGroupDbo)
@@ -75,3 +87,80 @@ class PrincipalRepository(RepositoryBase):
         principal.group_attributes = group.principal_group_attributes
 
         return principal
+
+    @staticmethod
+    def merge_principals_staging(session, ingestion_process_id: int) -> int:
+        merge_stmt: str = PrincipalRepository._get_merge_statement(
+            merge_keys=PrincipalStagingDbo.MERGE_KEYS,
+            update_cols=PrincipalStagingDbo.UPDATE_COLS,
+            ingestion_process_id=ingestion_process_id,
+        )
+        result = session.execute(text(merge_stmt))
+
+        # TODO join and delete
+        return result.rowcount
+
+    @staticmethod
+    def _get_merge_statement(
+        merge_keys: list[str], update_cols: list[str], ingestion_process_id: int
+    ) -> str:
+        merge_key: str = merge_keys[0]  # HACK
+
+        update_stmt: str = (
+            "update set "
+            + ", ".join([f"{c} = src.{c}" for c in update_cols])
+            + f", process_id = {ingestion_process_id}"
+        )
+
+        insert_stmt: str = (
+            "insert (" + ", ".join([merge_key] + update_cols) + ", process_id)"
+        )
+        values_stmt: str = (
+            "values ("
+            + ", ".join([f"src.{c}" for c in [merge_key] + update_cols])
+            + f", {ingestion_process_id})"
+        )
+
+        merge_statement: str = dedent(
+            f"""
+                    merge into {PrincipalDbo.__tablename__} as tgt
+                    using (
+                        select * from {PrincipalStagingDbo.__tablename__}
+                    ) src
+                    on src.{merge_key} = tgt.{merge_key}
+                    when matched then
+                        {update_stmt}
+                    when not matched then
+                        {insert_stmt}
+                        {values_stmt}
+                """
+        )
+        return merge_statement
+
+    @staticmethod
+    def _get_merge_deactivate_statement(
+        merge_keys: list[str], ingestion_process_id: int
+    ) -> str:
+        """
+        The merge delete statement actually executes an update
+        The process ID is set and the record is marked as inactive
+
+        When the trigger proc is called on the update, the function
+        should insert a row in the history table with the new proc id
+        and delete the record from the target table
+        """
+        merge_keys_str: str = ", ".join(merge_keys)
+        where_clause: str = ", ".join([f"tgt.{c} = src.{c}" for c in merge_keys])
+
+        return dedent(
+            f"""
+            update {PrincipalDbo.__tablename__} tgt
+            set process_id = {ingestion_process_id}, active = false
+            from (
+                select {merge_keys_str} from principals
+                except
+                select {merge_keys_str} from principals_staging
+            ) src
+            where {where_clause}
+            """
+        )

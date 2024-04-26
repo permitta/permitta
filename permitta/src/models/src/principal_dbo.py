@@ -23,7 +23,7 @@ class PrincipalDbo(IngestionDboMixin, BaseModel):
     first_name: str = Column(String)
     last_name: str = Column(String)
     user_name: str = Column(String)
-    job_title: str = Column(String)
+    email: str = Column(String)
 
     principal_attributes: Mapped[list["PrincipalAttributeDbo"]] = relationship(
         back_populates="principal"

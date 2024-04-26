@@ -19,16 +19,21 @@ class Database:
 
     engine: Engine
     Session: sessionmaker
+    config: DatabaseConfig
+
+    def __init__(self):
+        self.config: DatabaseConfig = DatabaseConfig.load()
 
     def connect(self) -> None:
-        database_config: DatabaseConfig = DatabaseConfig.load()
         self.engine: Engine = create_engine(
-            database_config.connection_string,
-            # echo=True,
+            self.config.connection_string,
+            echo=True,
             pool_pre_ping=True,
             pool_recycle=3600,
         )
         self.Session = sessionmaker(self.engine)
+
+    def create_all_tables(self):
         BaseModel.metadata.create_all(self.engine)
 
     # def execute(self, statement: str) -> None:

@@ -55,4 +55,13 @@ services:
       - GROUP_CONFIGS_DIR=/bootstrap/group-configs
       - DO_CLEANUP=true
 
-#
+  postgres:
+    image: postgres:16.2
+    ports:
+      - 5432:5432
+    volumes:
+      - ./instance/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_USER=test_user
+      - POSTGRES_DB=permitta

@@ -1,6 +1,15 @@
-database.connection_string: "sqlite:///:memory:"
+# unit test items - do not remove
 common.db_connection_string: "sqlite:///:memory:"
 common.super_secret: "https:/domain?username=$SUPER_SECRET_VALUE"
+flask.secret_key: "$FLASK_SECRET_KEY"
+
+database.protocol: "postgresql+psycopg"
+database.user: "test_user"
+database.password: "test_password"
+database.host: "localhost"
+database.port: "5432"
+database.database: "unittest"
+
 connector.json_file.principals.file_path: "config/principals.json"
 oidc_auth_provider.issuer: "http://example.com/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"
@@ -14,7 +23,7 @@ ldap_client.password: changeme
 ldap_client.user_base_dn: ou=people,dc=example,dc=com
 
 ldap_connector.user_search_base: ou=people,dc=example,dc=com
-ldap_connector.user_search_filter: (uid=*)
+ldap_connector.user_search_filter: (&(uid=*)(memberof=cn=permitta_users_gl,ou=groups,dc=example,dc=com))
 ldap_connector.attr_user_name: cn
 ldap_connector.attr_user_id: uid
 ldap_connector.attr_first_name: givenname

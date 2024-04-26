@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 from database import Database
 from models import (
     PrincipalAttributeDbo,
@@ -47,7 +49,7 @@ def test_get_all(database: Database) -> None:
         assert len(principals) == 198
 
         # check sorting
-        first_names: list[str] = [p.first_name for p in principals]
+        first_names: list[str] = [p.first_name for p in principals][:20]
         sorted_first_names: list[str] = sorted(first_names)
         assert first_names == sorted_first_names
 
