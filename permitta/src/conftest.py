@@ -2,6 +2,7 @@ import os
 
 import pytest
 from pytest_postgresql.janitor import DatabaseJanitor
+from sqlalchemy.sql import text
 
 os.environ["CONFIG_FILE_PATH"] = "permitta/config/config.unittest.yaml"
 os.environ["SUPER_SECRET_VALUE"] = "dont-tell-anyone"
@@ -23,6 +24,20 @@ def database_empty() -> Database:
     ):
         db.connect()
         db.create_all_tables()
+
+        # HACK - this will be replaced by alembic
+        with db.Session.begin() as session:
+            sql_files: list[str] = [
+                f
+                for f in os.listdir("permitta/src/models/src/functions")
+                if f.endswith(".sql")
+            ]
+            for sql_file in sql_files:
+                with open(
+                    os.path.join("permitta/src/models/src/functions", sql_file)
+                ) as f:
+                    session.execute(text(f.read()))
+
         yield db
 
 

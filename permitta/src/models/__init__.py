@@ -1,5 +1,8 @@
 from .src.data_object_table_attribute_dbo import DataObjectTableAttributeDbo
 from .src.data_object_table_dbo import DataObjectTableDbo
+
+# history tables
+from .src.history.principal_history_dbo import PrincipalHistoryDbo
 from .src.ingestion_process_dbo import IngestionProcessDbo
 from .src.object_type_enum import ObjectTypeEnum
 from .src.platform_dbo import PlatformDbo

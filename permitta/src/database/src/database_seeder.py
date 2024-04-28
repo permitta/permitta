@@ -164,7 +164,7 @@ class DatabaseSeeder:
         ingestion_process_id = self._get_process_id(object_type)
 
         for obj in object_list:
-            obj.process_id = ingestion_process_id
+            obj.ingestion_process_id = ingestion_process_id
 
         with self.db.Session.begin() as session:
             session.add_all(object_list)

@@ -10,7 +10,5 @@ class IngestionDboMixin:
         return cls.__name__.lower()
 
     # these cannot be type-hinted or alchemy complains
-    process_id = Column(Integer)
-    active = Column(Boolean, default=True)
-    activated_at = Column(DateTime)
-    deactivated_at = Column(DateTime)
+    ingestion_process_id = Column(Integer)
+    active = Column(Boolean, default=True, server_default="t")

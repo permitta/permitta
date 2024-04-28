@@ -9,6 +9,7 @@ from models import (
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
+    PrincipalHistoryDbo,
     PrincipalStagingDbo,
 )
 from sqlalchemy import Row, and_
@@ -55,6 +56,20 @@ class PrincipalRepository(RepositoryBase):
         return query.count(), query.all()
 
     @staticmethod
+    def get_all_history(session) -> Tuple[int, list[PrincipalHistoryDbo]]:
+        query: Query = session.query(PrincipalHistoryDbo)
+        return query.count(), query.all()
+
+    @staticmethod
+    def get_all_history_by_id(
+        session, principal_id: int
+    ) -> Tuple[int, list[PrincipalHistoryDbo]]:
+        query: Query = session.query(PrincipalHistoryDbo).filter(
+            PrincipalHistoryDbo.principal_id == principal_id
+        )
+        return query.count(), query.all()
+
+    @staticmethod
     def get_by_id(session, principal_id: int) -> PrincipalDbo:
         principal: PrincipalDbo = (
             session.query(PrincipalDbo)
@@ -96,8 +111,15 @@ class PrincipalRepository(RepositoryBase):
             ingestion_process_id=ingestion_process_id,
         )
         result = session.execute(text(merge_stmt))
+        return result.rowcount
 
-        # TODO join and delete
+    @staticmethod
+    def merge_deactivate_principals_staging(session, ingestion_process_id: int) -> int:
+        merge_stmt: str = PrincipalRepository._get_merge_deactivate_statement(
+            merge_keys=PrincipalStagingDbo.MERGE_KEYS,
+            ingestion_process_id=ingestion_process_id,
+        )
+        result = session.execute(text(merge_stmt))
         return result.rowcount
 
     @staticmethod
@@ -106,14 +128,20 @@ class PrincipalRepository(RepositoryBase):
     ) -> str:
         merge_key: str = merge_keys[0]  # HACK
 
+        matched_and_stmt: str = "and " + " or ".join(
+            [f"src.{c} <> tgt.{c}" for c in update_cols]
+        )
+
         update_stmt: str = (
             "update set "
             + ", ".join([f"{c} = src.{c}" for c in update_cols])
-            + f", process_id = {ingestion_process_id}"
+            + f", ingestion_process_id = {ingestion_process_id}"
         )
 
         insert_stmt: str = (
-            "insert (" + ", ".join([merge_key] + update_cols) + ", process_id)"
+            "insert ("
+            + ", ".join([merge_key] + update_cols)
+            + ", ingestion_process_id)"
         )
         values_stmt: str = (
             "values ("
@@ -128,7 +156,9 @@ class PrincipalRepository(RepositoryBase):
                         select * from {PrincipalStagingDbo.__tablename__}
                     ) src
                     on src.{merge_key} = tgt.{merge_key}
-                    when matched then
+                    when matched 
+                        {matched_and_stmt}
+                    then
                         {update_stmt}
                     when not matched then
                         {insert_stmt}
@@ -155,7 +185,7 @@ class PrincipalRepository(RepositoryBase):
         return dedent(
             f"""
             update {PrincipalDbo.__tablename__} tgt
-            set process_id = {ingestion_process_id}, active = false
+            set ingestion_process_id = {ingestion_process_id}, active = false
             from (
                 select {merge_keys_str} from principals
                 except

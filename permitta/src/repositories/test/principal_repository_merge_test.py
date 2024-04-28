@@ -7,6 +7,7 @@ from models import (
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
+    PrincipalHistoryDbo,
     PrincipalStagingDbo,
 )
 
@@ -15,8 +16,6 @@ from ..src.principal_repository import PrincipalRepository
 
 def test_merge_principals_staging(database_empty: Database) -> None:
     repo: PrincipalRepository = PrincipalRepository()
-
-    # TODO add proc id in
 
     # scenario 1: empty target tables
     with database_empty.Session.begin() as session:
@@ -43,8 +42,13 @@ def test_merge_principals_staging(database_empty: Database) -> None:
         row_count: int = repo.merge_principals_staging(
             session=session, ingestion_process_id=1
         )
-        session.commit()
         assert row_count == 2
+
+        row_count: int = repo.merge_deactivate_principals_staging(
+            session=session, ingestion_process_id=2
+        )
+        assert row_count == 0
+        session.commit()
 
     # test it
     with database_empty.Session.begin() as session:
@@ -52,16 +56,15 @@ def test_merge_principals_staging(database_empty: Database) -> None:
         assert count == 2
         assert principals[0].principal_id == 1
         assert principals[0].source_uid == "abigail.fleming"
-        assert principals[0].process_id == 1
+        assert principals[0].ingestion_process_id == 1
+        assert principals[0].active
         assert principals[1].principal_id == 2
         assert principals[1].source_uid == "boris.johnstone"
-        assert principals[1].process_id == 1
+        assert principals[1].ingestion_process_id == 1
+        assert principals[1].active
 
     # scenario 2: append to target tables
     with database_empty.Session.begin() as session:
-        # truncate staging table
-        repo.truncate_staging_tables(session=session)
-
         # populate staging table
         ps3: PrincipalStagingDbo = PrincipalStagingDbo()
         ps3.source_uid = "frank.herbert"
@@ -77,17 +80,22 @@ def test_merge_principals_staging(database_empty: Database) -> None:
         row_count: int = repo.merge_principals_staging(
             session=session, ingestion_process_id=2
         )
-        session.commit()
         assert row_count == 1
+
+        row_count: int = repo.merge_deactivate_principals_staging(
+            session=session, ingestion_process_id=2
+        )
+        assert row_count == 0
+        session.commit()
 
     # test it
     with database_empty.Session.begin() as session:
         count, principals = repo.get_all(session=session)
         # one record should be changed
-        assert 1 == len([p for p in principals if p.process_id == 2])
+        assert 1 == len([p for p in principals if p.ingestion_process_id == 2])
         assert count == 3
 
-    # scenario 3: update target tables
+    # scenario 3: update target tables - includes two soft deletes
     with database_empty.Session.begin() as session:
         principal: PrincipalDbo = repo.get_by_id(session=session, principal_id=1)
         assert principal.first_name == "Abigail"
@@ -110,8 +118,13 @@ def test_merge_principals_staging(database_empty: Database) -> None:
         row_count: int = repo.merge_principals_staging(
             session=session, ingestion_process_id=3
         )
-        session.commit()
         assert row_count == 1
+
+        row_count: int = repo.merge_deactivate_principals_staging(
+            session=session, ingestion_process_id=3
+        )
+        assert row_count == 2  # two soft deletes
+        session.commit()
 
     # test it
     with database_empty.Session.begin() as session:
@@ -120,14 +133,29 @@ def test_merge_principals_staging(database_empty: Database) -> None:
         assert principal.last_name == "Hathaway"
 
         count, principals = repo.get_all(session=session)
-        # one record should be changed
-        assert 1 == len([p for p in principals if p.process_id == 3])
+        # three records should be changed
+        assert 3 == len([p for p in principals if p.ingestion_process_id == 3])
         assert 3 == count
 
-    # scenario 3: delete from target tables
+        # anne should be active, the others not
+        assert repo.get_by_id(session=session, principal_id=1).active
+        assert not repo.get_by_id(session=session, principal_id=2).active
+        assert not repo.get_by_id(session=session, principal_id=3).active
 
-    # extra for experts: history tables
-    assert False
+    #  history tables
+    with database_empty.Session.begin() as session:
+        count, principal_history = repo.get_all_history(session=session)
+        assert 6 == count
+        assert 3 == len([p for p in principal_history if p.change_operation == "I"])
+        assert 3 == len([p for p in principal_history if p.change_operation == "U"])
+        assert 0 == len([p for p in principal_history if p.change_operation == "D"])
+
+        count, ph1 = repo.get_all_history_by_id(session=session, principal_id=1)
+        assert 2 == count
+        assert ph1[0].change_operation == "I"
+        assert ph1[0].first_name == "Abigail"
+        assert ph1[1].change_operation == "U"
+        assert ph1[1].first_name == "Anne"
 
 
 def test_get_merge_statement():
@@ -139,10 +167,12 @@ def test_get_merge_statement():
         select * from principals_staging
     ) src
     on src.source_uid = tgt.source_uid
-    when matched then
-        update set first_name = src.first_name, last_name = src.last_name, user_name = src.user_name, email = src.email, process_id = 1234
+    when matched 
+        and src.first_name <> tgt.first_name or src.last_name <> tgt.last_name or src.user_name <> tgt.user_name or src.email <> tgt.email
+    then
+        update set first_name = src.first_name, last_name = src.last_name, user_name = src.user_name, email = src.email, ingestion_process_id = 1234
     when not matched then
-        insert (source_uid, first_name, last_name, user_name, email, process_id)
+        insert (source_uid, first_name, last_name, user_name, email, ingestion_process_id)
         values (src.source_uid, src.first_name, src.last_name, src.user_name, src.email, 1234)
     """
         )
@@ -159,7 +189,7 @@ def test_get_merge_deactivate_statement():
         dedent(
             """
             update principals tgt
-            set process_id = 1, active = false
+            set ingestion_process_id = 1, active = false
             from (
                 select source_uid, id from principals
                 except

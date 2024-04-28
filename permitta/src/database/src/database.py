@@ -27,7 +27,7 @@ class Database:
     def connect(self) -> None:
         self.engine: Engine = create_engine(
             self.config.connection_string,
-            echo=True,
+            # echo=True,
             pool_pre_ping=True,
             pool_recycle=3600,
         )
@@ -36,8 +36,8 @@ class Database:
     def create_all_tables(self):
         BaseModel.metadata.create_all(self.engine)
 
-    # def execute(self, statement: str) -> None:
-    #     self.engine.raw_connection().e
+    def drop_all_tables(self):
+        BaseModel.metadata.drop_all(self.engine)
 
     def disconnect(self) -> None:
         self.engine.dispose()
