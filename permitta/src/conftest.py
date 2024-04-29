@@ -24,20 +24,7 @@ def database_empty() -> Database:
     ):
         db.connect()
         db.create_all_tables()
-
-        # HACK - this will be replaced by alembic
-        with db.Session.begin() as session:
-            sql_files: list[str] = [
-                f
-                for f in os.listdir("permitta/src/models/src/functions")
-                if f.endswith(".sql")
-            ]
-            for sql_file in sql_files:
-                with open(
-                    os.path.join("permitta/src/models/src/functions", sql_file)
-                ) as f:
-                    session.execute(text(f.read()))
-
+        db.create_all_functions()
         yield db
 
 

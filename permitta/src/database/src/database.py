@@ -1,6 +1,9 @@
+import os
+
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import text
 
 from .database_config import DatabaseConfig
 
@@ -35,6 +38,20 @@ class Database:
 
     def create_all_tables(self):
         BaseModel.metadata.create_all(self.engine)
+
+    def create_all_functions(self):
+        # HACK - this will be replaced by alembic
+        with self.Session.begin() as session:
+            sql_files: list[str] = [
+                f
+                for f in os.listdir("permitta/src/models/src/functions")
+                if f.endswith(".sql")
+            ]
+            for sql_file in sql_files:
+                with open(
+                    os.path.join("permitta/src/models/src/functions", sql_file)
+                ) as f:
+                    session.execute(text(f.read()))
 
     def drop_all_tables(self):
         BaseModel.metadata.drop_all(self.engine)

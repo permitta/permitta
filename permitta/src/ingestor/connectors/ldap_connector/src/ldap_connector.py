@@ -83,8 +83,16 @@ class LdapConnector(ConnectorBase):
             session.add_all(attributes)
             session.commit()
 
-            with self.database.Session.begin() as session:
-                IngestionProcessRepository.complete_process(
-                    session=session, ingestion_process_id=process_id
-                )
-                session.commit()
+        # TODO wrap this in try catch and write the error to the ing proc table
+        with self.database.Session.begin() as session:
+            PrincipalRepository.merge_principals_staging(
+                session=session, ingestion_process_id=process_id
+            )
+            PrincipalRepository.merge_deactivate_principals_staging(
+                session=session, ingestion_process_id=process_id
+            )
+
+            IngestionProcessRepository.complete_process(
+                session=session, ingestion_process_id=process_id
+            )
+            session.commit()
