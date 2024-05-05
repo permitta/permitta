@@ -24,7 +24,7 @@ def index():
 def principals_table(query: TableQueryDto):
     with g.database.Session.begin() as session:
         repo: PrincipalRepository = PrincipalRepository()
-        principal_count, principals = repo.get_all(
+        principal_count, principals = repo.get_all_with_search_and_pagination(
             session=session,
             sort_col_name=query.sort_key,  # TODO is this SQL injection?
             page_number=query.page_number,

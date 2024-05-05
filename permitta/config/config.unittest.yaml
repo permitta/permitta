@@ -1,6 +1,9 @@
 # unit test items - do not remove
 common.db_connection_string: "sqlite:///:memory:"
 common.super_secret: "https:/domain?username=$SUPER_SECRET_VALUE"
+
+logger.root_level: "INFO"
+
 flask.secret_key: "$FLASK_SECRET_KEY"
 
 database.protocol: "postgresql+psycopg"

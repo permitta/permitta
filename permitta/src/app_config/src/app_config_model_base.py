@@ -19,13 +19,23 @@ class AppConfigModelBase:
 
     CONFIG_PREFIX: str = "base"
 
-    @classmethod
-    def load(cls) -> "AppConfigModelBase":
+    @staticmethod
+    def _load_yaml_file() -> dict:
         config_file_path: str = os.getenv(
             "CONFIG_FILE_PATH", "permitta/config/config.yaml"
         )
         with open(config_file_path, "r") as f:
-            config_content: dict = yaml.load(f, Loader=yaml.FullLoader)
+            config_content: dict = yaml.load(f, Loader=yaml.SafeLoader)
+        return config_content
+
+    @staticmethod
+    def get_value(key: str, default: str = None) -> str:
+        config_content: dict = AppConfigModelBase._load_yaml_file()
+        return config_content.get(key, default)
+
+    @classmethod
+    def load(cls) -> "AppConfigModelBase":
+        config_content: dict = AppConfigModelBase._load_yaml_file()
 
         instance = cls()
         for key, value in config_content.items():

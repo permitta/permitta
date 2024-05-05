@@ -1,3 +1,5 @@
+logger.root_level: "INFO"
+
 flask.secret_key: "$FLASK_SECRET_KEY"
 
 database.protocol: "postgresql+psycopg"

@@ -12,6 +12,6 @@ class IngestionProcessDbo(BaseModel):
     source = Column(String)  # trino, postgres, ldap etc
     object_type = Column(String)  # tag, object, principal, group
     started_at = Column(DateTime(timezone=True), server_default=current_timestamp())
-    completed_at = Column(DateTime)
+    completed_at = Column(DateTime(timezone=True))
     status = Column(String, default="running")
     log = Column(String)

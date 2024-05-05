@@ -61,11 +61,11 @@ def groups_table(query: TableQueryDto):
 
 @bp.route("/detail-modal/<principal_group_id>", methods=["GET"])
 @oidc.oidc_auth("default")
-def group_detail_modal(principal_group_id):
+def group_detail_modal(principal_group_id: str):
     with g.database.Session.begin() as session:
         principal_group: PrincipalGroupDbo = (
             session.query(PrincipalGroupDbo)
-            .filter(PrincipalGroupDbo.principal_group_id == principal_group_id)
+            .filter(PrincipalGroupDbo.principal_group_id == int(principal_group_id))
             .first()
         )
 
@@ -80,15 +80,15 @@ def group_detail_modal(principal_group_id):
 
 @bp.route("/members-modal/<principal_group_id>", methods=["GET"])
 @oidc.oidc_auth("default")
-def group_members_modal(principal_group_id):
+def group_members_modal(principal_group_id: str):
     with g.database.Session.begin() as session:
         repo: PrincipalGroupRepository = PrincipalGroupRepository()
         principal_count, principals = repo.get_principal_group_members(
-            session=session, principal_group_id=principal_group_id
+            session=session, principal_group_id=int(principal_group_id)
         )
         group_name, group_description = (
             session.query(PrincipalGroupDbo.name, PrincipalGroupDbo.description)
-            .filter(PrincipalGroupDbo.principal_group_id == principal_group_id)
+            .filter(PrincipalGroupDbo.principal_group_id == int(principal_group_id))
             .first()
         )
 
@@ -106,12 +106,12 @@ def group_members_modal(principal_group_id):
 
 @bp.route("/edit-modal/<principal_group_id>", methods=["GET"])
 @oidc.oidc_auth("default")
-def group_edit_modal(principal_group_id):
+def group_edit_modal(principal_group_id: str):
     with g.database.Session.begin() as session:
         principal_group: (
             PrincipalGroupDbo
         ) = PrincipalGroupRepository().get_principal_group_by_id(
-            session=session, principal_group_id=principal_group_id
+            session=session, principal_group_id=int(principal_group_id)
         )
 
         response: Response = make_response(

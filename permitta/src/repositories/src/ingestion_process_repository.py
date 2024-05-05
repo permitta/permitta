@@ -1,4 +1,5 @@
 import inspect
+from datetime import datetime
 from typing import Tuple, Type
 
 from database import Database
@@ -11,6 +12,11 @@ from .repository_base import RepositoryBase
 
 
 class IngestionProcessRepository(RepositoryBase):
+
+    @staticmethod
+    def get_all(session) -> Tuple[int, list[IngestionProcessDbo]]:
+        query: Query = session.query(IngestionProcessDbo)
+        return query.count(), query.all()
 
     @staticmethod
     def create(session, object_types: list[ObjectTypeEnum], source: str) -> int:
@@ -39,3 +45,4 @@ class IngestionProcessRepository(RepositoryBase):
             )
         )
         ingestion_process_dbo.status = "complete"
+        ingestion_process_dbo.completed_at = datetime.utcnow()

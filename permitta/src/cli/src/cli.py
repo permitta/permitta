@@ -1,6 +1,6 @@
 import click
 from database import Database
-from ingestor import LdapConnector
+from ingestor import IngestionController
 
 
 @click.group()
@@ -11,11 +11,7 @@ def cli():
 @cli.command()
 @click.option("--source", default="ldap", help="Source to ingest from")
 def ingest(source):
-    # todo move to ingestion manager(new name?)
-    database: Database = Database()
-    database.connect()
-    ldap_connector: LdapConnector = LdapConnector(database=database)
-    ldap_connector.ingest()
+    ingestion_controller = IngestionController()
 
 
 if __name__ == "__main__":

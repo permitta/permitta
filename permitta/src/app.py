@@ -12,12 +12,7 @@ class FlaskConfig(AppConfigModelBase):
     template_folder: str = "../ui/templates"
 
 
-# bp = Blueprint("a", __name__, url_prefix="/temp")
-
-
 def create_app() -> Flask:
-    # global oidc
-
     flask_config = FlaskConfig.load()
 
     flask_app = Flask(
@@ -67,9 +62,3 @@ def create_app() -> Flask:
         return redirect("/")
 
     return flask_app
-
-
-# @bp.route("/")
-# @oidc.oidc_auth("default")
-# def dashboard():
-#     return render_template("views/dashboard.html")

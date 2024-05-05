@@ -12,13 +12,21 @@ with open("permitta/src/ingestor/connectors/ldap_connector/test/ldap_users.json"
 
 @mock.patch.object(LdapClient, "connect")
 @mock.patch.object(LdapClient, "list_users", return_value=ldap_users)
-def test_ingest(mock_list_users: mock.MagicMock, mock_connect: mock.MagicMock):
+def test_acquire_data(mock_list_users: mock.MagicMock, mock_connect: mock.MagicMock):
     ldap_connector: LdapConnector = LdapConnector()
-    ldap_connector.ingest()
+    ldap_connector.acquire_data()
 
     mock_list_users.assert_called_with(
         user_search_base="ou=people,dc=example,dc=com",
-        user_search_filter="(uid=*)",
+        user_search_filter="(&(uid=*)(memberof=cn=permitta_users_gl,ou=groups,dc=example,dc=com))",
         attributes=["cn", "uid", "givenname", "sn", "mail", "memberOf"],
     )
     mock_connect.assert_called_once()
+
+
+def test_get_principals():
+    assert False
+
+
+def test_get_principal_attributes():
+    assert False
