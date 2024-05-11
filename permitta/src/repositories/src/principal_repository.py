@@ -4,6 +4,7 @@ from typing import Tuple, Type
 
 from database import Database
 from models import (
+    AttributeDto,
     PrincipalAttributeDbo,
     PrincipalAttributeStagingDbo,
     PrincipalDbo,
@@ -12,7 +13,7 @@ from models import (
     PrincipalHistoryDbo,
     PrincipalStagingDbo,
 )
-from sqlalchemy import Row, and_
+from sqlalchemy import Row, and_, or_
 from sqlalchemy.orm import Query
 from sqlalchemy.sql import text
 from sqlalchemy.sql.elements import NamedColumn
@@ -77,6 +78,43 @@ class PrincipalRepository(RepositoryBase):
             .first()
         )
         return principal
+
+    @staticmethod
+    def get_all_unique_attribute_kvs(
+        session, search_term: str = ""
+    ) -> list[AttributeDto]:
+        """
+        Returns a list of all the unique attributes that a user can have
+        :param session:
+        :return:
+        """
+        attributes: list[PrincipalAttributeDbo] = (
+            session.query(
+                PrincipalAttributeDbo.attribute_key,
+                PrincipalAttributeDbo.attribute_value,
+            )
+            .distinct()
+            .union(
+                session.query(
+                    PrincipalGroupAttributeDbo.attribute_key,
+                    PrincipalGroupAttributeDbo.attribute_value,
+                ).distinct()
+            )
+            .order_by(
+                PrincipalAttributeDbo.attribute_key,
+                PrincipalAttributeDbo.attribute_value,
+            )
+            .filter(
+                or_(
+                    PrincipalAttributeDbo.attribute_key.ilike(f"%{search_term}%"),
+                    PrincipalAttributeDbo.attribute_value.ilike(f"%{search_term}%"),
+                )
+            )
+            .all()
+        )
+        return [
+            AttributeDto(attribute_key=a[0], attribute_value=a[1]) for a in attributes
+        ]
 
     @staticmethod
     def get_principal_with_attributes(session, principal_id: int) -> PrincipalDbo:

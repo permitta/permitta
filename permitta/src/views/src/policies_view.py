@@ -3,15 +3,18 @@ from typing import Type
 
 from extensions import oidc
 from flask import Blueprint, g, render_template, request
-from models import DataObjectTableDbo, PlatformDbo
+from flask_pydantic import validate
+from models import AttributeDto, DataObjectTableDbo, PlatformDbo, PrincipalAttributeDbo
+from repositories import PrincipalRepository
+from views.models import TableQueryDto
 
 bp = Blueprint("policies", __name__, url_prefix="/policies")
 
 
-@bp.route("/", methods=["GET"])
-@oidc.oidc_auth("default")
-def index():
-    return render_template("partials/policies/policies-search.html")
+# @bp.route("/", methods=["GET"])
+# @oidc.oidc_auth("default")
+# def index():
+#     return render_template("partials/policies/policies-search.html")
 
 
 @bp.route("/table", methods=["GET"])
@@ -101,9 +104,36 @@ def policies_table():
     )
 
 
-@bp.route("/<policy_id>", methods=["GET"])
+@bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
-def policy_detail(policy_id):
+def policy_detail():
+
+    # with g.database.Session.begin() as session:
+    #     principal_attributes: list[AttributeDto] = (
+    #         PrincipalRepository.get_all_unique_attribute_kvs(
+    #             session=session, search_term=query.search_term
+    #         )
+    #     )
+
     return render_template(
-        template_name_or_list="partials/policies/policy-detail.html",
+        # template_name_or_list="partials/policies/policy-draggable.html",
+        template_name_or_list="partials/policy_builder/policy-builder.html",
+        # principal_attributes=principal_attributes,
     )
+
+
+@bp.route("/principal_attributes", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def principal_attributes(query: TableQueryDto):
+    with g.database.Session.begin() as session:
+        principal_attributes: list[AttributeDto] = (
+            PrincipalRepository.get_all_unique_attribute_kvs(
+                session=session, search_term=query.search_term
+            )
+        )
+
+        return render_template(
+            template_name_or_list="partials/policy_builder/policy-attributes.html",
+            attributes=principal_attributes,
+        )

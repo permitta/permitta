@@ -133,3 +133,31 @@ def test_get_principal_with_attributes(database: Database) -> None:
             ("Marketing", "Commercial"),
             ("Marketing", "Restricted"),
         ]
+
+
+def test_get_all_unique_attributes(database: Database) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        attributes = repo.get_all_unique_attribute_kvs(session=session)
+        assert len(attributes) == 19
+
+        # check they are all unique
+        unique_key_values: list[str] = []
+        for attribute in attributes:
+            unique_key_values.append(
+                f"{attribute.attribute_key}={attribute.attribute_value}"
+            )
+        assert len(set(unique_key_values)) == len(attributes)
+
+        # with a search term on the key
+        attributes = repo.get_all_unique_attribute_kvs(
+            session=session, search_term="ad_"
+        )
+        assert len(attributes) == 7
+
+        # with a search term on the value
+        attributes = repo.get_all_unique_attribute_kvs(
+            session=session, search_term="Restricted"
+        )
+        assert len(attributes) == 4

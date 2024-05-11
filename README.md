@@ -122,9 +122,41 @@ https://play.openpolicyagent.org/
         "kevinrudd": {
             "location": "commercial"
         }
+    },
+    "actions": {
+      "read": [ "ShowSchemas", "ExecuteQuery", "FilterSchemas", "SelectFromColumns"] # etc
+      "write": ["InsertIntoTable", "DeleteFromTable", "TruncateTable"],
+      "ddl": ["AddColumn", "AlterColumn", "DropColumn", "RenameColumn", "CreateView"],
     }
 }
 
+# request:
+{
+  "context": {
+    "identity": {
+      "user": "foo",
+      "groups": ["some-group"]
+    },
+    "softwareStack": {
+      "trinoVersion": "434"
+    }
+  },
+  "action": {
+    "operation": "SelectFromColumns",
+    "resource": {
+      "table": {
+        "catalogName": "example_catalog",
+        "schemaName": "example_schema",
+        "tableName": "example_table",
+        "columns": [
+          "column1",
+          "column2",
+          "column3"
+        ]
+      }
+    }
+  }
+}
 ```
 
 ### Policy
@@ -136,6 +168,19 @@ import rego.v1
 default permit := false
 # deny everything by default
 default allow := false
+
+# public
+permit if {
+  "access", "public" in data.data_objects[input.data_object]
+  "access", "public" in data.principals[input.principal]    # this line isnt required for public really
+}
+
+# RW schema - no DDL
+permit if {
+  
+}
+
+# masked column: GetColumnMask
 
 permit if {
 	# evaluates to true if the principal exists in the array

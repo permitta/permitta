@@ -1,5 +1,6 @@
 from .src.data_object_table_attribute_dbo import DataObjectTableAttributeDbo
 from .src.data_object_table_dbo import DataObjectTableDbo
+from .src.dtos.attribute_dto import AttributeDto
 
 # history tables
 from .src.history.principal_history_dbo import PrincipalHistoryDbo
