@@ -80,9 +80,7 @@ class PrincipalRepository(RepositoryBase):
         return principal
 
     @staticmethod
-    def get_all_unique_attribute_kvs(
-        session, search_term: str = ""
-    ) -> list[AttributeDto]:
+    def get_all_unique_attributes(session, search_term: str = "") -> list[AttributeDto]:
         """
         Returns a list of all the unique attributes that a user can have
         :param session:

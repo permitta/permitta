@@ -139,7 +139,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
     repo: PrincipalRepository = PrincipalRepository()
 
     with database.Session.begin() as session:
-        attributes = repo.get_all_unique_attribute_kvs(session=session)
+        attributes = repo.get_all_unique_attributes(session=session)
         assert len(attributes) == 19
 
         # check they are all unique
@@ -151,13 +151,11 @@ def test_get_all_unique_attributes(database: Database) -> None:
         assert len(set(unique_key_values)) == len(attributes)
 
         # with a search term on the key
-        attributes = repo.get_all_unique_attribute_kvs(
-            session=session, search_term="ad_"
-        )
+        attributes = repo.get_all_unique_attributes(session=session, search_term="ad_")
         assert len(attributes) == 7
 
         # with a search term on the value
-        attributes = repo.get_all_unique_attribute_kvs(
+        attributes = repo.get_all_unique_attributes(
             session=session, search_term="Restricted"
         )
         assert len(attributes) == 4

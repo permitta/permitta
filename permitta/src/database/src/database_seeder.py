@@ -21,7 +21,6 @@ class DatabaseSeeder:
 
     def __init__(self, db: Database):
         self.db = db
-        # self.db.connect()
 
     @staticmethod
     def _get_principals() -> list[PrincipalDbo]:

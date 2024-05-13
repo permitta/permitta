@@ -1,3 +1,4 @@
+from .src.data_object_repository import DataObjectRepository
 from .src.ingestion_process_repository import IngestionProcessRepository
 from .src.principal_group_repository import PrincipalGroupRepository
 from .src.principal_repository import PrincipalRepository
