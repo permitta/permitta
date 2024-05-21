@@ -33,7 +33,7 @@ class TableQueryDto(BaseModel):
         return self.page_number == 0
 
     search_term: str = Field(default="")  # TODO validate to avoid sql injection
-    sort_key: str = Field(default="")
+    sort_key: str = Field(default=None)
     page_number: int = Field(default=0)
     page_size: int = Field(default=20)
     record_count: int = Field(default=0)

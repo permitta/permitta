@@ -7,6 +7,10 @@ from .src.history.principal_history_dbo import PrincipalHistoryDbo
 from .src.ingestion_process_dbo import IngestionProcessDbo
 from .src.object_type_enum import ObjectTypeEnum
 from .src.platform_dbo import PlatformDbo
+from .src.policy_attribute_dbo import PolicyAttributeDbo
+
+# policies
+from .src.policy_dbo import PolicyDbo
 from .src.principal_attribute_dbo import PrincipalAttributeDbo
 from .src.principal_dbo import PrincipalDbo
 from .src.principal_group_attribute_dbo import PrincipalGroupAttributeDbo

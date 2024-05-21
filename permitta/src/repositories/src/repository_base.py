@@ -46,17 +46,13 @@ class RepositoryBase:
     def _get_all_with_search_and_pagination(
         session,
         model: Type[BaseModel],
-        sort_col_name: str,
         page_number: int,
         page_size: int,
         sort_ascending: bool = True,
+        sort_col_name: str | None = None,
         search_term: str = "",
         search_column_name: str = "search_property",
     ) -> Tuple[int, list[BaseModel]]:
-        sort_column: NamedColumn | ColumnProperty = RepositoryBase.get_column_by_name(
-            model=model, column_name=sort_col_name
-        )
-
         search_column: NamedColumn | ColumnProperty = RepositoryBase.get_column_by_name(
             model=model, column_name=search_column_name
         )
@@ -66,9 +62,15 @@ class RepositoryBase:
         )
         count: int = query.count()
 
-        results: list[BaseModel] = (
-            query.order_by(sort_column)
-            .slice(page_number * page_size, (page_number + 1) * page_size)
-            .all()
-        )
+        if sort_col_name:
+            sort_column: NamedColumn | ColumnProperty = (
+                RepositoryBase.get_column_by_name(
+                    model=model, column_name=sort_col_name
+                )
+            )
+            query = query.order_by(sort_column)
+
+        results: list[BaseModel] = query.slice(
+            page_number * page_size, (page_number + 1) * page_size
+        ).all()
         return count, results

@@ -35,7 +35,7 @@
                     <label for="products-search" class="sr-only">Search</label>
                     <div class="relative w-48 mt-1 sm:w-64 xl:w-96">
                             <input type="text" name="searchTerm"
-                               id="data-objects-search"
+                               id="policies-search"
                                onkeydown="return event.key != 'Enter';"
                                hx-get="/policies/table"
                                hx-trigger="load, keyup changed delay:0.2s"
@@ -84,12 +84,17 @@
                     </div>
                 </div>
             </div>
-            {#            <button id="createProductButton" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button" data-drawer-target="drawer-create-product-default" data-drawer-show="drawer-create-product-default" aria-controls="drawer-create-product-default" data-drawer-placement="right">#}
-            {#                Add new product#}
-            {#            </button>#}
+            <button
+                id="createPolicyButton"
+                hx-get="/policies/create"
+                hx-target="#main"
+                hx-swap="innerHTML"
+                class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button"
+            >
+                Create New Policy
+            </button>
         </div>
     </div>
 </div>
 <div id="policies-table">
-    {% include 'partials/policies/policies-table.html' %}
 </div>
