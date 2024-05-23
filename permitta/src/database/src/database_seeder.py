@@ -147,6 +147,7 @@ class DatabaseSeeder:
     def _get_policies():
         policy: PolicyDbo = PolicyDbo()
         policy.name = "Sales"
+        policy.author = "jamesbrown"
         policy.description = (
             "All sales people have access to all sales and marketing data"
         )

@@ -23,6 +23,7 @@ Authorise all the things
 #### Stretch
 * I can see which users have accessed which objects, when and from what tool
 * I can see which users have attempted and failed to access an object
+* I can sww which policies have been invoked and by who
 
 ### As a data classifier
 #### Required
@@ -46,7 +47,7 @@ Authorise all the things
 ### As a system administrator
 #### Stretch
 * Classifications herein can be pushed to downstream platforms (OMD)
-* Classifications can be accessed programatically (API / DB view schema)
+* Classifications can be accessed programmatically (API / DB view schema)
 
 ### As a CDO
 * I have confidence that data owners have full control

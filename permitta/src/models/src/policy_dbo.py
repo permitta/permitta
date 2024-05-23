@@ -14,6 +14,8 @@ class PolicyDbo(BaseModel):
     STATUS_ACTIVE = "Active"
     STATUS_DRAFT = "Draft"
     STATUS_DISABLED = "Disabled"
+    STATUS_PENDING_PUBLISH = "Pending Publish"
+    STATUS_PENDING_DELETE = "Pending Delete"
 
     @property
     def principal_attributes(self):
@@ -34,6 +36,9 @@ class PolicyDbo(BaseModel):
     name: str = Column(String)
     description: str = Column(String)
     status: str = Column(String, server_default=STATUS_DISABLED)
+    author: str = Column(String)
+    publisher: str = Column(String)
+
     enforced_from: datetime = Column(
         DateTime(timezone=True), server_default=current_timestamp()
     )

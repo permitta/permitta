@@ -112,6 +112,7 @@ def get_policy_metadata(policy_id: int):
 @oidc.oidc_auth("default")
 @validate()
 def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -122,6 +123,8 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
 
         policy.name = body.name
         policy.description = body.description
+        policy.record_updated_by = web_session.username
+        policy.author = web_session.username
         session.commit()
 
         response: Response = make_response(

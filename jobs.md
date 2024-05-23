@@ -8,6 +8,7 @@
 * Source of group:tag mapping (json)
 * Default policy rego
 * OPA connected to trino
+* INow integration: https://developer.sailpoint.com/docs/api/v3/list-identity-profiles
 
 ## Demo sequence
 * Log into trino with user, show access

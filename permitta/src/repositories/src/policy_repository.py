@@ -18,7 +18,7 @@ class PolicyRepository(RepositoryBase):
         session, logged_in_user: str, name: str = "", description: str = ""
     ) -> PolicyDbo:
         policy: PolicyDbo = PolicyDbo(
-            name=name, description=description, record_updated_by=logged_in_user
+            name=name, description=description, record_updated_by=logged_in_user, author=logged_in_user
         )
         session.add(policy)
         return policy
