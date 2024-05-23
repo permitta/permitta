@@ -3,9 +3,11 @@ from typing import Type
 
 from app_logger import Logger, get_logger
 from extensions import oidc
-from flask import Blueprint, Response, abort, g, make_response, render_template, request
+from flask import Blueprint, Response, abort, g, make_response, render_template, redirect
+from flask import session as flask_session
 from flask_pydantic import validate
 from models import (
+    WebSession,
     AttributeDto,
     DataObjectTableDbo,
     PlatformDbo,
@@ -50,6 +52,22 @@ def policies_table(query: TableQueryDto):
     return response
 
 
+@bp.route("/create", methods=["POST"])
+@oidc.oidc_auth("default")
+@validate()
+def create_policy():
+    web_session: WebSession = WebSession(flask_session=flask_session)
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.create(session=session, logged_in_user=web_session.username)
+        policy.status = PolicyDbo.STATUS_DRAFT
+        session.add(policy)
+        session.flush()
+        policy_id = policy.policy_id
+        session.commit()
+
+    return redirect(f"/policies/{policy_id}", code=302)
+
+
 @bp.route("/<policy_id>", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
@@ -90,7 +108,7 @@ def get_policy_metadata(policy_id: int):
         )
 
 
-@bp.route("/<policy_id>/metadata_tab", methods=["PUT"])
+@bp.route("/<policy_id>/metadata", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
 def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
@@ -111,6 +129,7 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
                 template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
                 active_tab="metadata",
                 policy=body,
+                policy_id=policy_id
             )
         )
 
@@ -172,11 +191,18 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
         )
         session.commit()
 
-        return render_template(
-            template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
-            active_tab="principals",
-            policy_id=policy_id,
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
+                active_tab="principals",
+                policy_id=policy_id,
+            )
         )
+
+    response.headers.set(
+        "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
+    )
+    return response
 
 
 @bp.route("/<policy_id>/object_attributes_tab", methods=["GET"])
@@ -231,11 +257,18 @@ def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
         )
         session.commit()
 
-        return render_template(
+    response: Response = make_response(
+        render_template(
             template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
             active_tab="objects",
             policy_id=policy_id,
         )
+    )
+
+    response.headers.set(
+        "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
+    )
+    return response
 
 
 @bp.route("/create/all_principal_attributes", methods=["GET"])

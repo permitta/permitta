@@ -11,6 +11,10 @@ from .policy_attribute_dbo import PolicyAttributeDbo
 class PolicyDbo(BaseModel):
     __tablename__ = "policies"
 
+    STATUS_ACTIVE = "Active"
+    STATUS_DRAFT = "Draft"
+    STATUS_DISABLED = "Disabled"
+
     @property
     def principal_attributes(self):
         return self._filter_attributes_by_type(
@@ -29,6 +33,7 @@ class PolicyDbo(BaseModel):
     policy_id: int = Column(Integer, primary_key=True, autoincrement=True)
     name: str = Column(String)
     description: str = Column(String)
+    status: str = Column(String, server_default=STATUS_DISABLED)
     enforced_from: datetime = Column(
         DateTime(timezone=True), server_default=current_timestamp()
     )

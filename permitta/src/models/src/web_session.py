@@ -28,5 +28,13 @@ class WebSession:
         return self._user_session.userinfo.get("family_name")
 
     @property
+    def full_name(self) -> str:
+        return f"{self.given_name.capitalize()} {self.family_name.capitalize()}"
+
+    @property
     def email(self) -> str:
         return self._user_session.userinfo.get("email")
+
+    @property
+    def username(self) -> str:
+        return self.email.split("@")[0]

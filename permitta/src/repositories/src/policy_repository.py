@@ -14,7 +14,9 @@ from .repository_base import RepositoryBase
 class PolicyRepository(RepositoryBase):
 
     @staticmethod
-    def create(session, name: str, description: str, logged_in_user: str) -> PolicyDbo:
+    def create(
+        session, logged_in_user: str, name: str = "", description: str = ""
+    ) -> PolicyDbo:
         policy: PolicyDbo = PolicyDbo(
             name=name, description=description, record_updated_by=logged_in_user
         )

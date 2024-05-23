@@ -26,7 +26,10 @@
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(policy.object_attributes) }}
     </td>
-        <td class="p-4 space-x-2 whitespace-nowrap">
+    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+        {{ status_label(policy.status) }}
+    </td>
+    <td class="p-4 space-x-2 whitespace-nowrap">
         <button
             hx-get="/policies/{{ policy.policy_id }}"
             hx-target="#main"
