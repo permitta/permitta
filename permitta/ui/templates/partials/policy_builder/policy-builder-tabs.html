@@ -9,7 +9,7 @@
                 {% else %}
                     class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                 {% endif %}
-                hx-get="/policies/{{ policy.policy_id }}/metadata"
+                hx-get="/policies/{{ policy_id }}/metadata_tab"
                 hx-target="#policy-builder-content"
                 hx-swap="innerHTML">
                 Metadata
@@ -23,7 +23,7 @@
                 {% else %}
                     class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                 {% endif %}
-                hx-get="/policies/{{ policy.policy_id }}/principal_attributes"
+                hx-get="/policies/{{ policy_id }}/principal_attributes_tab"
                 hx-target="#policy-builder-content"
                 hx-swap="innerHTML">
                 Principals
@@ -37,7 +37,7 @@
                 {% else %}
                     class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                 {% endif %}
-                hx-get="/policies/{{ policy.policy_id }}/object_attributes"
+                hx-get="/policies/{{ policy_id }}/object_attributes_tab"
                 hx-target="#policy-builder-content"
                 hx-swap="innerHTML">
                 Objects

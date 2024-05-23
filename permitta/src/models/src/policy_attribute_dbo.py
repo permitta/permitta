@@ -13,11 +13,14 @@ from sqlalchemy.sql.functions import current_timestamp
 
 
 class PolicyAttributeDbo(BaseModel):
+    ATTRIBUTE_TYPE_PRINCIPAL = "principal"
+    ATTRIBUTE_TYPE_OBJECT = "object"
+
     __tablename__ = "policy_attributes"
 
     policy_attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
-    key: str = Column(String)
-    value: str = Column(String)
+    attribute_key: str = Column(String)
+    attribute_value: str = Column(String)
     type: str = Column(String)  # principal or object
 
     record_updated_date: str = Column(

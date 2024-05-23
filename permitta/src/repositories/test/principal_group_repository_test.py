@@ -9,14 +9,6 @@ from models import (
 from ..src.principal_group_repository import PrincipalGroupRepository
 
 
-def test_get_all(database: Database) -> None:
-    assert False
-
-
-def test_get_all_paginated(database: Database) -> None:
-    assert False
-
-
 def test_get_principal_groups(database: Database) -> None:
     repo: PrincipalGroupRepository = PrincipalGroupRepository()
 

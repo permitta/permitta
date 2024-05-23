@@ -14,7 +14,7 @@ from models import (
     PrincipalAttributeDbo,
 )
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
-from views.models import PolicyMetadataDto, TableQueryDto
+from views.models import PolicyAttributeDto, PolicyMetadataDto, TableQueryDto
 
 bp = Blueprint("policies", __name__, url_prefix="/policies")
 
@@ -65,11 +65,12 @@ def get_policy(policy_id: int):
         return render_template(
             template_name_or_list="partials/policy_builder/policy-builder.html",
             active_tab="metadata",
+            policy_id=policy_id,
             policy=policy,
         )
 
 
-@bp.route("/<policy_id>/metadata", methods=["GET"])
+@bp.route("/<policy_id>/metadata_tab", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
 def get_policy_metadata(policy_id: int):
@@ -85,19 +86,11 @@ def get_policy_metadata(policy_id: int):
             template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
             active_tab="metadata",
             policy=policy,
+            policy_id=policy_id,
         )
 
 
-# @bp.route("/create/metadata", methods=["GET"])
-# @oidc.oidc_auth("default")
-# def policy_create_metadata():
-#     return render_template(
-#         template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
-#         active_tab="metadata",
-#     )
-
-
-@bp.route("/<policy_id>/metadata", methods=["PUT"])
+@bp.route("/<policy_id>/metadata_tab", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
 def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
@@ -127,10 +120,21 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
     return response
 
 
+@bp.route("/<policy_id>/principal_attributes_tab", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def get_principal_attributes_tab(policy_id: int):
+    return render_template(
+        template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
+        active_tab="principals",
+        policy_id=policy_id,
+    )
+
+
 @bp.route("/<policy_id>/principal_attributes", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def get_principal_attributes(policy_id: int):
+def get_principal_attribute(policy_id: int):
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -140,10 +144,50 @@ def get_principal_attributes(policy_id: int):
             abort(404, "Policy not found")
 
         return render_template(
+            template_name_or_list="partials/policy_builder/policy-attributes.html",
+            attributes=policy.principal_attributes,
+        )
+
+
+@bp.route("/<policy_id>/principal_attributes", methods=["PUT"])
+@oidc.oidc_auth("default")
+@validate()
+def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
+    # TODO regex the attributes to ensure they are legit
+    # TODO auth the attributes
+
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        PolicyRepository.merge_policy_attributes(
+            session=session,
+            policy_id=policy_id,
+            attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL,
+            merge_attributes=body.attributes,
+        )
+        session.commit()
+
+        return render_template(
             template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
             active_tab="principals",
-            policy=policy,
+            policy_id=policy_id,
         )
+
+
+@bp.route("/<policy_id>/object_attributes_tab", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def get_object_attributes_tab(policy_id: int):
+    return render_template(
+        template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
+        active_tab="objects",
+        policy_id=policy_id,
+    )
 
 
 @bp.route("/<policy_id>/object_attributes", methods=["GET"])
@@ -159,9 +203,38 @@ def get_object_attributes(policy_id: int):
             abort(404, "Policy not found")
 
         return render_template(
+            template_name_or_list="partials/policy_builder/policy-attributes.html",
+            attributes=policy.object_attributes,
+        )
+
+
+@bp.route("/<policy_id>/object_attributes", methods=["PUT"])
+@oidc.oidc_auth("default")
+@validate()
+def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
+    # TODO regex the attributes to ensure they are legit
+    # TODO auth the attributes
+
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        PolicyRepository.merge_policy_attributes(
+            session=session,
+            policy_id=policy_id,
+            attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT,
+            merge_attributes=body.attributes,
+        )
+        session.commit()
+
+        return render_template(
             template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
             active_tab="objects",
-            policy=policy,
+            policy_id=policy_id,
         )
 
 

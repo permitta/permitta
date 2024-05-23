@@ -9,6 +9,8 @@ from models import (
     DataObjectTableDbo,
     IngestionProcessDbo,
     PlatformDbo,
+    PolicyAttributeDbo,
+    PolicyDbo,
     PrincipalAttributeDbo,
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
@@ -141,6 +143,37 @@ class DatabaseSeeder:
                 data_object_table_dbos.append(data_object_table_dbo)
         return data_object_table_dbos
 
+    @staticmethod
+    def _get_policies():
+        policy: PolicyDbo = PolicyDbo()
+        policy.name = "Sales"
+        policy.description = (
+            "All sales people have access to all sales and marketing data"
+        )
+
+        attr1 = PolicyAttributeDbo()
+        attr1.attribute_key = "Sales"
+        attr1.attribute_value = "Commercial"
+        attr1.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL
+
+        attr2 = PolicyAttributeDbo()
+        attr2.attribute_key = "Marketing"
+        attr2.attribute_value = "Commercial"
+        attr2.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL
+
+        attr3 = PolicyAttributeDbo()
+        attr3.attribute_key = "Sales"
+        attr3.attribute_value = "Commercial"
+        attr3.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
+
+        attr4 = PolicyAttributeDbo()
+        attr4.attribute_key = "Marketing"
+        attr4.attribute_value = "Commercial"
+        attr4.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
+
+        policy.policy_attributes = [attr1, attr2, attr3, attr4]
+        return [policy]
+
     # platforms are not normally ingested so no proc id
     def _ingest_platforms(self):
         with self.db.Session.begin() as session:
@@ -179,3 +212,4 @@ class DatabaseSeeder:
         self._ingest_objects("Data Object", self._get_data_objects())
         self._ingest_objects("Principal", self._get_principals())
         self._ingest_objects("Principal Groups", self._get_groups())
+        self._ingest_objects("Policies", self._get_policies())

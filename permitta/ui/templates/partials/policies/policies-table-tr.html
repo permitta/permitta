@@ -18,13 +18,13 @@
 {#        {{ policy.group_operator }}#}
 {#    </td>#}
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ attribute_pill_list(policy.policy_attributes) }}
+        {{ attribute_pill_list(policy.principal_attributes) }}
     </td>
 {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
 {#        {{ policy.operator }}#}
 {#    </td>#}
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ attribute_pill_list(policy.policy_attributes) }}
+        {{ attribute_pill_list(policy.object_attributes) }}
     </td>
         <td class="p-4 space-x-2 whitespace-nowrap">
         <button
