@@ -1,0 +1,35 @@
+{% from "partials/common/macro-attribute-pill-list.html" import attribute_pill_list %}
+{% from "partials/common/macro-status-label.html" import status_label %}
+<div class="p-4 md:p-5 space-y-4">
+    <div class="flex justify-between">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            {{ policy.name }}
+        </h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            {{ status_label(policy.status) }}
+        </h3>
+    </div>
+    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        {{ policy.description|default("No description", true) }}
+    </p>
+{#    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">#}
+{#        Author#}
+{#    </h3>#}
+{#    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">#}
+{#        {{ policy.author }}#}
+{#    </p>#}
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Principal Attributes
+    </h3>
+    {{ attribute_pill_list(policy.principal_attributes) }}
+    <p class="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+        Principals with all of these attributes are accepted by this policy
+    </p>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Object Attributes
+    </h3>
+    {{ attribute_pill_list(policy.object_attributes) }}
+    <p class="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+        Objects with all of these attributes are included in this policy
+    </p>
+</div>

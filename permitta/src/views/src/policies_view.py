@@ -23,7 +23,10 @@ logger: Logger = get_logger("views.policy")
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    return render_template("partials/policies/policies-search.html")
+    response: Response = make_response(
+        render_template("partials/policies/policies-search.html")
+    )
+    return response
 
 
 @bp.route("/table", methods=["GET"])
@@ -46,6 +49,7 @@ def policies_table(query: TableQueryDto):
                 policy_count=policy_count,
             )
         )
+    response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
     return response
 
 
@@ -108,6 +112,28 @@ def get_policy(policy_id: int):
             policy_id=policy_id,
             policy=policy,
         )
+
+
+@bp.route("/<policy_id>/detail-modal", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def get_policy_modal(policy_id: int):
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policies/policy-detail-modal.html",
+                policy=policy,
+            )
+        )
+    # response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
+    return response
 
 
 @bp.route("/<policy_id>", methods=["DELETE"])
