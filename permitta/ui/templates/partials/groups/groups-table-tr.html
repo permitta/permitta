@@ -1,7 +1,6 @@
 {% for group in groups %}
 <tr hx-get="/groups/detail-modal/{{ group.principal_group_id }}"
     hx-target="#group-detail-modal-content"
-    hx-swap="innerHTML"
     data-modal-target="group-detail-modal"
     data-modal-toggle="group-detail-modal"
     class="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -27,7 +26,6 @@
             hx-get="/groups/members-modal/{{ group.principal_group_id }}"
             hx-trigger="click consume"
             hx-target="#group-members-modal-content"
-            hx-swap="innerHTML"
             type="button"
             id="group-members-button"
             data-modal-target="group-members-modal"
@@ -44,7 +42,6 @@
             hx-get="/groups/edit-modal/{{ group.principal_group_id }}"
             hx-trigger="click consume"
             hx-target="#group-edit-modal-content"
-            hx-swap="innerHTML"
             type="button"
             id="group-edit-button"
             data-modal-target="group-edit-modal"

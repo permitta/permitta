@@ -1,94 +1,179 @@
 {% for policy in policies %}
-<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-    <td class="w-4 p-4">
-        <div class="flex items-center">
-            <input id="checkbox-id" aria-describedby="checkbox-1" type="checkbox"
-                class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-            <label for="checkbox-id" class="sr-only">checkbox</label>
-        </div>
-    </td>
-    <td class="p-4 text-sm font-normal text-gray-500 whitespace-normal dark:text-gray-400">
-        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ policy.name }}</div>
-        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ policy.description }}</div>
-    </td>
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ policy.policy_type }}
-    </td>
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ policy.author }}
-    </td>
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ policy.publisher or "" }}
-    </td>{#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
-{#        {{ policy.group_operator }}#}
-{#    </td>#}
-{#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
-{#        {{ attribute_pill_list(policy.principal_attributes) }}#}
-{#    </td>#}
-{#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
-{#        {{ policy.operator }}#}
-{#    </td>#}
-{#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
-{#        {{ attribute_pill_list(policy.object_attributes) }}#}
-{#    </td>#}
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ status_label(policy.status) }}
-    </td>
-    <td class="p-4 space-x-2 whitespace-nowrap">
-        <button
-            hx-get="/policies/{{ policy.policy_id }}/detail-modal"
-            hx-target="#policy-detail-modal-content"
-            hx-swap="innerHTML"
-            data-modal-target="policy-detail-modal"
-            data-modal-toggle="policy-detail-modal"
-            type="button"
-            id="policy-detail-button"
-            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-            Detail
-        </button>
-        <button
-            hx-get="/policies/{{ policy.policy_id }}"
-            hx-target="#main"
-            hx-swap="innerHTML"
-            type="button"
-            id="policy-publish-button"
-            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-            Publish
-        </button>
-        <button
-            hx-get="/policies/{{ policy.policy_id }}"
-            hx-target="#main"
-            hx-swap="innerHTML"
-            type="button"
-            id="policy-edit-button"
-            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-            Edit
-        </button>
-        <button
-            hx-post="/policies/clone/{{ policy.policy_id }}"
-            hx-confirm="Are you sure you want to clone this policy?"
-            hx-target="#main"
-            hx-swap="innerHTML"
-            type="button"
-            id="policy-clone-button"
-            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-            Clone
-        </button>
-        <button
-            hx-delete="/policies/{{ policy.policy_id }}"
-            hx-confirm="Are you sure you want to delete this policy?"
-            hx-target="#main"
-            hx-swap="innerHTML"
-            type="button"
-            id="policy-delete-button"
-            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-            Delete
-        </button>
-    </td>
-</tr>
+    <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+        <td class="w-4 p-4">
+            <div class="flex items-center">
+                <input id="checkbox-id" aria-describedby="checkbox-1" type="checkbox"
+                       class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                <label for="checkbox-id" class="sr-only">checkbox</label>
+            </div>
+        </td>
+        <td class="p-4 text-sm font-normal text-gray-500 whitespace-normal dark:text-gray-400">
+            <div class="text-base font-semibold text-gray-900 dark:text-white">{{ policy.name }}</div>
+            <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ policy.description }}</div>
+        </td>
+        <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+            {{ policy.policy_type }}
+        </td>
+        <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+            {{ policy.author }}
+        </td>
+        <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+            {{ policy.publisher or "" }}
+        </td>
+        {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
+        {#        {{ policy.group_operator }}#}
+        {#    </td>#}
+        {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
+        {#        {{ attribute_pill_list(policy.principal_attributes) }}#}
+        {#    </td>#}
+        {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
+        {#        {{ policy.operator }}#}
+        {#    </td>#}
+        {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
+        {#        {{ attribute_pill_list(policy.object_attributes) }}#}
+        {#    </td>#}
+        <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+            {{ status_label(policy.status) }}
+        </td>
+        <td class="p-4 space-x-2 whitespace-nowrap">
+            <button
+                    hx-get="/policies/{{ policy.policy_id }}/detail-modal"
+                    hx-target="#policy-detail-modal-content"
+                    data-modal-target="policy-detail-modal"
+                    data-modal-toggle="policy-detail-modal"
+                    type="button"
+                    id="policy-detail-button"
+                    class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            >
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                    <path fill-rule="evenodd"
+                          d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                          clip-rule="evenodd"></path>
+                </svg>
+                Detail
+            </button>
+            <button
+                    id="dropdownActionsButton{{ policy.policy_id }}"
+                    data-dropdown-toggle="dropdown-actions-{{ policy.policy_id }}"
+                    class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    type="button">
+                <svg class="w-2.5 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m1 1 4 4 4-4"></path>
+                </svg>
+                Actions
+            </button>
+
+            <!-- Dropdown menu -->
+            <div id="dropdown-actions-{{ policy.policy_id }}"
+                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-get="/policies/{{ policy.policy_id }}"
+                           hx-target="#main"
+                        >
+                            Edit
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-post="/policies/{{ policy.policy_id }}/clone"
+                           hx-confirm="Are you sure you want to clone this policy?"
+                           hx-target="#main"
+                        >
+                            Clone
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-post="/policies/{{ policy.policy_id }}/status/request-publish"
+                           hx-confirm="Are you sure you want to request this policy to be published?"
+                           hx-target="#main"
+                        >
+                            Request Publish
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-post="/policies/{{ policy.policy_id }}/status/request-delete"
+                           hx-confirm="Are you sure you want to request this policy to be deleted?"
+                           hx-target="#main"
+                        >
+                            Request Delete
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-post="/policies/{{ policy.policy_id }}/status/published"
+                           hx-confirm="Are you sure you want to publish this policy?"
+                           hx-target="#main"
+                        >
+                            Publish
+                        </a>
+                    </li>
+                </ul>
+                <div class="py-2">
+                    <a href="#"
+                           class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                           hx-delete="/policies/{{ policy.policy_id }}"
+                           hx-confirm="Are you sure you want to delete this policy?"
+                           hx-target="#main"
+                        >
+                            Delete
+                        </a>
+                </div>
+            </div>
+
+            {#        <button#}
+            {#            hx-get="/policies/{{ policy.policy_id }}"#}
+            {#            hx-target="#main"#}
+            {#            hx-swap="innerHTML"#}
+            {#            type="button"#}
+            {#            id="policy-publish-button"#}
+            {#            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">#}
+            {#            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>#}
+            {#            Publish#}
+            {#        </button>#}
+            {#        <button#}
+            {#            hx-get="/policies/{{ policy.policy_id }}"#}
+            {#            hx-target="#main"#}
+            {#            hx-swap="innerHTML"#}
+            {#            type="button"#}
+            {#            id="policy-edit-button"#}
+            {#            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">#}
+            {#            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>#}
+            {#            Edit#}
+            {#        </button>#}
+            {#        <button#}
+            {#            hx-post="/policies/clone/{{ policy.policy_id }}"#}
+            {#            hx-confirm="Are you sure you want to clone this policy?"#}
+            {#            hx-target="#main"#}
+            {#            hx-swap="innerHTML"#}
+            {#            type="button"#}
+            {#            id="policy-clone-button"#}
+            {#            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">#}
+            {#            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>#}
+            {#            Clone#}
+            {#        </button>#}
+            {#        <button#}
+            {#            hx-delete="/policies/{{ policy.policy_id }}"#}
+            {#            hx-confirm="Are you sure you want to delete this policy?"#}
+            {#            hx-target="#main"#}
+            {#            hx-swap="innerHTML"#}
+            {#            type="button"#}
+            {#            id="policy-delete-button"#}
+            {#            class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">#}
+            {#            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>#}
+            {#            Delete#}
+            {#        </button>#}
+        </td>
+    </tr>
 {% endfor %}

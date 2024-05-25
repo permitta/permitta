@@ -71,7 +71,7 @@ def create_policy():
     return redirect(f"/policies/{policy_id}", code=303)
 
 
-@bp.route("/clone/<policy_id>", methods=["POST"])
+@bp.route("/<policy_id>/clone", methods=["POST"])
 @oidc.oidc_auth("default")
 @validate()
 def clone_policy(policy_id: int):
@@ -81,8 +81,6 @@ def clone_policy(policy_id: int):
             session=session, policy_id=policy_id, logged_in_user=web_session.username
         )
         session.add(policy)
-        session.flush()
-        new_policy_id = policy.policy_id
         session.commit()
 
     response: Response = make_response(
@@ -132,7 +130,43 @@ def get_policy_modal(policy_id: int):
                 policy=policy,
             )
         )
-    # response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
+    return response
+
+
+@bp.route("/<policy_id>/status/<status>", methods=["POST"])
+@oidc.oidc_auth("default")
+@validate()
+def set_policy_status(policy_id: int, status: str):
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        if status == "request-publish":
+            policy.status = PolicyDbo.STATUS_PENDING_PUBLISH
+        elif status == "request-delete":
+            policy.status = PolicyDbo.STATUS_PENDING_DELETE
+        elif status == "published":
+            policy.status = PolicyDbo.STATUS_PUBLISHED
+        elif status == "draft":
+            policy.status = PolicyDbo.STATUS_DRAFT
+        elif status == "disabled":
+            policy.status = PolicyDbo.STATUS_DISABLED
+        else:
+            abort(400, "Invalid status")
+
+        session.commit()
+
+    response: Response = make_response(
+        render_template("partials/policies/policies-search.html")
+    )
+    response.headers.set(
+        "HX-Trigger-After-Swap",
+        '{"toast_success": {"message": "Policy Updated Successfully"}}',
+    )
     return response
 
 

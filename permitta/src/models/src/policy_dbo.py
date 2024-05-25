@@ -11,7 +11,7 @@ from .policy_attribute_dbo import PolicyAttributeDbo
 class PolicyDbo(BaseModel):
     __tablename__ = "policies"
 
-    STATUS_ACTIVE = "Active"
+    STATUS_PUBLISHED = "Published"
     STATUS_DRAFT = "Draft"
     STATUS_DISABLED = "Disabled"
     STATUS_PENDING_PUBLISH = "Pending Publish"

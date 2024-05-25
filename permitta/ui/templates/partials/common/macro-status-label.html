@@ -1,5 +1,13 @@
 {% macro status_label(status) %}
 <div class="flex items-center">
-    <div class="h-2.5 w-2.5 rounded-full {% if status == "Active" %} bg-green-400 {% elif status == "Draft" %} bg-gray-500 {% else %} bg-red-500 {% endif %} mr-2"></div>  {{ status }}
+    <div class="h-2.5 w-2.5 rounded-full
+    {% if status == "Published" %} bg-green-500
+    {% elif status == "Draft" %} bg-gray-500
+    {% elif status == "Pending Publish" %} bg-blue-500
+    {% elif status == "Pending Delete" %} bg-blue-500
+    {% else %} bg-red-500
+    {% endif %}
+    mr-2"></div>
+    {{ status }}
 </div>
 {% endmacro %}
