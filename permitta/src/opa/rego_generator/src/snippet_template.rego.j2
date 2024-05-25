@@ -1,0 +1,15 @@
+
+permit if {
+    # Policy ID: {{ policy.policy_id }}
+    # Policy Name: {{ policy.name }}
+
+    # Required Principal Attributes
+    {% for attribute in policy.principal_attributes %}
+    "{{ attribute.attribute_key }}", "{{ attribute.attribute_value }}" in data.principals[input.principal]
+    {%- endfor %}
+
+    # Permitted Object Attributes
+    {% for attribute in policy.object_attributes %}
+    "{{ attribute.attribute_key }}", "{{ attribute.attribute_value }}" in data.data_objects[input.data_object]
+    {%- endfor %}
+}

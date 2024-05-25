@@ -43,5 +43,19 @@
                 Objects
             </a>
         </li>
+        <li class="me-2">
+            <a href="#"
+                {% if active_tab == 'dsl' %}
+                    aria-current="page"
+                    class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"
+                {% else %}
+                    class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+                {% endif %}
+                hx-get="/policies/{{ policy_id }}/dsl_tab"
+                hx-target="#policy-builder-content"
+                >
+                DSL
+            </a>
+        </li>
     </ul>
 </div>

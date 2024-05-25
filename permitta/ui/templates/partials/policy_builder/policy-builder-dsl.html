@@ -1,0 +1,26 @@
+{% include("partials/policy_builder/policy-builder-tabs.html") %}
+<div class="grid gap-4 grid-cols-1 pb-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <div class="flex justify-between">
+            <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Policy DSL Snippet
+            </h3>
+{#            <button#}
+{#                id="savePolicyMetadataButton"#}
+{#                hx-include="#policy_metadata"#}
+{#                hx-put="/policies/{{ policy_id }}/dsl"#}
+{#                hx-target="#policy-builder-content"#}
+{#                hx-ext='json-enc'#}
+{#                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">#}
+{#                Save#}
+{#            </button>#}
+        </div>
+        <div class="w-full mb-1">
+        <pre>
+            <code class="language-rego">
+                {{ policy_dsl }}
+            </code>
+        </pre>
+    </div>
+</div>
+<script src={{ url_for('static', filename='js/prism.js') }}></script>

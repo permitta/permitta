@@ -14,6 +14,7 @@ from flask_pydantic import validate
 from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
 from views.models import PolicyAttributeDto, PolicyMetadataDto, TableQueryDto
+from opa import RegoGenerator
 
 bp = Blueprint("policies", __name__, url_prefix="/policies")
 
@@ -137,6 +138,7 @@ def get_policy_modal(policy_id: int):
 @oidc.oidc_auth("default")
 @validate()
 def set_policy_status(policy_id: int, status: str):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -151,6 +153,7 @@ def set_policy_status(policy_id: int, status: str):
             policy.status = PolicyDbo.STATUS_PENDING_DELETE
         elif status == "published":
             policy.status = PolicyDbo.STATUS_PUBLISHED
+            policy.publisher = web_session.username
         elif status == "draft":
             policy.status = PolicyDbo.STATUS_DRAFT
         elif status == "disabled":
@@ -158,6 +161,7 @@ def set_policy_status(policy_id: int, status: str):
         else:
             abort(400, "Invalid status")
 
+        policy.record_updated_by = web_session.username
         session.commit()
 
     response: Response = make_response(
@@ -414,3 +418,18 @@ def all_object_attributes(query: TableQueryDto):
             attributes=object_attributes,
             attribute_id_prefix="object_attribute",
         )
+
+
+@bp.route("/<policy_id>/dsl_tab", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def get_dsl_tab(policy_id: int):
+    rego_generator: RegoGenerator = RegoGenerator(database=g.database)
+    policy_dsl: str = rego_generator.generate_snippet_for_policy(policy_id)
+
+    return render_template(
+        template_name_or_list="partials/policy_builder/policy-builder-dsl.html",
+        active_tab="dsl",
+        policy_id=policy_id,
+        policy_dsl=policy_dsl,
+    )
