@@ -18,10 +18,46 @@ class PolicyRepository(RepositoryBase):
         session, logged_in_user: str, name: str = "", description: str = ""
     ) -> PolicyDbo:
         policy: PolicyDbo = PolicyDbo(
-            name=name, description=description, record_updated_by=logged_in_user, author=logged_in_user
+            name=name,
+            description=description,
+            record_updated_by=logged_in_user,
+            author=logged_in_user,
+            policy_type=PolicyDbo.POLICY_TYPE_BUILDER,
         )
         session.add(policy)
         return policy
+
+    @staticmethod
+    def clone(
+        session,
+        policy_id: int,
+        logged_in_user: str,
+        policy_type: str = PolicyDbo.POLICY_TYPE_BUILDER,
+    ) -> PolicyDbo:
+        new_policy_dbo: PolicyDbo = PolicyRepository.create(
+            session=session, logged_in_user=logged_in_user
+        )
+        new_policy_dbo.policy_type = policy_type
+
+        source_policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+        if not source_policy:
+            raise ValueError(f"Policy with id {policy_id} does not exist")
+
+        new_policy_dbo.name = source_policy.name
+        new_policy_dbo.description = source_policy.description
+        new_policy_dbo.author = logged_in_user
+
+        for source_attribute in source_policy.policy_attributes:
+            new_policy_attribute_dbo: PolicyAttributeDbo = PolicyAttributeDbo()
+            new_policy_attribute_dbo.attribute_key = source_attribute.attribute_key
+            new_policy_attribute_dbo.attribute_value = source_attribute.attribute_value
+            new_policy_attribute_dbo.type = source_attribute.type
+            new_policy_dbo.policy_attributes.append(new_policy_attribute_dbo)
+
+        session.add(new_policy_dbo)
+        return new_policy_dbo
 
     @staticmethod
     def get_all_with_search_and_pagination(

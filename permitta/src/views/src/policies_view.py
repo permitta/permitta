@@ -1,20 +1,17 @@
-from dataclasses import dataclass
-from typing import Type
-
 from app_logger import Logger, get_logger
 from extensions import oidc
-from flask import Blueprint, Response, abort, g, make_response, render_template, redirect
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    g,
+    make_response,
+    redirect,
+    render_template,
+)
 from flask import session as flask_session
 from flask_pydantic import validate
-from models import (
-    WebSession,
-    AttributeDto,
-    DataObjectTableDbo,
-    PlatformDbo,
-    PolicyAttributeDbo,
-    PolicyDbo,
-    PrincipalAttributeDbo,
-)
+from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
 from views.models import PolicyAttributeDto, PolicyMetadataDto, TableQueryDto
 
@@ -58,14 +55,39 @@ def policies_table(query: TableQueryDto):
 def create_policy():
     web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.create(session=session, logged_in_user=web_session.username)
+        policy: PolicyDbo = PolicyRepository.create(
+            session=session, logged_in_user=web_session.username
+        )
         policy.status = PolicyDbo.STATUS_DRAFT
         session.add(policy)
         session.flush()
         policy_id = policy.policy_id
         session.commit()
 
-    return redirect(f"/policies/{policy_id}", code=302)
+    return redirect(f"/policies/{policy_id}", code=303)
+
+
+@bp.route("/clone/<policy_id>", methods=["POST"])
+@oidc.oidc_auth("default")
+@validate()
+def clone_policy(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.clone(
+            session=session, policy_id=policy_id, logged_in_user=web_session.username
+        )
+        session.add(policy)
+        session.flush()
+        new_policy_id = policy.policy_id
+        session.commit()
+
+    response: Response = make_response(
+        render_template("partials/policies/policies-search.html")
+    )
+    response.headers.set(
+        "HX-Trigger", '{"toast_success": {"message": "Cloned Successfully"}}'
+    )
+    return response
 
 
 @bp.route("/<policy_id>", methods=["GET"])
@@ -86,6 +108,30 @@ def get_policy(policy_id: int):
             policy_id=policy_id,
             policy=policy,
         )
+
+
+@bp.route("/<policy_id>", methods=["DELETE"])
+@oidc.oidc_auth("default")
+@validate()
+def delete_policy(policy_id: int):
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+        session.delete(policy)
+        session.commit()
+
+    response: Response = make_response(
+        render_template("partials/policies/policies-search.html")
+    )
+    response.headers.set(
+        "HX-Trigger-After-Swap",
+        '{"toast_success": {"message": "Deleted Successfully"}}',
+    )
+    return response
 
 
 @bp.route("/<policy_id>/metadata_tab", methods=["GET"])
@@ -132,7 +178,7 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
                 template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
                 active_tab="metadata",
                 policy=body,
-                policy_id=policy_id
+                policy_id=policy_id,
             )
         )
 

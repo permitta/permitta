@@ -17,6 +17,9 @@ class PolicyDbo(BaseModel):
     STATUS_PENDING_PUBLISH = "Pending Publish"
     STATUS_PENDING_DELETE = "Pending Delete"
 
+    POLICY_TYPE_BUILDER = "Builder"
+    POLICY_TYPE_DSL = "DSL"
+
     @property
     def principal_attributes(self):
         return self._filter_attributes_by_type(
@@ -33,9 +36,10 @@ class PolicyDbo(BaseModel):
         return [p for p in self.policy_attributes if p.type == attribute_type]
 
     policy_id: int = Column(Integer, primary_key=True, autoincrement=True)
+    policy_type: str = Column(String)
     name: str = Column(String)
     description: str = Column(String)
-    status: str = Column(String, server_default=STATUS_DISABLED)
+    status: str = Column(String, server_default=STATUS_DRAFT)
     author: str = Column(String)
     publisher: str = Column(String)
 
@@ -50,5 +54,5 @@ class PolicyDbo(BaseModel):
     record_updated_by: str = Column(String)
 
     policy_attributes: Mapped[list[PolicyAttributeDbo]] = relationship(
-        back_populates="policy"
+        back_populates="policy", cascade="all, delete-orphan"
     )

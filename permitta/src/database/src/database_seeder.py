@@ -146,6 +146,7 @@ class DatabaseSeeder:
     @staticmethod
     def _get_policies():
         policy: PolicyDbo = PolicyDbo()
+        policy.policy_type = PolicyDbo.POLICY_TYPE_BUILDER
         policy.name = "Sales"
         policy.author = "jamesbrown"
         policy.description = (
