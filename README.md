@@ -227,8 +227,7 @@ pip install -r requirements.txt
 # front end
 cd permitta/ui
 npm install
-npm run build
-npm run watch:styles
+npm start   # watches both the js folder and tailwind
 ```
 
 ### Environment Variables

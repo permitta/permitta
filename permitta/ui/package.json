@@ -9,15 +9,15 @@
     "trino"
   ],
   "style": "static/output.css",
-  "main": "static/js/index.js",
+  "main": "js/index.js",
   "homepage": "https://permitta.com",
   "repository": "https://github.com/jcoenraadts/permitta.git",
   "author": "Permitta",
   "scripts": {
-    "start": "run-p start:dev:*",
-    "start:dev:webpack": "webpack --mode=development --watch",
-    "build": "NODE_ENV=production && run-s build:webpack",
+    "start": "npm-run-all --parallel watch:styles watch:webpack",
+    "build": "NODE_ENV=production && run-s build:webpack build:styles",
     "build:webpack": "webpack --mode=production",
+    "watch:webpack": "webpack --mode=development --watch",
     "build:styles": "npx tailwindcss -i css/input.css -o static/css/output.css",
     "watch:styles": "npx tailwindcss -i css/input.css -o static/css/output.css --watch"
   },
@@ -37,6 +37,7 @@
     "minimist": "^1.2.5",
     "multi-stage-sourcemap": "^0.3.1",
     "multimatch": "^5.0.0",
+    "nodemon": "^3.1.1",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.3.9",
     "postcss-loader": "^6.2.0",
@@ -54,8 +55,9 @@
     "@popperjs/core": "^2.10.2",
     "apexcharts": "^3.29.0",
     "codemirror": "^6.0.1",
+    "@codemirror/lang-javascript": "^6.1.1",
+    "@codemirror/theme-one-dark": "^6.1.0",
     "flowbite": "^2.1.1",
-    "htmx": "^0.0.2",
-    "prismjs": "^1.29.0"
+    "htmx": "^0.0.2"
   }
 }

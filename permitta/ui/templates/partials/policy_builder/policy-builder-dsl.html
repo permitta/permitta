@@ -16,11 +16,8 @@
 {#            </button>#}
         </div>
         <div class="w-full mb-1">
-        <pre>
-            <code class="language-rego">
-                {{ policy_dsl }}
-            </code>
-        </pre>
+            <div id="dsl-content" hidden>{{ policy_dsl }}</div>
+            <div id="editor" class="h-50 w-full"></div>
+        </div>
     </div>
 </div>
-<script src={{ url_for('static', filename='js/prism.js') }}></script>

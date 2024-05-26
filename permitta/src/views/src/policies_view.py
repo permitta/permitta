@@ -105,12 +105,13 @@ def get_policy(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        return render_template(
+        response: Response = make_response(render_template(
             template_name_or_list="partials/policy_builder/policy-builder.html",
             active_tab="metadata",
             policy_id=policy_id,
             policy=policy,
-        )
+        ))
+    return response
 
 
 @bp.route("/<policy_id>/detail-modal", methods=["GET"])
@@ -210,12 +211,13 @@ def get_policy_metadata(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        return render_template(
+        response: Response = make_response(render_template(
             template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
             active_tab="metadata",
             policy=policy,
             policy_id=policy_id,
-        )
+        ))
+    return response
 
 
 @bp.route("/<policy_id>/metadata", methods=["PUT"])
@@ -427,9 +429,14 @@ def get_dsl_tab(policy_id: int):
     rego_generator: RegoGenerator = RegoGenerator(database=g.database)
     policy_dsl: str = rego_generator.generate_snippet_for_policy(policy_id)
 
-    return render_template(
+    response: Response = make_response(render_template(
         template_name_or_list="partials/policy_builder/policy-builder-dsl.html",
         active_tab="dsl",
         policy_id=policy_id,
         policy_dsl=policy_dsl,
+    ))
+
+    response.headers.set(
+        "HX-Trigger-After-Settle", '{"load_codemirror": {"readonly": "true"}}',
     )
+    return response

@@ -1,11 +1,15 @@
 const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
 const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
+let darkMode = false;
+
 // Change the icons inside the button based on previous settings
 if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     themeToggleLightIcon.classList.remove('hidden');
+    darkMode = true;
 } else {
     themeToggleDarkIcon.classList.remove('hidden');
+    darkMode = false;
 }
 
 const themeToggleBtn = document.getElementById('theme-toggle');
@@ -17,6 +21,7 @@ themeToggleBtn.addEventListener('click', function() {
     // toggle icons
     themeToggleDarkIcon.classList.toggle('hidden');
     themeToggleLightIcon.classList.toggle('hidden');
+    darkMode = !darkMode;
 
     // if set via local storage previously
     if (localStorage.getItem('color-theme')) {
@@ -40,5 +45,10 @@ themeToggleBtn.addEventListener('click', function() {
     }
 
     document.dispatchEvent(event);
-    
 });
+
+function isDarkMode(){
+    return darkMode
+}
+
+export {isDarkMode};
