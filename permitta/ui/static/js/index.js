@@ -3,8 +3,7 @@
 import './sidebar.js';
 // import './charts.js';
 import './dark-mode.js';
-
-
+import './editor.js'
 
 document.body.addEventListener("initialiseFlowbite", function(evt){
     initFlowbite();

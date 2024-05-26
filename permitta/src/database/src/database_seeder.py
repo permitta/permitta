@@ -2,7 +2,7 @@ import json
 import random
 import uuid
 from datetime import datetime
-
+from textwrap import dedent
 from database import Database
 from models import (
     DataObjectTableAttributeDbo,
@@ -174,7 +174,26 @@ class DatabaseSeeder:
         attr4.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
 
         policy.policy_attributes = [attr1, attr2, attr3, attr4]
-        return [policy]
+
+        # DSL type policy
+        policy_dsl: PolicyDbo = PolicyDbo()
+        policy_dsl.policy_type = PolicyDbo.POLICY_TYPE_DSL
+        policy_dsl.name = "Global"
+        policy_dsl.author = "ritchievalens"
+        policy_dsl.description = (
+            "Global policy to allow access to objects which match the attributes or principals"
+        )
+        policy_dsl.policy_dsl = dedent("""
+        permit if {
+            # Global Policy
+            # All attributes on the object must exist on the principal
+            every k, v in data.data_objects[input.data_object] {
+                k, v in data.principals[input.principal]
+            }
+        }
+        """)
+
+        return [policy, policy_dsl]
 
     # platforms are not normally ingested so no proc id
     def _ingest_platforms(self):

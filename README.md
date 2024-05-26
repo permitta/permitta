@@ -218,12 +218,17 @@ allow if {
 `venv` and `node_modules` should both be at the project root
 ```bash
 brew install nodejs
-npm install
 
 brew install python@3.11
 python3.11 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+
+# front end
+cd permitta/ui
+npm install
+npm run build
+npm run watch:styles
 ```
 
 ### Environment Variables
@@ -257,14 +262,6 @@ kill $(pgrep -f flask)
 
 ## Front end
 * https://flowbite.com/icons/
-
-```bash
-# tailwind
-npm install -D tailwindcss
-
-cd permitta/ui
-npx tailwindcss -i ./css/input.css -o ./static/css/output.css --watch
-```
 
 ## Data Model
 * Properties are key-value pairs

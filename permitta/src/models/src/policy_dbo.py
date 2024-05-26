@@ -43,6 +43,8 @@ class PolicyDbo(BaseModel):
     author: str = Column(String)
     publisher: str = Column(String)
 
+    policy_dsl: str = Column(String)
+
     enforced_from: datetime = Column(
         DateTime(timezone=True), server_default=current_timestamp()
     )

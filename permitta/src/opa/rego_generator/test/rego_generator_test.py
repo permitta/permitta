@@ -23,3 +23,18 @@ def test_generate_snippet_for_policy(database: Database):
             "Marketing", "Commercial" in data.data_objects[input.data_object]
         }"""
     )
+
+
+def test_generate_snippet_for_dsl_policy(database: Database):
+    rego_generator: RegoGenerator = RegoGenerator(database=database)
+
+    assert dedent(rego_generator.generate_snippet_for_policy(2)) == dedent(
+        """
+        permit if {
+            # check the tags on the user match those of the object
+            every k, v in data.data_objects[input.data_object] {
+                k, v in data.principals[input.principal]
+            }
+        }
+        """
+    )

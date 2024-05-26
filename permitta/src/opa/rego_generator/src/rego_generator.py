@@ -24,8 +24,12 @@ class RegoGenerator:
                 raise ValueError(f"Policy with id {policy_id} was not found")
 
             # TODO handle direct DSL policies
-            environment = jinja2.Environment()
-
-            with open ("permitta/src/opa/rego_generator/src/snippet_template.rego.j2") as f:
-                template = environment.from_string(f.read())
-            return template.render(policy=policy)
+            if policy.policy_type == PolicyDbo.POLICY_TYPE_BUILDER:
+                environment = jinja2.Environment()
+                with open("permitta/src/opa/rego_generator/src/snippet_template.rego.j2") as f:
+                    template = environment.from_string(f.read())
+                return template.render(policy=policy)
+            elif policy.policy_type == PolicyDbo.POLICY_TYPE_DSL:
+                return policy.policy_dsl
+            else:
+                raise ValueError(f"Unknown policy type {policy.policy_type}")
