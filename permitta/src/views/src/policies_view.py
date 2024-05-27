@@ -1,3 +1,5 @@
+import json
+
 from app_logger import Logger, get_logger
 from extensions import oidc
 from flask import (
@@ -13,7 +15,13 @@ from flask import session as flask_session
 from flask_pydantic import validate
 from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
-from views.models import PolicyAttributeDto, PolicyMetadataDto, TableQueryDto
+from views.models import (
+    PolicyAttributeDto,
+    PolicyDslDto,
+    PolicyMetadataDto,
+    TableQueryDto,
+)
+
 from opa import RegoGenerator
 
 bp = Blueprint("policies", __name__, url_prefix="/policies")
@@ -105,12 +113,14 @@ def get_policy(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        response: Response = make_response(render_template(
-            template_name_or_list="partials/policy_builder/policy-builder.html",
-            active_tab="metadata",
-            policy_id=policy_id,
-            policy=policy,
-        ))
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-builder.html",
+                active_tab="metadata",
+                policy_id=policy_id,
+                policy=policy,
+            )
+        )
     return response
 
 
@@ -211,12 +221,14 @@ def get_policy_metadata(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        response: Response = make_response(render_template(
-            template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
-            active_tab="metadata",
-            policy=policy,
-            policy_id=policy_id,
-        ))
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
+                active_tab="metadata",
+                policy=policy,
+                policy_id=policy_id,
+            )
+        )
     return response
 
 
@@ -426,17 +438,60 @@ def all_object_attributes(query: TableQueryDto):
 @oidc.oidc_auth("default")
 @validate()
 def get_dsl_tab(policy_id: int):
-    rego_generator: RegoGenerator = RegoGenerator(database=g.database)
-    policy_dsl: str = rego_generator.generate_snippet_for_policy(policy_id)
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
 
-    response: Response = make_response(render_template(
-        template_name_or_list="partials/policy_builder/policy-builder-dsl.html",
-        active_tab="dsl",
-        policy_id=policy_id,
-        policy_dsl=policy_dsl,
-    ))
+        if not policy:
+            abort(404, "Policy not found")
+
+        policy_dsl: str = RegoGenerator.generate_snippet_for_policy(policy=policy)
+        policy_dsl_read_only: bool = policy.policy_type == PolicyDbo.POLICY_TYPE_BUILDER
+
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-builder-dsl.html",
+                active_tab="dsl",
+                policy_id=policy_id,
+                policy_dsl=policy_dsl,
+                policy_type=policy.policy_type,
+                policy_dsl_read_only=policy_dsl_read_only,
+            )
+        )
+
+        trigger_content: dict = {
+            "load_codemirror": {"readonly": str(policy_dsl_read_only)}
+        }
 
     response.headers.set(
-        "HX-Trigger-After-Settle", '{"load_codemirror": {"readonly": "true"}}',
+        "HX-Trigger-After-Settle",
+        json.dumps(trigger_content),
+    )
+    return response
+
+
+@bp.route("/<policy_id>/dsl", methods=["PUT"])
+@oidc.oidc_auth("default")
+@validate()
+def put_dsl(policy_id: int, body: PolicyDslDto):
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        # TODO validate DSL
+        if policy.policy_type != PolicyDbo.POLICY_TYPE_DSL:
+            abort(400, "Incorrect policy type")
+
+        policy.policy_dsl = body.policy_dsl
+        session.commit()
+
+    response: Response = make_response("", 200)
+    response.headers.set(
+        "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
     )
     return response

@@ -3,6 +3,7 @@ import random
 import uuid
 from datetime import datetime
 from textwrap import dedent
+
 from database import Database
 from models import (
     DataObjectTableAttributeDbo,
@@ -180,10 +181,9 @@ class DatabaseSeeder:
         policy_dsl.policy_type = PolicyDbo.POLICY_TYPE_DSL
         policy_dsl.name = "Global"
         policy_dsl.author = "ritchievalens"
-        policy_dsl.description = (
-            "Global policy to allow access to objects which match the attributes or principals"
-        )
-        policy_dsl.policy_dsl = dedent("""
+        policy_dsl.description = "Global policy to allow access to objects which match the attributes or principals"
+        policy_dsl.policy_dsl = dedent(
+            """
         permit if {
             # Global Policy
             # All attributes on the object must exist on the principal
@@ -191,7 +191,8 @@ class DatabaseSeeder:
                 k, v in data.principals[input.principal]
             }
         }
-        """)
+        """
+        )
 
         return [policy, policy_dsl]
 

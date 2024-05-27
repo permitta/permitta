@@ -5,18 +5,22 @@
             <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Policy DSL Snippet
             </h3>
-{#            <button#}
-{#                id="savePolicyMetadataButton"#}
-{#                hx-include="#policy_metadata"#}
-{#                hx-put="/policies/{{ policy_id }}/dsl"#}
-{#                hx-target="#policy-builder-content"#}
-{#                hx-ext='json-enc'#}
-{#                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">#}
-{#                Save#}
-{#            </button>#}
+            {% if not policy_dsl_read_only %}
+            <button
+                id="savePolicyDslButton"
+                hx-include="#dsl_content_form"
+                hx-put="/policies/{{ policy_id }}/dsl"
+                hx-swap="none"
+                hx-ext='json-enc'
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Save
+            </button>
+            {% endif %}
         </div>
         <div class="w-full mb-1">
-            <div id="dsl-content" hidden>{{ policy_dsl }}</div>
+            <form id="dsl_content_form">
+                <input id="dsl_content" name="policy_dsl" type="hidden" value="{{ policy_dsl }}">
+            </form>
             <div id="editor" class="h-50 w-full"></div>
         </div>
     </div>

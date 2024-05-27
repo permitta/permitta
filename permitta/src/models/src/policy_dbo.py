@@ -11,14 +11,14 @@ from .policy_attribute_dbo import PolicyAttributeDbo
 class PolicyDbo(BaseModel):
     __tablename__ = "policies"
 
-    STATUS_PUBLISHED = "Published"
-    STATUS_DRAFT = "Draft"
-    STATUS_DISABLED = "Disabled"
-    STATUS_PENDING_PUBLISH = "Pending Publish"
-    STATUS_PENDING_DELETE = "Pending Delete"
+    STATUS_PUBLISHED: str = "Published"
+    STATUS_DRAFT: str = "Draft"
+    STATUS_DISABLED: str = "Disabled"
+    STATUS_PENDING_PUBLISH: str = "Pending Publish"
+    STATUS_PENDING_DELETE: str = "Pending Delete"
 
-    POLICY_TYPE_BUILDER = "Builder"
-    POLICY_TYPE_DSL = "DSL"
+    POLICY_TYPE_BUILDER: str = "Builder"
+    POLICY_TYPE_DSL: str = "DSL"
 
     @property
     def principal_attributes(self):
