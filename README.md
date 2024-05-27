@@ -300,7 +300,6 @@ docker-compose up
 Settings:
 * Realm: permitta
 * Client ID: permitta-client
-* OIDC_REDIRECT_URI="http://127.0.0.1:8000/oidccallback"
 * Root URL: http://localhost:8000
 * Home URL: http://localhost:8000
 * Valid redirect URIs: http://127.0.0.1:8000/oidccallback
