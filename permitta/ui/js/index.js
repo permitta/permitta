@@ -3,7 +3,7 @@ import './sidebar.js';
 import './dark-mode.js';
 import './flowbite.js'
 import './toast.js'
-import {getEditorContent} from './editor.js'
+import './editor.js'
 import {onPillDrop, onPillDragStart} from './policyBuilder.js'
 
 document.body.addEventListener("initialiseFlowbite", function(evt){

@@ -1,9 +1,10 @@
 {% include("partials/policy_builder/policy-builder-tabs.html") %}
-<div class="grid gap-4 grid-cols-1 pb-4">
-    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+{% from "partials/common/macro-status-label.html" import status_label %}
+<div class="grid gap-4 grid-cols-8 pb-4">
+    <div class="col-span-5 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
         <div class="flex justify-between">
             <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                Policy Detail
+                Name & Description
             </h3>
             <button
                 id="savePolicyMetadataButton"
@@ -17,9 +18,10 @@
         </div>
         <div class="w-full mb-1">
             <div class="mb-4">
-                <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
-                    <div class="flex items-center mb-4 sm:mb-0">
-                        <form id="policy_metadata" class="relative w-96 mt-1 sm:w-64 xl:w-96">
+{#                <div class="items-center justify-between block sm:flex ">#}
+{#                    <div class="flex items-center mb-4 sm:mb-0">#}
+{#                        <form id="policy_metadata" class="w-full mt-1 sm:w-64 xl:w-full">#}
+                        <form id="policy_metadata" class="w-full mt-1 ">
                             <input type="hidden" name="policy_id" value="{{ policy.policy_id }}">
                             <div class="mb-6">
                                 <div>
@@ -29,15 +31,14 @@
                                            placeholder="e.g: Human Resources Commercial" required/>
                                 </div>
                             </div>
-{#                            <div class="mb-6">#}
-{#                                <div>#}
-{#                                    <label for="name"#}
-{#                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
-{#                                    <input type="text" name="expiry" value=""#}
-{#                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
-{#                                           placeholder="e.g: 30/6/24" required/>#}
+{#                                <div class="mb-6">#}
+{#                                    <div>#}
+{#                                        <label for="expiry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
+{#                                        <input type="text" name="expiry" value=""#}
+{#                                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
+{#                                               placeholder="e.g: 30/6/24" required/>#}
+{#                                    </div>#}
 {#                                </div>#}
-{#                            </div>#}
                             <div class="mb-6">
                                 <label for="description"
                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -45,14 +46,89 @@
                                 </label>
                                 <textarea id="description"
                                           name="description"
-                                          rows="4"
+                                          rows="12"
                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                           placeholder="This policy allows access to...">{{ policy.description }}</textarea>
                             </div>
                         </form>
-                    </div>
-                </div>
+{#                    </div>#}
+{#                </div>#}
             </div>
+        </div>
+    </div>
+    <div class="col-span-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+        <div class="flex justify-between">
+            <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Metadata
+            </h3>
+        </div>
+        <div class="w-full mb-1">
+            <div class="mb-4">
+{#                <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">#}
+{#                    <div class="flex items-center mb-4 sm:mb-0">#}
+                        <dl class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+                            <div class="flex flex-col pb-3">
+                                <dt class="mb-1 text-gray-500 md:text-sm dark:text-gray-400">Status</dt>
+                                <dd class="text-md font-semibold">{{ status_label(policy.status) }}</dd>
+                            </div>
+                            <div class="flex flex-col pb-3">
+                                <dt class="mb-1 text-gray-500 md:text-sm dark:text-gray-400">Author</dt>
+                                <dd class="text-md font-semibold">{{ policy.author }}</dd>
+                            </div>
+                            <div class="flex flex-col py-3">
+                                <dt class="mb-1 text-gray-500 md:text-sm dark:text-gray-400">Publisher</dt>
+                                <dd class="text-md font-semibold">{{ policy.publisher or "Unpublished" }}</dd>
+                            </div>
+                            <div class="flex flex-col pt-3">
+                                <dt class="mb-1 text-gray-500 md:text-sm dark:text-gray-400">Last Updated By</dt>
+                                <dd class="text-md font-semibold">{{ policy.record_updated_by }}</dd>
+                            </div>
+                            <div class="flex flex-col pt-3">
+                                <dt class="mb-1 text-gray-500 md:text-sm dark:text-gray-400">Last Updated At</dt>
+                                <dd class="text-md font-semibold">{{ policy.record_updated_date.strftime('%d-%m-%Y %H:%m %z') }}</dd>
+                            </div>
+                        </dl>
+{#                        <form class="relative w-96 mt-1 sm:w-64 xl:w-96">#}
+{#                        <form class="w-96">#}
+{#                            <div class="mb-6">#}
+{#                                {{ status_label(policy.status) }}#}
+{#                            </div>#}
+{#                            <div class="mb-6">#}
+{#                                <div>#}
+{#                                    <label for="expiry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
+{#                                    <input type="text" name="expiry" value="Something" readonly#}
+{#                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
+{#                                           placeholder="e.g: 30/6/24" required/>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-6">#}
+{#                                <div>#}
+{#                                    <label for="expiry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
+{#                                    <input type="text" name="expiry" value="Something" readonly#}
+{#                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
+{#                                           placeholder="e.g: 30/6/24" required/>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-6">#}
+{#                                <div>#}
+{#                                    <label for="expiry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
+{#                                    <input type="text" name="expiry" value="Something" readonly#}
+{#                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
+{#                                           placeholder="e.g: 30/6/24" required/>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="mb-6">#}
+{#                                <div>#}
+{#                                    <label for="expiry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expiry</label>#}
+{#                                    <input type="text" name="expiry" value="Something" readonly#}
+{#                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"#}
+{#                                           placeholder="e.g: 30/6/24" required/>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </form>#}
+{#                    </div>#}
+                </div>
+{#            </div>#}
         </div>
     </div>
 </div>

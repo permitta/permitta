@@ -64,6 +64,22 @@
           "value": "demo"
         }
       ]
+    },
+    {
+      "id":"joelcoenraadts",
+      "email": "joelcoenraadts@permitta.co",
+      "username": "joelcoenraadts",
+      "firstName": "Joel",
+      "lastName": "Coenraadts",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "admin"
+        }
+      ]
     }
   ]
 }

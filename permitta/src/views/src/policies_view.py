@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime, timezone
 from app_logger import Logger, get_logger
 from extensions import oidc
 from flask import (
@@ -249,16 +249,17 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
         policy.description = body.description
         policy.record_updated_by = web_session.username
         policy.author = web_session.username
-        session.commit()
+        policy.record_updated_date = datetime.utcnow().replace(tzinfo=timezone.utc)
 
         response: Response = make_response(
             render_template(
                 template_name_or_list="partials/policy_builder/policy-builder-metadata.html",
                 active_tab="metadata",
-                policy=body,
+                policy=policy,
                 policy_id=policy_id,
             )
         )
+        session.commit()
 
     response.headers.set(
         "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'

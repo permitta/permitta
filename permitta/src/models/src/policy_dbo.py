@@ -45,11 +45,6 @@ class PolicyDbo(BaseModel):
 
     policy_dsl: str = Column(String)
 
-    enforced_from: datetime = Column(
-        DateTime(timezone=True), server_default=current_timestamp()
-    )
-    enforced_to: datetime = Column(DateTime(timezone=True))
-
     record_updated_date: str = Column(
         DateTime(timezone=True), server_default=current_timestamp()
     )

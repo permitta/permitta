@@ -57,8 +57,8 @@ services:
     image: postgres:16.2
     ports:
       - 5432:5432
-    volumes:
-      - ./instance/postgres:/var/lib/postgresql/data
+#    volumes:
+#      - ./instance/postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=test_password
       - POSTGRES_USER=test_user
@@ -89,7 +89,7 @@ services:
   trino:
     ports:
       - "8081:8080"
-    image: "trinodb/trino:448-arm64"
+    image: "trinodb/trino:448"
     volumes:
       - ./docker/trino/etc:/usr/lib/trino/etc:ro
       - ./docker/trino/catalog:/etc/trino/catalog
