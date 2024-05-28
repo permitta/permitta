@@ -1,16 +1,16 @@
 services:
-  opa:
-    image: openpolicyagent/opa:latest
-    ports:
-      - 8181:8181
-    command:
-      - "run"
-      - "--server"
-      - "--log-level=debug"
-      - "-c"
-      - "/policy/config.yaml"
-    volumes:
-      - ./policy:/policy
+#  opa:
+#    image: openpolicyagent/opa:latest
+#    ports:
+#      - 8181:8181
+#    command:
+#      - "run"
+#      - "--server"
+#      - "--log-level=debug"
+#      - "-c"
+#      - "/policy/config.yaml"
+#    volumes:
+#      - ./policy:/policy
 
   keycloak:
     image: keycloak/keycloak:latest
@@ -19,8 +19,6 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-    volumes:
-      - ./docker/keycloak/import_data:/opt/keycloak/data/import
     command:
       - "start-dev"
 
