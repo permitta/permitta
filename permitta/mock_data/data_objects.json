@@ -1,122 +1,146 @@
 [
   {
     "platform_id": 1,
-    "database": "erp",
+    "database": "iceberg",
     "schema": "hr",
-    "table": "employees"
+    "table": "employees",
+    "attributes": [
+      {
+        "key": "HR",
+        "value": "Privacy"
+      }
+    ]
   },
   {
     "platform_id": 1,
-    "database": "erp",
+    "database": "iceberg",
     "schema": "hr",
-    "table": "employee_territories"
+    "table": "employee_territories",
+    "attributes": [
+      {
+        "key": "HR",
+        "value": "Commercial"
+      }
+    ]
   },
   {
     "platform_id": 1,
-    "database": "erp",
-    "schema": "hr",
-    "table": "shippers"
+    "database": "iceberg",
+    "schema": "logistics",
+    "table": "shippers",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Commercial"
+      },
+      {
+        "key": "Marketing",
+        "value": "Commercial"
+      }
+    ]
   },
   {
     "platform_id": 1,
-    "database": "erp",
-    "schema": "hr",
-    "table": "territories"
+    "database": "iceberg",
+    "schema": "logistics",
+    "table": "territories",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Commercial"
+      },
+      {
+        "key": "Marketing",
+        "value": "Commercial"
+      }
+    ]
   },
   {
     "platform_id": 1,
-    "database": "erp",
-    "schema": "hr",
-    "table": "region"
+    "database": "iceberg",
+    "schema": "logistics",
+    "table": "regions",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Commercial"
+      },
+      {
+        "key": "Marketing",
+        "value": "Commercial"
+      }
+    ]
   },
   {
     "platform_id": 1,
-    "database": "erp",
-    "schema": "hr",
-    "table": "suppliers"
+    "database": "iceberg",
+    "schema": "logistics",
+    "table": "suppliers",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Restricted"
+      },
+      {
+        "key": "Marketing",
+        "value": "Restricted"
+      }
+    ]
   },
   {
-    "platform_id": 2,
-    "database": "sal",
+    "platform_id": 1,
+    "database": "iceberg",
     "schema": "sales",
-    "table": "products"
+    "table": "orders",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Privacy"
+      },
+      {
+        "key": "Marketing",
+        "value": "Privacy"
+      }
+    ]
   },
   {
-    "platform_id": 2,
-    "database": "sal",
+    "platform_id": 1,
+    "database": "iceberg",
     "schema": "sales",
-    "table": "orders"
+    "table": "products",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Commercial"
+      },
+      {
+        "key": "Marketing",
+        "value": "Commercial"
+      }
+    ]
   },
   {
-    "platform_id": 2,
-    "database": "sal",
+    "platform_id": 1,
+    "database": "iceberg",
     "schema": "sales",
-    "table": "products"
+    "table": "customers",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Privacy"
+      }
+    ]
   },
   {
-    "platform_id": 2,
-    "database": "sal",
+    "platform_id": 1,
+    "database": "iceberg",
     "schema": "sales",
-    "table": "customers"
-  },
-  {
-    "platform_id": 2,
-    "database": "sal",
-    "schema": "sales",
-    "table": "customer_demographics"
-  },
-  {
-    "platform_id": 2,
-    "database": "sal",
-    "schema": "sales",
-    "table": "demos"
-  },
-  {
-    "platform_id": 2,
-    "database": "sal",
-    "schema": "sales",
-    "table": "order_details"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "products"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "orders"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "products"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "customers"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "customer_demographics"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "demos"
-  },
-  {
-    "platform_id": 3,
-    "database": "public",
-    "schema": "sales",
-    "table": "order_details"
+    "table": "customer_demographics",
+    "attributes": [
+      {
+        "key": "Sales",
+        "value": "Commercial"
+      }
+    ]
   }
 ]

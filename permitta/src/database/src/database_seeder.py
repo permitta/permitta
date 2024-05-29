@@ -128,18 +128,15 @@ class DatabaseSeeder:
                 data_object_table_dbo.object_name = table.get("table")
                 data_object_table_dbo.search_value = f"{table.get('database')}.{table.get('schema')}.{table.get('table')}"
 
-                # randomly apply tags
-                with open("permitta/mock_data/data_tags.json") as tags_file:
-                    all_props = json.load(tags_file).get("properties")
-                    for i in range(0, 2):
-                        prop: dict = random.choice(all_props)
-                        data_object_table_attribute_dbo = DataObjectTableAttributeDbo()
-                        data_object_table_attribute_dbo.attribute_key = prop["key"]
-                        data_object_table_attribute_dbo.attribute_value = prop["value"]
-                        data_object_table_attribute_dbo.activated_at = datetime.utcnow()
-                        data_object_table_dbo.data_object_table_attributes.append(
-                            data_object_table_attribute_dbo
-                        )
+                # apply tags
+                for attribute in table.get("attributes"):
+                    data_object_table_attribute_dbo = DataObjectTableAttributeDbo()
+                    data_object_table_attribute_dbo.attribute_key = attribute["key"]
+                    data_object_table_attribute_dbo.attribute_value = attribute["value"]
+                    data_object_table_attribute_dbo.activated_at = datetime.utcnow()
+                    data_object_table_dbo.data_object_table_attributes.append(
+                        data_object_table_attribute_dbo
+                    )
 
                 data_object_table_dbos.append(data_object_table_dbo)
         return data_object_table_dbos

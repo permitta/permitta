@@ -47,8 +47,9 @@ def create_app() -> Flask:
     flask_app.register_blueprint(policies_bp)
     flask_app.register_blueprint(groups_bp)
 
-    from apis import decision_log_bp
+    from apis import decision_log_bp, bundle_bp
     flask_app.register_blueprint(decision_log_bp)
+    flask_app.register_blueprint(bundle_bp)
 
     # Database
     database: Database = Database()
