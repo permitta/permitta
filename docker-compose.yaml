@@ -15,10 +15,10 @@ services:
       - "--watch"
       - "--log-level=debug"
       - "--log-format=json-pretty"
-      - "--set=decision_logs.console=true"
+#      - "--set=decision_logs.console=true"
+      - "-c"
+      - "/policy/config.yaml"
       - "/policy/"
-#      - "-c"
-#      - "/policy/config.yaml"
     volumes:
       - ./docker/opa/policy:/policy
 
@@ -93,7 +93,6 @@ services:
       - "8081:8080"
     image: "trinodb/trino:448"
     volumes:
-#      - ./docker/trino/etc:/usr/lib/trino/etc:ro
       - ./docker/trino/etc:/etc/trino
       - ./docker/trino/catalog:/etc/trino/catalog
 

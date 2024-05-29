@@ -318,12 +318,31 @@ Capability Config:
 ```
 
 ## OPA Stuff
+```yaml
+actions:
+- ImpersonateUser
+- ExecuteQuery
+- ViewQueryOwnedBy
+- FilterViewQueryOwnedBy
+- KillQueryOwnedBy
+- ReadSystemInformation
+- WriteSystemInformation
+- SetSystemSessionProperty
+- AccessCatalog
+- CreateCatalog
+
+```
+
+
 ```bash
 # tar the bundle folder
 tar czf app/static/static/bundles/permitta/bundle.tar.gz policy_bundle
 
 # decision logger
 https://gist.github.com/asafc/036ead38d8711e4376a02c98d39877a3
+
+# OPA Trino source
+https://github.com/trinodb/trino/blob/master/plugin/trino-opa/src/main/java/io/trino/plugin/opa/OpaAccessControl.java
 
 opa --help
 An open source project to policy-enable your service.
