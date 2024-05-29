@@ -5,20 +5,22 @@ x-logging: &logging
     max-file: "3"
 
 services:
-#  opa:
-#    image: openpolicyagent/opa:latest
-#    ports:
-#      - 8181:8181
-#    command:
-#      - "run"
-#      - "--server"
-#      - "--log-level=debug"
+  opa:
+    image: openpolicyagent/opa:latest-static
+    ports:
+      - 8181:8181
+    command:
+      - "run"
+      - "--server"
+      - "--watch"
+      - "--log-level=debug"
+      - "--log-format=json-pretty"
+      - "--set=decision_logs.console=true"
+      - "/policy/permitta.rego"
 #      - "-c"
 #      - "/policy/config.yaml"
-#    volumes:
-#      - ./policy:/policy
-
-
+    volumes:
+      - ./docker/opa/policy:/policy
 
   lldap:
     image: lldap/lldap:stable

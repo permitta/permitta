@@ -11,3 +11,5 @@ isort
 trino
 ldap3
 click
+requests
+responses

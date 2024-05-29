@@ -119,6 +119,7 @@ def get_policy(policy_id: int):
                 active_tab="metadata",
                 policy_id=policy_id,
                 policy=policy,
+                policy_type=policy.policy_type,
             )
         )
     return response
@@ -271,11 +272,20 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
 @oidc.oidc_auth("default")
 @validate()
 def get_principal_attributes_tab(policy_id: int):
-    return render_template(
-        template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
-        active_tab="principals",
-        policy_id=policy_id,
-    )
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        return render_template(
+            template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
+            active_tab="principals",
+            policy_id=policy_id,
+            policy_type=policy.policy_type,
+        )
 
 
 @bp.route("/<policy_id>/principal_attributes", methods=["GET"])
@@ -337,11 +347,20 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
 @oidc.oidc_auth("default")
 @validate()
 def get_object_attributes_tab(policy_id: int):
-    return render_template(
-        template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
-        active_tab="objects",
-        policy_id=policy_id,
-    )
+    with g.database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        return render_template(
+            template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
+            active_tab="objects",
+            policy_id=policy_id,
+            policy_type=policy.policy_type,
+        )
 
 
 @bp.route("/<policy_id>/object_attributes", methods=["GET"])
