@@ -27,17 +27,30 @@ principal_attributes contains attribute if {
 }
 
 principal_exists(input_principal_name) if {
+  input_principal_name
   some principal in principals
   principal.name == input_principal_name
 }
 
+# ExecuteQuery comes with no parameters
 allow if {
   # ensure we have a valid user
-  input_principal_name
+  input.action.operation == "ExecuteQuery"
+  principal_exists(input_principal_name)
+}
+
+# All valid users should have AccessCatalog on system
+allow if {
+  input.action.operation == "ExecuteQuery"
+  input.action.resource.catalog == "system"
+  principal_exists(input_principal_name)
+}
+
+allow if {
+  # ensure we have a valid user
   principal_exists(input_principal_name)
 
   # ensure all attrs on object exist on principal
-  #  print(principal_attributes)
 	every data_object_attribute in data_object_attributes {
     some principal_attribute in principal_attributes
     data_object_attribute == principal_attribute

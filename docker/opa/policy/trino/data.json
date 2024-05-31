@@ -42,6 +42,19 @@
       "object": {
         "database": "iceberg",
         "schema": "logistics",
+        "table": "shippers"
+      },
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "logistics",
         "table": "territories"
       },
       "attributes": [
@@ -50,19 +63,156 @@
           "value": "Commercial"
         }
       ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "logistics",
+        "table": "regions"
+      },
+      "attributes": [
+        {
+          "key": "Marketing",
+          "value": "Commercial"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "logistics",
+        "table": "suppliers"
+      },
+      "attributes": [
+        {
+          "key": "Marketing",
+          "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "sales",
+        "table": "orders"
+      },
+      "attributes": [
+        {
+          "key": "Marketing",
+          "value": "Privacy"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "sales",
+        "table": "products"
+      },
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "sales",
+        "table": "customers"
+      },
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "object": {
+        "database": "iceberg",
+        "schema": "sales",
+        "table": "customer_demographics"
+      },
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Privacy"
+        }
+      ]
     }
   ],
   "principals": [
     {
-      "name": "joel",
+      "name": "bob",
       "attributes": [
         {
-          "key": "ad_group",
-          "value": "SALES_ANALYSTS_GL"
+          "key": "Sales",
+          "value": "Commercial"
         },
         {
           "key": "Sales",
           "value": "Privacy"
+        },
+        {
+          "key": "HR",
+          "value": "Commercial"
+        },
+        {
+          "key": "HR",
+          "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "name": "alice",
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
+        },
+        {
+          "key": "Marketing",
+          "value": "Commercial"
+        },
+        {
+          "key": "Marketing",
+          "value": "Privacy"
+        }
+      ]
+    },
+    {
+      "name": "frank",
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
+        },
+        {
+          "key": "Sales",
+          "value": "Restricted"
+        },
+        {
+          "key": "HR",
+          "value": "Commercial"
+        },
+        {
+          "key": "HR",
+          "value": "Privacy"
+        }
+      ]
+    },
+    {
+      "name": "anne",
+      "attributes": [
+        {
+          "key": "Marketing",
+          "value": "Commercial"
+        },
+        {
+          "key": "Marketing",
+          "value": "Restricted"
         },
         {
           "key": "HR",
