@@ -95,6 +95,13 @@ Authorise all the things
   * allow when: all principal tags == all object tags
   * deny when: any deny principal tag in all object tags  <-- not quite
 
+# OPA
+## Testing
+```bash
+brew install opa
+
+```
+
 ## OPA Data Model for ABAC
 https://play.openpolicyagent.org/
 ```jsonc

@@ -1,0 +1,28 @@
+{
+    "context": {
+        "identity": {
+            "user": "joel",
+            "groups": [
+                "some-group"
+            ]
+        },
+        "softwareStack": {
+            "trinoVersion": "434"
+        }
+    },
+    "action": {
+        "operation": "SelectFromColumns",
+        "resource": {
+            "table": {
+                "catalogName": "iceberg",
+                "schemaName": "hr",
+                "tableName": "employees",
+                "columns": [
+                    "column1",
+                    "column2",
+                    "column3"
+                ]
+            }
+        }
+    }
+}

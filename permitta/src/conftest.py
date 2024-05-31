@@ -7,7 +7,8 @@ from sqlalchemy.sql import text
 os.environ["CONFIG_FILE_PATH"] = "permitta/config/config.unittest.yaml"
 os.environ["SUPER_SECRET_VALUE"] = "dont-tell-anyone"
 
-from database import Database, DatabaseSeeder
+from database import Database
+from database.src.database_seeder import DatabaseSeeder
 
 
 @pytest.fixture(scope="module")

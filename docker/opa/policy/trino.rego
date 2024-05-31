@@ -1,35 +1,78 @@
 package permitta.trino
+
 import rego.v1
+import data.trino
 
-import trino.data
+data_objects := data.trino.data_objects
+principals := data.trino.principals
 
-default allow = false
+input_principal_name := input.context.identity.user
 
-allow if {
-	# evaluates to true if the principal exists in the array
-	input.context.identity.user in trino.data[principals]
-
-	# check the tags on the user match those of the object
-#	every k, v in data.data_objects[input.data_object] {
-#    	k, v in data.principals[input.principal]
-#    }
+input_table := {
+	"database": input.action.resource.table.catalogName,
+	"schema": input.action.resource.table.schemaName,
+	"table": input.action.resource.table.tableName,
 }
 
-# Allow batched access
+data_object_attributes contains attribute if {
+	some data_object in data_objects
+	data_object.object == input_table
+	some attribute in data_object.attributes
+}
+
+principal_attributes contains attribute if {
+  some principal in principals
+  principal.name == input_principal_name
+  some attribute in principal.attributes
+}
+
+principal_exists(input_principal_name) if {
+  some principal in principals
+  principal.name == input_principal_name
+}
+
+allow if {
+  # ensure we have a valid user
+  input_principal_name
+  principal_exists(input_principal_name)
+
+  # ensure all attrs on object exist on principal
+  #  print(principal_attributes)
+	every data_object_attribute in data_object_attributes {
+    some principal_attribute in principal_attributes
+    data_object_attribute == principal_attribute
+  }
+}
+
+# batch mode - run with both the input and output resources if they exist
 #batch contains i if {
-#  some i
-#  input.action.filterResources[i]
-#  is_admin
-#}
-# Corner case: filtering columns is done with a single table item, and many columns inside
-#batch contains i if {
-#  some i
-#  input.action.operation == "FilterColumns"
-#  count(input.action.filterResources) == 1
-#  input.action.filterResources[0].table.columns[i]
-#  is_admin
+#	some i
+#	raw_resource := input.action.filterResources[i]
+#	allow with input.action.resource as raw_resource
 #}
 #
-#is_admin() if {
-#  input.context.identity.user in ["joel","abbas"]
+#data_object_columns contains column if {
+##  some i
+#	input.action.operation == "FilterColumns"
+#	count(input.action.filterResources) == 1
+#	raw_resource := input.action.filterResources[0]
+#	count(raw_resource.table.columns) > 0
+#	new_resources := [
+#    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
+#	]
+#	some column in new_resources
 #}
+
+
+batch contains i if {
+	some i
+	input.action.operation == "FilterColumns"
+	count(input.action.filterResources) == 1
+	raw_resource := input.action.filterResources[0]
+	count(raw_resource.table.columns) > 0
+	new_resources := [
+    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
+	]
+	print(new_resources)
+	allow with input.action.resource as new_resources[i]
+}

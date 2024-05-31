@@ -1,142 +1,49 @@
 {
   "data_objects": [
     {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "hr",
-      "table": "employees",
-      "attributes": [
-        {
-          "key": "HR",
-          "value": "Privacy"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "hr",
-      "table": "employee_territories",
+      "object": {
+        "database": "iceberg",
+        "schema": "hr",
+        "table": "employees"
+      },
       "attributes": [
         {
           "key": "HR",
           "value": "Commercial"
         }
+      ],
+      "columns": [
+        {
+          "name": "column2",
+          "attributes": [
+            {
+              "key": "HR",
+              "value": "Privacy"
+            }
+          ],
+          "mask": "'XXX'"
+        }
       ]
     },
     {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "logistics",
-      "table": "shippers",
+      "object": {
+        "database": "iceberg",
+        "schema": "hr",
+        "table": "employee_territories"
+      },
       "attributes": [
         {
-          "key": "Sales",
-          "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
+          "key": "HR",
           "value": "Commercial"
         }
       ]
     },
     {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "logistics",
-      "table": "territories",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
-          "value": "Commercial"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "logistics",
-      "table": "regions",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
-          "value": "Commercial"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "logistics",
-      "table": "suppliers",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Restricted"
-        },
-        {
-          "key": "Marketing",
-          "value": "Restricted"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "sales",
-      "table": "orders",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Privacy"
-        },
-        {
-          "key": "Marketing",
-          "value": "Privacy"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "sales",
-      "table": "products",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
-          "value": "Commercial"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "sales",
-      "table": "customers",
-      "attributes": [
-        {
-          "key": "Sales",
-          "value": "Privacy"
-        }
-      ]
-    },
-    {
-      "platform_id": 1,
-      "database": "iceberg",
-      "schema": "sales",
-      "table": "customer_demographics",
+      "object": {
+        "database": "iceberg",
+        "schema": "logistics",
+        "table": "territories"
+      },
       "attributes": [
         {
           "key": "Sales",
@@ -145,8 +52,9 @@
       ]
     }
   ],
-  "principals": {
-    "joel": {
+  "principals": [
+    {
+      "name": "joel",
       "attributes": [
         {
           "key": "ad_group",
@@ -154,13 +62,17 @@
         },
         {
           "key": "Sales",
-          "value": "Commercial"
+          "value": "Privacy"
         },
         {
-          "key": "Marketing",
+          "key": "HR",
           "value": "Commercial"
         }
       ]
     }
+  ],
+  "actions": {
+    "read": ["ExecuteQuery", "AccessCatalog", "SelectFromColumns", "FilterCatalogs", "FilterSchemas"],
+    "write": ["InsertIntoTable"]
   }
 }
