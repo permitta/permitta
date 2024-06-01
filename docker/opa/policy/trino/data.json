@@ -1,4 +1,35 @@
 {
+  "databases": {
+    "iceberg": {
+      "attributes": [],
+      "schemas": {
+        "hr": {
+          "attributes": [],
+          "tables": {
+            "employees": {
+            "attributes": [
+                {
+                  "key": "HR",
+                  "value": "Commercial"
+                }
+              ],
+              "columns": {
+                "column2": {
+                  "attributes": [
+                    {
+                      "key": "HR",
+                      "value": "Privacy"
+                    }
+                  ],
+                  "mask": "'XXX'"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "data_objects": [
     {
       "object": {
@@ -222,7 +253,15 @@
     }
   ],
   "actions": {
-    "read": ["ExecuteQuery", "AccessCatalog", "SelectFromColumns", "FilterCatalogs", "FilterSchemas"],
-    "write": ["InsertIntoTable"]
+    "read": [
+      "ExecuteQuery",
+      "AccessCatalog",
+      "SelectFromColumns",
+      "FilterCatalogs",
+      "FilterSchemas"
+    ],
+    "write": [
+      "InsertIntoTable"
+    ]
   }
 }

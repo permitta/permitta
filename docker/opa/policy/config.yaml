@@ -5,6 +5,6 @@ services:
 decision_logs:
   service: permitta
   resource: /opa/decision/
-#  reporting:
-#    min_delay_seconds: 1
-#    max_delay_seconds: 10
+  reporting:
+    min_delay_seconds: 1
+    max_delay_seconds: 10
