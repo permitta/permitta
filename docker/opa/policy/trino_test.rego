@@ -180,7 +180,177 @@ test_bob_allow_catalogs if {
   }
 }
 
+# access catalogs should have the same behaviour as filter catalogs
+test_bob_allow_catalogs if {
+  not allow with input as {
+    "action": {
+      "operation": "AccessCatalog",
+      "resource": {
+        "catalog": {
+          "name": "memory"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "bob"
+      }
+    }
+  }
+}
+
+# filter catalogs should pass for "iceberg"
+test_bob_allow_catalogs if {
+  allow with input as {
+    "action": {
+      "operation": "AccessCatalog",
+      "resource": {
+        "catalog": {
+          "name": "iceberg"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "bob"
+      }
+    }
+  }
+}
+
 # filter schemas should return hr, logistics and sales
+# TODO
+
+# filter tables
+test_filter_tables_alice_hr_employees if {
+  not allow with input as {
+    "action": {
+      "operation": "FilterTables",
+      "resource": {
+        "table": {
+          "catalogName": "iceberg",
+          "schemaName": "hr",
+          "tableName": "employees"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "alice"
+      }
+    }
+  }
+}
+
+test_filter_tables_alice_logistics_shippers if {
+  allow with input as {
+    "action": {
+      "operation": "FilterTables",
+      "resource": {
+        "table": {
+          "catalogName": "iceberg",
+          "schemaName": "logistics",
+          "tableName": "shippers"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "alice"
+      }
+    }
+  }
+}
+
+test_filter_tables_alice_logistics_suppliers if {
+  not allow with input as {
+    "action": {
+      "operation": "FilterTables",
+      "resource": {
+        "table": {
+          "catalogName": "iceberg",
+          "schemaName": "logistics",
+          "tableName": "suppliers"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "alice"
+      }
+    }
+  }
+}
+
+# filter columns
+test_filter_columns_alice_logistics_regions if {
+  allow with input as {
+      "action": {
+        "operation": "FilterColumns",
+        "resource": {
+          "table": {
+            "catalogName": "iceberg",
+            "columns": [
+              "column1"
+            ],
+            "schemaName": "logistics",
+            "tableName": "regions"
+          }
+        }
+      },
+      "context": {
+        "identity": {
+          "user": "alice"
+        }
+      }
+    }
+}
+
+test_filter_columns_bob_hr_employees_column_a if {
+  allow with input as {
+      "action": {
+        "operation": "FilterColumns",
+        "resource": {
+          "table": {
+            "catalogName": "iceberg",
+            "columns": [
+              "a"
+            ],
+            "schemaName": "hr",
+            "tableName": "employees"
+          }
+        }
+      },
+      "context": {
+        "identity": {
+          "user": "bob"
+        }
+      }
+    }
+}
+
+test_filter_columns_bob_hr_employees_column_b if {
+  not allow with input as {
+      "action": {
+        "operation": "FilterColumns",
+        "resource": {
+          "table": {
+            "catalogName": "iceberg",
+            "columns": [
+              "b"
+            ],
+            "schemaName": "hr",
+            "tableName": "employees"
+          }
+        }
+      },
+      "context": {
+        "identity": {
+          "user": "bob"
+        }
+      }
+    }
+}
 
 # bob should be able to select from logistics.shippers, but not logistics.regions
 test_bob_selects_logistics_shippers if {
@@ -198,9 +368,9 @@ test_bob_selects_logistics_shippers if {
                   "schemaName": "logistics",
                   "tableName": "shippers",
                   "columns": [
-                      "column1",
-                      "column2",
-                      "column3"
+                      "a",
+                      "b",
+                      "c"
                   ]
               }
           }
@@ -223,9 +393,9 @@ test_bob_selects_logistics_regions if {
                   "schemaName": "logistics",
                   "tableName": "regions",
                   "columns": [
-                      "column1",
-                      "column2",
-                      "column3"
+                      "a",
+                      "b",
+                      "c"
                   ]
               }
           }
@@ -233,8 +403,8 @@ test_bob_selects_logistics_regions if {
   }
 }
 
-# bob should be able to select column1 and column3 from hr.employees
-test_bob_selects_hr_employees_column1_and_column3 if {
+# bob should be able to select column a and column c from hr.employees
+test_bob_selects_hr_employees_column_a_and_column_c if {
   allow with input as {
       "context": {
           "identity": {
@@ -249,8 +419,8 @@ test_bob_selects_hr_employees_column1_and_column3 if {
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
-                      "column1",
-                      "column3"
+                      "a",
+                      "c"
                   ]
               }
           }
@@ -258,7 +428,7 @@ test_bob_selects_hr_employees_column1_and_column3 if {
   }
 }
 
-# bob should not be able to select column2 from hr.employees
+# bob should not be able to select column b from hr.employees
 test_bob_selects_hr_employees_all_columns if {
   not allow with input as {
       "context": {
@@ -274,9 +444,9 @@ test_bob_selects_hr_employees_all_columns if {
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
-                      "column1",
-                      "column2",
-                      "column3"
+                      "a",
+                      "b",
+                      "c"
                   ]
               }
           }
@@ -284,7 +454,7 @@ test_bob_selects_hr_employees_all_columns if {
   }
 }
 
-# frank should be able to select column2 from hr.employees
+# frank should be able to select column b from hr.employees
 test_frank_selects_hr_employees_all_columns if {
   not allow with input as {
       "context": {
@@ -300,9 +470,9 @@ test_frank_selects_hr_employees_all_columns if {
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
-                      "column1",
-                      "column2",
-                      "column3"
+                      "a",
+                      "b",
+                      "c"
                   ]
               }
           }
@@ -311,7 +481,7 @@ test_frank_selects_hr_employees_all_columns if {
 }
 
 # alice should not be able to select column1 and column3 from hr.employees
-test_alice_selects_hr_employees_column1_and_column3 if {
+test_alice_selects_hr_employees_column_a_and_column_c if {
   not allow with input as {
       "context": {
           "identity": {
@@ -326,8 +496,8 @@ test_alice_selects_hr_employees_column1_and_column3 if {
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
-                      "column1",
-                      "column3"
+                      "a",
+                      "c"
                   ]
               }
           }
@@ -352,15 +522,15 @@ test_classified_columns if {
                 "schemaName": "hr",
                 "tableName": "employees",
                 "columns": [
-                    "column1",
-                    "column2",
-                    "column3"
+                    "a",
+                    "b",
+                    "c"
                 ]
             }
         }
     }
   }
-  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": "'XXX'", "name": "column2"}}
+  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": "'XXX'", "name": "b"}}
   actual == expected
 }
 

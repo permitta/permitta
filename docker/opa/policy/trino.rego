@@ -59,6 +59,17 @@ all_object_attrs_exist_on_principal if {
   }
 }
 
+all_classified_column_attrs_exist_on_principal if {
+  # for all columns which are in both the input and data
+  every classified_column in classified_columns {
+    # for every attribute on each of the columns
+    every column_attribute in classified_column.attributes {
+      # all attrs on the column must be on the principal
+      column_attribute == principal_attributes
+    }
+  }
+}
+
 # ExecuteQuery comes with no parameters
 allow if {
   # ensure we have a valid user
@@ -84,10 +95,41 @@ allow if {
 # filter catalogs
 # user should have permissions on >0 objects in the target catalog
 allow if {
-  input.action.operation == "FilterCatalogs"
+  input.action.operation in ["FilterCatalogs", "AccessCatalog"]
   some data_object in data_objects
 	data_object.object.database == input.action.resource.catalog.name
 	all_object_attrs_exist_on_principal
+}
+
+# filter schemas
+# TODO add information schemas
+allow if {
+  input.action.operation == "FilterSchemas"
+  some data_object in data_objects
+	data_object.object.database == input.action.resource.schema.catalogName
+	data_object.object.schema == input.action.resource.schema.schemaName
+	all_object_attrs_exist_on_principal
+}
+
+# filter tables
+allow if {
+  input.action.operation == "FilterTables"
+  some data_object in data_objects
+	data_object.object.database == input.action.resource.table.catalogName
+	data_object.object.schema == input.action.resource.table.schemaName
+	data_object.object.table == input.action.resource.table.tableName
+	all_object_attrs_exist_on_principal
+}
+
+# filter columns
+allow if {
+  input.action.operation == "FilterColumns"
+  some data_object in data_objects
+	data_object.object.database == input.action.resource.table.catalogName
+	data_object.object.schema == input.action.resource.table.schemaName
+	data_object.object.table == input.action.resource.table.tableName
+	all_object_attrs_exist_on_principal
+	all_classified_column_attrs_exist_on_principal
 }
 
 # running the select
@@ -102,14 +144,8 @@ allow if {
   # ensure all attrs on object exist on principal
 	all_object_attrs_exist_on_principal
 
-  # for all columns which are in both the input and data
-  every classified_column in classified_columns {
-    # for every attribute on each of the columns
-    every column_attribute in classified_column.attributes {
-      # all attrs on the column must be on the principal
-      column_attribute == principal_attributes
-    }
-  }
+  # ensure all attrs on classified columns exist on principal
+  all_classified_column_attrs_exist_on_principal
 }
 
 # batch mode - run with both the input and output resources if they exist
