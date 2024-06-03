@@ -21,7 +21,7 @@
                       "value": "Privacy"
                     }
                   ],
-                  "mask": "'XXX'"
+                  "mask": "-1"
                 }
               }
             }
@@ -52,7 +52,7 @@
               "value": "Privacy"
             }
           ],
-          "mask": "'XXX'"
+          "mask": -1
         }
       ]
     },
@@ -79,6 +79,17 @@
         {
           "key": "Sales",
           "value": "Commercial"
+        }
+      ],
+      "columns": [
+        {
+          "name": "c",
+          "attributes": [
+            {
+              "key": "Sales",
+              "value": "Privacy"
+            }
+          ]
         }
       ]
     },

@@ -65,7 +65,7 @@ all_classified_column_attrs_exist_on_principal if {
     # for every attribute on each of the columns
     every column_attribute in classified_column.attributes {
       # all attrs on the column must be on the principal
-      column_attribute == principal_attributes
+      column_attribute == principal_attributes[_]
     }
   }
 }
@@ -145,8 +145,39 @@ allow if {
 	all_object_attrs_exist_on_principal
 
   # ensure all attrs on classified columns exist on principal
-  all_classified_column_attrs_exist_on_principal
+#  all_classified_column_attrs_exist_on_principal  # removed as we mask these columns ATM
 }
+
+# ----------------- column masking rules ---------------------
+# the mask value should be applied when a user doesnt have access to it
+# when a user doesn't have access, they will still get a true on the column
+# if that column doesnt have a defined mask
+all_attributes_on_principal(attributes) if {
+  every attribute in attributes {
+    # all attrs must be on the principal
+    attribute == principal_attributes[_]
+  }
+}
+
+columnmask := {"expression": mask} if {
+  some data_object in data_objects
+	data_object.object.database == input.action.resource.column.catalogName
+	data_object.object.schema == input.action.resource.column.schemaName
+	data_object.object.table == input.action.resource.column.tableName
+	print("data_object", data_object)
+
+	some column in data_object.columns
+	column.name == input.action.resource.column.columnName
+	print("column", column)
+
+	# true if not all attrs on the column are on the principal
+	# therefore we should not return a mask
+  not all_attributes_on_principal(column.attributes)
+
+  # either return the mask or a default which is null
+  mask := object.get(column, "mask", "NULL")
+}
+
 
 # batch mode - run with both the input and output resources if they exist
 #batch contains i if {
@@ -166,7 +197,6 @@ allow if {
 #	]
 #	some column in new_resources
 #}
-
 
 batch contains i if {
 	some i

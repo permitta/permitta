@@ -456,27 +456,27 @@ test_bob_selects_hr_employees_all_columns if {
 
 # frank should be able to select column b from hr.employees
 test_frank_selects_hr_employees_all_columns if {
-  not allow with input as {
-      "context": {
-          "identity": {
-              "user": "frank"
-          }
-      },
-      "action": {
-          "operation": "SelectFromColumns",
-          "resource": {
-              "table": {
-                  "catalogName": "iceberg",
-                  "schemaName": "hr",
-                  "tableName": "employees",
-                  "columns": [
-                      "a",
-                      "b",
-                      "c"
-                  ]
-              }
-          }
-      }
+  allow with input as {
+    "context": {
+        "identity": {
+            "user": "frank"
+        }
+    },
+    "action": {
+        "operation": "SelectFromColumns",
+        "resource": {
+            "table": {
+                "catalogName": "iceberg",
+                "schemaName": "hr",
+                "tableName": "employees",
+                "columns": [
+                    "a",
+                    "b",
+                    "c"
+                ]
+            }
+        }
+    }
   }
 }
 
@@ -530,7 +530,7 @@ test_classified_columns if {
         }
     }
   }
-  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": "'XXX'", "name": "b"}}
+  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": -1, "name": "b"}}
   actual == expected
 }
 
