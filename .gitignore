@@ -246,3 +246,6 @@ fabric.properties
 node_modules
 
 docs/~$*
+
+# minio
+.minio.sys

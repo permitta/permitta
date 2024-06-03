@@ -69,7 +69,9 @@ all_classified_column_attrs_exist_on_principal if {
     }
   }
 }
-
+allow if {
+  input_principal_name == "admin"
+}
 # ExecuteQuery comes with no parameters
 allow if {
   # ensure we have a valid user

@@ -150,6 +150,8 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
     command: server /data --console-address ":9001"
+    volumes:
+      - ./docker/s3:/data
 
   # This job will create the "datalake" bucket on Minio
   mc-job:
