@@ -123,15 +123,15 @@ allow if {
 	all_object_attrs_exist_on_principal
 }
 
-# filter columns
+# filter columns - all allowed as masking is default when inaccessible
 allow if {
   input.action.operation == "FilterColumns"
-  some data_object in data_objects
-	data_object.object.database == input.action.resource.table.catalogName
-	data_object.object.schema == input.action.resource.table.schemaName
-	data_object.object.table == input.action.resource.table.tableName
-	all_object_attrs_exist_on_principal
-	all_classified_column_attrs_exist_on_principal
+#  some data_object in data_objects
+#	data_object.object.database == input.action.resource.table.catalogName
+#	data_object.object.schema == input.action.resource.table.schemaName
+#	data_object.object.table == input.action.resource.table.tableName
+#	all_object_attrs_exist_on_principal
+#	all_classified_column_attrs_exist_on_principal
 }
 
 # running the select
@@ -166,12 +166,9 @@ columnmask := {"expression": mask} if {
 	data_object.object.database == input.action.resource.column.catalogName
 	data_object.object.schema == input.action.resource.column.schemaName
 	data_object.object.table == input.action.resource.column.tableName
-	print("data_object", data_object)
 
 	some column in data_object.columns
 	column.name == input.action.resource.column.columnName
-	print("column", column)
-
 	# true if not all attrs on the column are on the principal
 	# therefore we should not return a mask
   not all_attributes_on_principal(column.attributes)

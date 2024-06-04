@@ -2,7 +2,7 @@ import inspect
 from typing import Tuple, Type
 
 from database import BaseModel, Database
-from sqlalchemy import Row, and_
+from sqlalchemy import desc, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.inspection import inspect as sa_inspect
 from sqlalchemy.orm import ColumnProperty, Query, class_mapper
@@ -48,17 +48,25 @@ class RepositoryBase:
         model: Type[BaseModel],
         page_number: int,
         page_size: int,
+        search_column_names: list[str],
         sort_ascending: bool = True,
         sort_col_name: str | None = None,
         search_term: str = "",
-        search_column_name: str = "search_property",
     ) -> Tuple[int, list[BaseModel]]:
-        search_column: NamedColumn | ColumnProperty = RepositoryBase.get_column_by_name(
-            model=model, column_name=search_column_name
-        )
+        search_columns: list[NamedColumn] | list[ColumnProperty] = [
+            RepositoryBase.get_column_by_name(
+                model=model, column_name=search_column_name
+            )
+            for search_column_name in search_column_names
+        ]
 
         query: Query = session.query(model).filter(
-            search_column.ilike(f"%{search_term}%")
+            or_(
+                *[
+                    search_column.ilike(f"%{search_term}%")
+                    for search_column in search_columns
+                ]
+            )
         )
         count: int = query.count()
 
@@ -68,7 +76,10 @@ class RepositoryBase:
                     model=model, column_name=sort_col_name
                 )
             )
-            query = query.order_by(sort_column)
+            if sort_ascending:
+                query = query.order_by(sort_column)
+            else:
+                query = query.order_by(desc(sort_column))
 
         results: list[BaseModel] = query.slice(
             page_number * page_size, (page_number + 1) * page_size

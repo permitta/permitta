@@ -1,0 +1,52 @@
+{% for decision_log in decision_logs %}
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+    <td class="w-4 p-4">
+        <div class="flex items-center">
+            <input id="checkbox-id" aria-describedby="checkbox-1" type="checkbox"
+                class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox-id" class="sr-only">checkbox</label>
+        </div>
+    </td>
+{#    <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">#}
+{#        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ decision_log.platform.platform_display_name }}</div>#}
+{#        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ decision_log.search_value }}</div>#}
+{#    </td>#}
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {{ decision_log.timestamp.strftime('%d-%m-%Y %H:%M %z') }}
+    </td>
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {{ decision_log.username }}
+    </td>
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {{ decision_log.operation }}
+    </td>
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {{ decision_log.f_q_object_name }}
+    </td>
+{#    <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">#}
+{#        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ decision_log.database }}</div>#}
+{#        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">Trino</div>#}
+{#    </td>#}
+{#    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">#}
+{#        {{ decision_log.schema }}#}
+{#    </td>#}
+{#    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">#}
+{#        {{ decision_log.table }}#}
+{#    </td>#}
+{#    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">#}
+{#        {{ decision_log.column }}#}
+{#    </td>#}
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {% if decision_log.permitted %}
+            <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Granted</span>
+        {% elif decision_log.operation != 'GetColumnMask' %}
+            <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Denied</span>
+        {% endif %}
+    </td>
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+        {% if decision_log.expression %}
+        <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ decision_log.expression }}</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}

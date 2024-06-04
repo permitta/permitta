@@ -1,19 +1,19 @@
 [
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "hr",
     "table": "employees",
     "attributes": [
       {
         "key": "HR",
-        "value": "Privacy"
+        "value": "Commercial"
       }
     ]
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "hr",
     "table": "employee_territories",
     "attributes": [
@@ -25,47 +25,35 @@
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "logistics",
     "table": "shippers",
     "attributes": [
       {
         "key": "Sales",
         "value": "Commercial"
-      },
-      {
-        "key": "Marketing",
-        "value": "Commercial"
       }
     ]
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "logistics",
     "table": "territories",
     "attributes": [
       {
         "key": "Sales",
         "value": "Commercial"
-      },
-      {
-        "key": "Marketing",
-        "value": "Commercial"
       }
     ]
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "logistics",
     "table": "regions",
     "attributes": [
       {
-        "key": "Sales",
-        "value": "Commercial"
-      },
-      {
         "key": "Marketing",
         "value": "Commercial"
       }
@@ -73,15 +61,11 @@
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "logistics",
     "table": "suppliers",
     "attributes": [
       {
-        "key": "Sales",
-        "value": "Restricted"
-      },
-      {
         "key": "Marketing",
         "value": "Restricted"
       }
@@ -89,15 +73,11 @@
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "sales",
     "table": "orders",
     "attributes": [
       {
-        "key": "Sales",
-        "value": "Privacy"
-      },
-      {
         "key": "Marketing",
         "value": "Privacy"
       }
@@ -105,41 +85,37 @@
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "sales",
     "table": "products",
     "attributes": [
       {
         "key": "Sales",
         "value": "Commercial"
-      },
-      {
-        "key": "Marketing",
-        "value": "Commercial"
       }
     ]
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "sales",
     "table": "customers",
     "attributes": [
       {
         "key": "Sales",
-        "value": "Privacy"
+        "value": "Restricted"
       }
     ]
   },
   {
     "platform_id": 1,
-    "database": "iceberg",
+    "database": "datalake",
     "schema": "sales",
     "table": "customer_demographics",
     "attributes": [
       {
         "key": "Sales",
-        "value": "Commercial"
+        "value": "Privacy"
       }
     ]
   }

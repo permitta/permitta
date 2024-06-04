@@ -127,7 +127,7 @@ test_input_select_logistics_territories if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "logistics",
                   "tableName": "territories",
                   "columns": [
@@ -143,7 +143,7 @@ test_input_select_logistics_territories if {
 
 # bob
 # filter catalogs should fail for "memory"
-test_bob_allow_catalogs if {
+test_bob_allow_catalogs_memory if {
   not allow with input as {
     "action": {
       "operation": "FilterCatalogs",
@@ -161,14 +161,14 @@ test_bob_allow_catalogs if {
   }
 }
 
-# filter catalogs should pass for "iceberg"
-test_bob_allow_catalogs if {
+# filter catalogs should pass for "datalake"
+test_bob_allow_catalogs_datalake if {
   allow with input as {
     "action": {
       "operation": "FilterCatalogs",
       "resource": {
         "catalog": {
-          "name": "iceberg"
+          "name": "datalake"
         }
       }
     },
@@ -199,14 +199,14 @@ test_bob_allow_catalogs if {
   }
 }
 
-# filter catalogs should pass for "iceberg"
+# filter catalogs should pass for "datalake"
 test_bob_allow_catalogs if {
   allow with input as {
     "action": {
       "operation": "AccessCatalog",
       "resource": {
         "catalog": {
-          "name": "iceberg"
+          "name": "datalake"
         }
       }
     },
@@ -228,7 +228,7 @@ test_filter_tables_alice_hr_employees if {
       "operation": "FilterTables",
       "resource": {
         "table": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "hr",
           "tableName": "employees"
         }
@@ -248,7 +248,7 @@ test_filter_tables_alice_logistics_shippers if {
       "operation": "FilterTables",
       "resource": {
         "table": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "logistics",
           "tableName": "shippers"
         }
@@ -268,7 +268,7 @@ test_filter_tables_alice_logistics_suppliers if {
       "operation": "FilterTables",
       "resource": {
         "table": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "logistics",
           "tableName": "suppliers"
         }
@@ -289,7 +289,7 @@ test_filter_columns_alice_logistics_regions if {
         "operation": "FilterColumns",
         "resource": {
           "table": {
-            "catalogName": "iceberg",
+            "catalogName": "datalake",
             "columns": [
               "column1"
             ],
@@ -312,7 +312,7 @@ test_filter_columns_bob_hr_employees_column_a if {
         "operation": "FilterColumns",
         "resource": {
           "table": {
-            "catalogName": "iceberg",
+            "catalogName": "datalake",
             "columns": [
               "a"
             ],
@@ -329,15 +329,16 @@ test_filter_columns_bob_hr_employees_column_a if {
     }
 }
 
-test_filter_columns_bob_hr_employees_column_b if {
-  not allow with input as {
+# flip this to a not if we bring back column filtering
+test_filter_columns_bob_hr_employees_column_phonenumber if {
+  allow with input as {
       "action": {
         "operation": "FilterColumns",
         "resource": {
           "table": {
-            "catalogName": "iceberg",
+            "catalogName": "datalake",
             "columns": [
-              "b"
+              "phonenumber"
             ],
             "schemaName": "hr",
             "tableName": "employees"
@@ -364,7 +365,7 @@ test_bob_selects_logistics_shippers if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "logistics",
                   "tableName": "shippers",
                   "columns": [
@@ -389,7 +390,7 @@ test_bob_selects_logistics_regions if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "logistics",
                   "tableName": "regions",
                   "columns": [
@@ -415,7 +416,7 @@ test_bob_selects_hr_employees_column_a_and_column_c if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
@@ -428,9 +429,9 @@ test_bob_selects_hr_employees_column_a_and_column_c if {
   }
 }
 
-# bob should not be able to select column b from hr.employees
+# bob should be able to select column phonenumber from hr.employees even though it is masked
 test_bob_selects_hr_employees_all_columns if {
-  not allow with input as {
+  allow with input as {
       "context": {
           "identity": {
               "user": "bob"
@@ -440,12 +441,12 @@ test_bob_selects_hr_employees_all_columns if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
                       "a",
-                      "b",
+                      "phonenumber",
                       "c"
                   ]
               }
@@ -466,7 +467,7 @@ test_frank_selects_hr_employees_all_columns if {
         "operation": "SelectFromColumns",
         "resource": {
             "table": {
-                "catalogName": "iceberg",
+                "catalogName": "datalake",
                 "schemaName": "hr",
                 "tableName": "employees",
                 "columns": [
@@ -492,7 +493,7 @@ test_alice_selects_hr_employees_column_a_and_column_c if {
           "operation": "SelectFromColumns",
           "resource": {
               "table": {
-                  "catalogName": "iceberg",
+                  "catalogName": "datalake",
                   "schemaName": "hr",
                   "tableName": "employees",
                   "columns": [
@@ -518,19 +519,19 @@ test_classified_columns if {
         "operation": "SelectFromColumns",
         "resource": {
             "table": {
-                "catalogName": "iceberg",
+                "catalogName": "datalake",
                 "schemaName": "hr",
                 "tableName": "employees",
                 "columns": [
                     "a",
-                    "b",
+                    "phonenumber",
                     "c"
                 ]
             }
         }
     }
   }
-  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": -1, "name": "b"}}
+  expected := {{"attributes": [{"key": "HR", "value": "Privacy"}], "mask": "'XXXX'", "name": "phonenumber"}}
   actual == expected
 }
 

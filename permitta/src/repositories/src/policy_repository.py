@@ -76,7 +76,7 @@ class PolicyRepository(RepositoryBase):
             page_size=page_size,
             sort_ascending=sort_ascending,
             search_term=search_term,
-            search_column_name="name",
+            search_column_names=["name"],
         )
 
     @staticmethod

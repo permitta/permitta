@@ -3,3 +3,4 @@ from .src.ingestion_process_repository import IngestionProcessRepository
 from .src.policy_repository import PolicyRepository
 from .src.principal_group_repository import PrincipalGroupRepository
 from .src.principal_repository import PrincipalRepository
+from .src.decision_log_repository import DecisionLogRepository

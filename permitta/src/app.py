@@ -3,6 +3,18 @@ from database import Database
 from extensions import oidc, oidc_auth_provider
 from flask import Blueprint, Flask, g, redirect, render_template
 
+# blueprints
+from views import (
+    data_objects_bp,
+    groups_bp,
+    healthz_bp,
+    policies_bp,
+    principals_bp,
+    root_bp,
+    decision_logs_bp,
+)
+from apis import decision_logs_api_bp, bundle_api_bp
+
 
 class FlaskConfig(AppConfigModelBase):
     CONFIG_PREFIX: str = "flask"
@@ -30,26 +42,16 @@ def create_app() -> Flask:
     )
     oidc.init_app(flask_app)
 
-    # blueprints
-    from views import (
-        data_objects_bp,
-        groups_bp,
-        healthz_bp,
-        policies_bp,
-        principals_bp,
-        root_bp,
-    )
-
     flask_app.register_blueprint(root_bp)
     flask_app.register_blueprint(principals_bp)
     flask_app.register_blueprint(healthz_bp)
     flask_app.register_blueprint(data_objects_bp)
     flask_app.register_blueprint(policies_bp)
     flask_app.register_blueprint(groups_bp)
+    flask_app.register_blueprint(decision_logs_bp)
 
-    from apis import decision_log_bp, bundle_bp
-    flask_app.register_blueprint(decision_log_bp)
-    flask_app.register_blueprint(bundle_bp)
+    flask_app.register_blueprint(decision_logs_api_bp)
+    flask_app.register_blueprint(bundle_api_bp)
 
     # Database
     database: Database = Database()

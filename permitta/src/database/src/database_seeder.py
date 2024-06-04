@@ -45,9 +45,7 @@ class DatabaseSeeder:
                 principal_dbo.deactivated_at = None
                 principal_dbo.first_name = mock_user.get("first_name")
                 principal_dbo.last_name = mock_user.get("last_name")
-                principal_dbo.user_name = (
-                    mock_user.get("first_name") + mock_user.get("last_name")
-                ).lower()
+                principal_dbo.user_name = mock_user.get("username")
                 principal_dbo.job_title = random.choice([""])
 
                 # apply groups
@@ -150,6 +148,7 @@ class DatabaseSeeder:
         policy.description = (
             "All sales people have access to all sales and marketing data"
         )
+        policy.record_updated_by = "jamesbrown"
 
         attr1 = PolicyAttributeDbo()
         attr1.attribute_key = "Sales"
@@ -179,6 +178,7 @@ class DatabaseSeeder:
         policy_dsl.name = "Global"
         policy_dsl.author = "ritchievalens"
         policy_dsl.description = "Global policy to allow access to objects which match the attributes or principals"
+        policy_dsl.record_updated_by = "ritchievalens"
         policy_dsl.policy_dsl = dedent(
             """
         permit if {

@@ -10,10 +10,10 @@ test_column_mask_frank_select_hr_employees if {
       "operation": "GetColumnMask",
       "resource": {
         "column": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "hr",
           "tableName": "employees",
-          "columnName": "b",
+          "columnName": "phonenumber",
           "columnType": "integer"
         }
       }
@@ -33,8 +33,8 @@ test_column_mask_bob_select_hr_employees if {
         "operation": "GetColumnMask",
         "resource": {
           "column": {
-            "catalogName": "iceberg",
-            "columnName": "b",
+            "catalogName": "datalake",
+            "columnName": "phonenumber",
             "columnType": "integer",
             "schemaName": "hr",
             "tableName": "employees"
@@ -47,8 +47,8 @@ test_column_mask_bob_select_hr_employees if {
         }
       }
     }
-  expected := {"expression": -1}
-#  expected == actual
+  expected := {"expression":"'XXXX'"}
+  expected == actual
 }
 
 # ------------------ unmasked column -----------------------
@@ -59,10 +59,10 @@ test_column_mask_bob_select_logistics_shippers if {
       "operation": "GetColumnMask",
       "resource": {
         "column": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "logistics",
           "tableName": "shippers",
-          "columnName": "c",
+          "columnName": "phone",
           "columnType": "integer"
         }
       }
@@ -82,10 +82,10 @@ test_column_mask_alice_select_logistics_shippers if {
       "operation": "GetColumnMask",
       "resource": {
         "column": {
-          "catalogName": "iceberg",
+          "catalogName": "datalake",
           "schemaName": "logistics",
           "tableName": "shippers",
-          "columnName": "c",
+          "columnName": "phone",
           "columnType": "integer"
         }
       }
@@ -97,6 +97,5 @@ test_column_mask_alice_select_logistics_shippers if {
     }
   }
   expected := {"expression": "NULL"}
-  print(actual)
   expected == actual
 }

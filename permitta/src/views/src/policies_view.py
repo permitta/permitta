@@ -327,6 +327,7 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL,
             merge_attributes=body.attributes,
         )
+        policy_type: str = policy.policy_type
         session.commit()
 
         response: Response = make_response(
@@ -334,6 +335,7 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
                 template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
                 active_tab="principals",
                 policy_id=policy_id,
+                policy_type=policy_type,
             )
         )
 
@@ -402,6 +404,7 @@ def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT,
             merge_attributes=body.attributes,
         )
+        policy_type: str = policy.policy_type
         session.commit()
 
     response: Response = make_response(
@@ -409,6 +412,7 @@ def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
             template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
             active_tab="objects",
             policy_id=policy_id,
+            policy_type=policy_type,
         )
     )
 

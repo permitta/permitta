@@ -48,7 +48,7 @@ class PrincipalRepository(RepositoryBase):
             page_size=page_size,
             sort_ascending=sort_ascending,
             search_term=search_term,
-            search_column_name="user_name",
+            search_column_names=["user_name"],
         )
 
     @staticmethod
