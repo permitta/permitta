@@ -15,7 +15,7 @@ services:
       - "--watch"
       - "--log-level=debug"
       - "--log-format=json-pretty"
-#      - "--set=decision_logs.console=true"
+      #      - "--set=decision_logs.console=true"
       - "-c"
       - "/policy/config.yaml"
       - "/policy/"
@@ -33,8 +33,8 @@ services:
       - "17170:17170"
     volumes:
       # Alternatively, you can mount a local folder
-     - ./instance/lldap:/data
-     - ./lldap/bootstrap:/bootstrap
+      - ./instance/lldap:/data
+      - ./lldap/bootstrap:/bootstrap
     environment:
       - UID=1000
       - GID=1000
@@ -67,7 +67,7 @@ services:
     volumes:
       - ./docker/postgres/postgres_init_script.sh:/docker-entrypoint-initdb.d/postgres_init_script.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test_user -d permitta"]
+      test: [ "CMD-SHELL", "pg_isready -U test_user -d permitta" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -102,6 +102,22 @@ services:
     volumes:
       - ./docker/trino/etc:/etc/trino
       - ./docker/trino/catalog:/etc/trino/catalog
+
+  trino-setup:
+    image: "trinodb/trino:448"
+    restart: "no"
+    volumes:
+      - ./docker/trino-setup/create_schemas_and_tables.sql:/create_schemas_and_tables.sql
+    entrypoint: [ "bash", "-c", "sleep 10 && trino --user=admin  --file='/create_schemas_and_tables.sql' --server trino:8080" ]
+    depends_on:
+      trino:
+        condition: service_healthy
+      hive-metastore:
+        condition: service_started
+      minio:
+        condition: service_started
+      mc-job:
+        condition: service_started
 
   hive-metastore:
     hostname: hive-metastore
