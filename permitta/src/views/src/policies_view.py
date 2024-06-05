@@ -229,6 +229,7 @@ def get_policy_metadata(policy_id: int):
                 active_tab="metadata",
                 policy=policy,
                 policy_id=policy_id,
+                policy_type=policy.policy_type,
             )
         )
     return response
@@ -259,6 +260,7 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
                 active_tab="metadata",
                 policy=policy,
                 policy_id=policy_id,
+                policy_type=policy.policy_type,
             )
         )
         session.commit()
