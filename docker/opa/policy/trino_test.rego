@@ -47,6 +47,30 @@ test_access_system_catalog_for_all_users if {
   }
 }
 
+# all valid users should habe information_schema on all catalog
+test_select_from_information_schema_for_all_users if {
+  allow with input as {
+    "action": {
+      "operation": "FilterSchemas",
+      "resource": {
+        "schema": {
+          "catalogName": "datalake",
+          "schemaName": "information_schema"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "groups": [],
+        "user": "bob"
+      },
+      "softwareStack": {
+        "trinoVersion": "448"
+      }
+    }
+  }
+}
+
 # All valid users should have SelectFromColumns on system
 test_select_from_system_catalog_for_all_users if {
   allow with input as {

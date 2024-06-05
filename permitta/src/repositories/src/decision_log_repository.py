@@ -64,12 +64,17 @@ class DecisionLogRepository(RepositoryBase):
             "SelectFromColumns",
             "FilterTables",
             "FilterColumns",
+            "FilterSchemas",
         ]:
-            data_object: dict = resource.get("column", {}) | resource.get("table", {})
+            data_object: dict = (
+                resource.get("column", {})
+                | resource.get("table", {})
+                | resource.get("schema", {})
+            )
             decision_log_dbo.database = data_object.get("catalogName", "")
             decision_log_dbo.schema = data_object.get("schemaName", "")
             decision_log_dbo.table = data_object.get("tableName", "")
-            decision_log_dbo.column = data_object.get("columnName", None) or ",".join(
+            decision_log_dbo.column = data_object.get("columnName", None) or ", ".join(
                 data_object.get("columns", [])
             )
         elif decision_log_dbo.operation in ["AccessCatalog", "FilterCatalogs"]:
@@ -79,7 +84,6 @@ class DecisionLogRepository(RepositoryBase):
         if isinstance(decision_log.get("result", False), bool):
             decision_log_dbo.permitted = decision_log.get("result", None)
         else:
-            decision_log_dbo.permitted = True
             decision_log_dbo.expression = decision_log.get("result", {}).get(
                 "expression", ""
             )

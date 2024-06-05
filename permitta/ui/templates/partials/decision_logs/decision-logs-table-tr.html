@@ -20,8 +20,17 @@
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
         {{ decision_log.operation }}
     </td>
-    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {{ decision_log.f_q_object_name }}
+    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate text-ellipsis text-nowrap xl:max-w-xs dark:text-gray-400">
+        <div data-popover-target="popover-f-q-object-name-{{ loop.index }}">{{ decision_log.f_q_object_name }}</div>
+        <div data-popover id="popover-f-q-object-name-{{ loop.index }}" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Object Name</h3>
+            </div>
+            <div class="px-3 py-2 text-wrap">
+                <p>{{ decision_log.f_q_object_name }}</p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
     </td>
 {#    <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">#}
 {#        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ decision_log.database }}</div>#}
@@ -41,12 +50,14 @@
             <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Granted</span>
         {% elif decision_log.operation != 'GetColumnMask' %}
             <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Denied</span>
+        {% elif decision_log.expression %}
+            <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ decision_log.expression }}</span>
         {% endif %}
     </td>
-    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {% if decision_log.expression %}
-        <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ decision_log.expression }}</span>
-        {% endif %}
-    </td>
+{#    <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">#}
+{#        {% if decision_log.expression %}#}
+{#        <span class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">{{ decision_log.expression }}</span>#}
+{#        {% endif %}#}
+{#    </td>#}
 </tr>
 {% endfor %}

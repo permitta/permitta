@@ -103,8 +103,12 @@ allow if {
 	all_object_attrs_exist_on_principal
 }
 
-# filter schemas
-# TODO add information schemas
+# filter schemas - all users see information_schema
+allow if {
+  input.action.operation == "FilterSchemas"
+  input.action.resource.schema.schemaName == "information_schema"
+}
+
 allow if {
   input.action.operation == "FilterSchemas"
   some data_object in data_objects

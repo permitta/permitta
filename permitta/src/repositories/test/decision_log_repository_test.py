@@ -138,7 +138,7 @@ def test_create_get_column_masks_not_null() -> None:
 
     assert decision_log_dbo.operation == "GetColumnMask"
     assert decision_log_dbo.username == "alice"
-    assert decision_log_dbo.permitted is True
+    assert decision_log_dbo.permitted is None
     assert decision_log_dbo.expression == "NULL"
 
     assert decision_log_dbo.database == "iceberg"
@@ -281,6 +281,54 @@ def test_create_filter_catalog() -> None:
     assert decision_log_dbo.schema is None
     assert decision_log_dbo.table is None
     assert decision_log_dbo.column is None
+
+
+def test_create_filter_schemas() -> None:
+    decision_log_dbo: DecisionLogDbo = DecisionLogRepository.create(
+        {
+            "labels": {
+                "id": "74621fc4-25bc-4e37-98e2-932970903827",
+                "version": "0.64.1",
+            },
+            "decision_id": "21a68402-f97a-43d3-b765-cd91f5688c63",
+            "path": "permitta/trino/allow",
+            "input": {
+                "action": {
+                    "operation": "FilterSchemas",
+                    "resource": {
+                        "schema": {
+                            "catalogName": "datalake",
+                            "schemaName": "information_schema",
+                        }
+                    },
+                },
+                "context": {
+                    "identity": {"groups": [], "user": "bob"},
+                    "softwareStack": {"trinoVersion": "448"},
+                },
+            },
+            "requested_by": "172.18.0.6:35102",
+            "timestamp": "2024-06-04T20:54:19.314772051Z",
+            "metrics": {
+                "counter_server_query_cache_hit": 1,
+                "timer_rego_external_resolve_ns": 208,
+                "timer_rego_input_parse_ns": 34958,
+                "timer_rego_query_eval_ns": 93708,
+                "timer_server_handler_ns": 145125,
+            },
+            "req_id": 812,
+        }
+    )
+
+    assert decision_log_dbo.operation == "FilterSchemas"
+    assert decision_log_dbo.username == "bob"
+    assert decision_log_dbo.permitted is None
+    assert decision_log_dbo.expression is None
+
+    assert decision_log_dbo.database == "datalake"
+    assert decision_log_dbo.schema == "information_schema"
+    assert decision_log_dbo.table == ""
+    assert decision_log_dbo.column == ""
 
 
 def test_create_filter_tables() -> None:
