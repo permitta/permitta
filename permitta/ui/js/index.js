@@ -4,6 +4,7 @@ import './dark-mode.js';
 import './flowbite.js'
 import './toast.js'
 import './editor.js'
+import 'htmx.org';
 import moment from "moment";
 import {onPillDrop, onPillDragStart} from './policyBuilder.js'
 

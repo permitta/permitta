@@ -33,8 +33,10 @@ logger: Logger = get_logger("views.policy")
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
+    query_state: TableQueryDto = TableQueryDto(sort_key="name")
+
     response: Response = make_response(
-        render_template("partials/policies/policies-search.html")
+        render_template("partials/policies/policies-search.html", query_state=query_state)
     )
     return response
 
@@ -52,11 +54,13 @@ def policies_table(query: TableQueryDto):
             search_term=query.search_term,
         )
 
+        query.record_count = policy_count
         response: Response = make_response(
             render_template(
                 template_name_or_list="partials/policies/policies-table.html",
                 policies=policies,
                 policy_count=policy_count,
+                query_state=query,
             )
         )
     response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
