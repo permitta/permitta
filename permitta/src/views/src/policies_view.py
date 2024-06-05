@@ -122,6 +122,7 @@ def get_policy(policy_id: int):
                 policy_type=policy.policy_type,
             )
         )
+    response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
     return response
 
 

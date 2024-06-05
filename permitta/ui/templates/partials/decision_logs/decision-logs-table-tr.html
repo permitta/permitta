@@ -12,7 +12,8 @@
 {#        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ decision_log.search_value }}</div>#}
 {#    </td>#}
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {{ decision_log.timestamp.strftime('%d-%m-%Y %H:%M %z') }}
+        <div class="text-base font-semibold text-gray-900 dark:text-white render-moment" data-render-moment="time">{{ decision_log.timestamp.isoformat() }}</div>
+        <div class="text-sm font-normal text-gray-500 dark:text-gray-400 render-moment" data-render-moment="date">{{ decision_log.timestamp.isoformat() }}</div>
     </td>
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
         {{ decision_log.username }}

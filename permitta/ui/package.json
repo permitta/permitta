@@ -58,6 +58,7 @@
     "apexcharts": "^3.29.0",
     "codemirror": "^6.0.1",
     "flowbite": "^2.1.1",
-    "htmx": "^0.0.2"
+    "htmx": "^0.0.2",
+    "moment": "^2.30.1"
   }
 }
