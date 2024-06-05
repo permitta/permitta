@@ -19,6 +19,7 @@ from views.models import (
     PolicyAttributeDto,
     PolicyDslDto,
     PolicyMetadataDto,
+    PolicyCreateDto,
     TableQueryDto,
 )
 
@@ -65,13 +66,14 @@ def policies_table(query: TableQueryDto):
 @bp.route("/create", methods=["POST"])
 @oidc.oidc_auth("default")
 @validate()
-def create_policy():
+def create_policy(body: PolicyCreateDto):
     web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.create(
             session=session, logged_in_user=web_session.username
         )
         policy.status = PolicyDbo.STATUS_DRAFT
+        policy.policy_type = body.policy_type.value
         session.add(policy)
         session.flush()
         policy_id = policy.policy_id

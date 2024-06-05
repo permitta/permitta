@@ -31,7 +31,7 @@ function moment_render_all() {
             formatString = 'DD/MM/YYYY'
         }
         else if (formatName === "time") {
-            formatString = 'HH : mm : ss.SS Z'
+            formatString = 'HH:mm:ss.SS Z'
         }
         else if (formatName === "datetime") {
             formatString = 'DD/MM/YYYY HH:mm:ss.SS Z'

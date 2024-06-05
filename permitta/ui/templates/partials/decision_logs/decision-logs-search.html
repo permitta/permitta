@@ -38,7 +38,7 @@
                                id="decision-logs-search"
                                onkeydown="return event.key != 'Enter';"
                                hx-get="/decision-logs/table"
-                               hx-trigger="load, keyup changed delay:0.2s"
+                               hx-trigger="load, keyup changed delay:0.2s, every 3s"
                                hx-target="#decision-logs-table"
                                hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size, #app-state-page-number"
                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"

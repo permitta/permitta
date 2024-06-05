@@ -7,6 +7,7 @@ data_objects := data.trino.data_objects
 principals := data.trino.principals
 
 input_principal_name := input.context.identity.user
+action := input.action.operation
 
 input_table := {
 	"database": input.action.resource.table.catalogName,
