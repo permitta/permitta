@@ -5,6 +5,8 @@ import './flowbite.js'
 import './toast.js'
 import './editor.js'
 import 'htmx.org';
+import './htmxImport.js'
+import 'htmx-ext-json-enc'
 import moment from "moment";
 import {onPillDrop, onPillDragStart} from './policyBuilder.js'
 

@@ -1,21 +1,26 @@
 import json
 import random
 import uuid
+import yaml
 from datetime import datetime
 from textwrap import dedent
 
 from database import Database
 from models import (
-    DataObjectTableAttributeDbo,
-    DataObjectTableDbo,
-    IngestionProcessDbo,
+    ObjectAttributeDbo,
     PlatformDbo,
+    DatabaseDbo,
+    SchemaDbo,
+    TableDbo,
+    ColumnDbo,
+    IngestionProcessDbo,
     PolicyAttributeDbo,
     PolicyDbo,
     PrincipalAttributeDbo,
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
+    PolicyActionDbo,
 )
 
 
@@ -111,87 +116,97 @@ class DatabaseSeeder:
             ]
         return platforms
 
+    @staticmethod
+    def _get_attributes(raw_attrs: list[dict]) -> list[ObjectAttributeDbo]:
+        attributes: list[ObjectAttributeDbo] = []
+        for raw_attr in raw_attrs:
+            attribute = ObjectAttributeDbo()
+            attribute.attribute_key = raw_attr["key"]
+            attribute.attribute_value = raw_attr["value"]
+            attributes.append(attribute)
+        return attributes
+
     # data objects
     @staticmethod
     def _get_data_objects():
-        with open("permitta/mock_data/data_objects.json") as data_objects_file:
-            data_object_table_dbos: list[DataObjectTableDbo] = []
-            for table in json.load(data_objects_file):
-                # add source tag
-                data_object_table_dbo: DataObjectTableDbo = DataObjectTableDbo()
-                data_object_table_dbo.activated_at = datetime.utcnow()
-                data_object_table_dbo.platform_id = table["platform_id"]
-                data_object_table_dbo.database_name = table.get("database")
-                data_object_table_dbo.schema_name = table.get("schema")
-                data_object_table_dbo.object_name = table.get("table")
-                data_object_table_dbo.search_value = f"{table.get('database')}.{table.get('schema')}.{table.get('table')}"
+        with open("permitta/mock_data/data_objects_hier.json") as data_objects_file:
+            database_dbos: list[DatabaseDbo] = []
+            for raw_database in json.load(data_objects_file).get("databases"):
+                database_dbo: DatabaseDbo = DatabaseDbo()
+                database_dbo.database_name = raw_database.get("name")
+                database_dbo.attributes = DatabaseSeeder._get_attributes(
+                    raw_database.get("attributes")
+                )
+                database_dbo.platform_id = 1
+                database_dbos.append(database_dbo)
 
-                # apply tags
-                for attribute in table.get("attributes"):
-                    data_object_table_attribute_dbo = DataObjectTableAttributeDbo()
-                    data_object_table_attribute_dbo.attribute_key = attribute["key"]
-                    data_object_table_attribute_dbo.attribute_value = attribute["value"]
-                    data_object_table_attribute_dbo.activated_at = datetime.utcnow()
-                    data_object_table_dbo.data_object_table_attributes.append(
-                        data_object_table_attribute_dbo
+                for raw_schema in raw_database.get("schemas"):
+                    schema_dbo: SchemaDbo = SchemaDbo()
+                    schema_dbo.schema_name = raw_schema.get("name")
+                    schema_dbo.attributes = DatabaseSeeder._get_attributes(
+                        raw_schema.get("attributes")
                     )
+                    database_dbo.schemas.append(schema_dbo)
 
-                data_object_table_dbos.append(data_object_table_dbo)
-        return data_object_table_dbos
+                    for raw_table in raw_schema.get("tables"):
+                        table_dbo: TableDbo = TableDbo()
+                        table_dbo.table_name = raw_table.get("name")
+                        table_dbo.attributes = DatabaseSeeder._get_attributes(
+                            raw_table.get("attributes")
+                        )
+                        schema_dbo.tables.append(table_dbo)
+
+                        for raw_column in raw_table.get("columns", []):
+                            column: ColumnDbo = ColumnDbo()
+                            column.column_name = raw_column.get("name")
+                            column.attributes = DatabaseSeeder._get_attributes(
+                                raw_column.get("attributes")
+                            )
+                            table_dbo.columns.append(column)
+
+        return database_dbos
 
     @staticmethod
     def _get_policies():
-        policy: PolicyDbo = PolicyDbo()
-        policy.policy_type = PolicyDbo.POLICY_TYPE_BUILDER
-        policy.name = "Sales"
-        policy.author = "jamesbrown"
-        policy.description = (
-            "All sales people have access to all sales and marketing data"
-        )
-        policy.record_updated_by = "jamesbrown"
+        with open("permitta/mock_data/policies.yaml") as policies_file:
+            policies_data = yaml.safe_load(policies_file)
 
-        attr1 = PolicyAttributeDbo()
-        attr1.attribute_key = "Sales"
-        attr1.attribute_value = "Commercial"
-        attr1.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL
+        policies: list[PolicyDbo] = []
+        for policy_data in policies_data:
+            policy: PolicyDbo = PolicyDbo()
+            policy.policy_type = policy_data.get("policy_type")
+            policy.name = policy_data.get("name")
+            policy.author = policy_data.get("author")
+            policy.description = policy_data.get("description")
+            policy.record_updated_by = policy.author
 
-        attr2 = PolicyAttributeDbo()
-        attr2.attribute_key = "Marketing"
-        attr2.attribute_value = "Commercial"
-        attr2.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL
+            if policy.policy_type == PolicyDbo.POLICY_TYPE_DSL:
+                policy.policy_dsl = policy_data.get("policy_dsl")
 
-        attr3 = PolicyAttributeDbo()
-        attr3.attribute_key = "Sales"
-        attr3.attribute_value = "Commercial"
-        attr3.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
+            if policy.policy_type == PolicyDbo.POLICY_TYPE_BUILDER:
+                if policy_data.get("action_group", "") == "read":
+                    for policy_action_name in PolicyActionDbo.ACTIONS_READ:
+                        policy_action: PolicyActionDbo = PolicyActionDbo()
+                        policy_action.action_name = policy_action_name
+                        policy_action.record_updated_by = policy.author
+                        policy.policy_actions.append(policy_action)
 
-        attr4 = PolicyAttributeDbo()
-        attr4.attribute_key = "Marketing"
-        attr4.attribute_value = "Commercial"
-        attr4.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
+            for p_attr in policy_data.get("principal_attributes", []):
+                attr = PolicyAttributeDbo()
+                attr.attribute_key = p_attr.get("key")
+                attr.attribute_value = p_attr.get("value")
+                attr.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL
+                policy.policy_attributes.append(attr)
 
-        policy.policy_attributes = [attr1, attr2, attr3, attr4]
+            for o_attr in policy_data.get("object_attributes", []):
+                attr = PolicyAttributeDbo()
+                attr.attribute_key = o_attr.get("key")
+                attr.attribute_value = o_attr.get("value")
+                attr.type = PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT
+                policy.policy_attributes.append(attr)
+            policies.append(policy)
 
-        # DSL type policy
-        policy_dsl: PolicyDbo = PolicyDbo()
-        policy_dsl.policy_type = PolicyDbo.POLICY_TYPE_DSL
-        policy_dsl.name = "Global"
-        policy_dsl.author = "ritchievalens"
-        policy_dsl.description = "Global policy to allow access to objects which match the attributes or principals"
-        policy_dsl.record_updated_by = "ritchievalens"
-        policy_dsl.policy_dsl = dedent(
-            """
-        permit if {
-            # Global Policy
-            # All attributes on the object must exist on the principal
-            every k, v in data.data_objects[input.data_object] {
-                k, v in data.principals[input.principal]
-            }
-        }
-        """
-        )
-
-        return [policy, policy_dsl]
+        return policies
 
     # platforms are not normally ingested so no proc id
     def _ingest_platforms(self):

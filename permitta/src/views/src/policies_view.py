@@ -36,7 +36,9 @@ def index():
     query_state: TableQueryDto = TableQueryDto(sort_key="name")
 
     response: Response = make_response(
-        render_template("partials/policies/policies-search.html", query_state=query_state)
+        render_template(
+            "partials/policies/policies-search.html", query_state=query_state
+        )
     )
     return response
 
@@ -238,6 +240,7 @@ def get_policy_metadata(policy_id: int):
                 policy_type=policy.policy_type,
             )
         )
+    response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
     return response
 
 
@@ -272,7 +275,8 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
         session.commit()
 
     response.headers.set(
-        "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
+        "HX-Trigger-After-Swap",
+        '{"toast_success": {"message": "Saved Successfully"}, "initialiseFlowbite":{}}',
     )
     return response
 

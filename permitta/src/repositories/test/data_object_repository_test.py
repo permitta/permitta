@@ -8,7 +8,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
     with database.Session.begin() as session:
         attributes = repo.get_all_unique_attributes(session=session)
-        assert len(attributes) == 12
+        assert len(attributes) == 9
 
         # check they are all unique
         unique_key_values: list[str] = []
@@ -26,4 +26,4 @@ def test_get_all_unique_attributes(database: Database) -> None:
         attributes = repo.get_all_unique_attributes(
             session=session, search_term="Restricted"
         )
-        assert len(attributes) == 4
+        assert len(attributes) == 2

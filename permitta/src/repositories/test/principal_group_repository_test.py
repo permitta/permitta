@@ -27,8 +27,8 @@ def test_get_principal_group_members(database: Database) -> None:
         count, principal_group_members_batch1 = repo.get_principal_group_members(
             session=session, principal_group_id=1
         )
-        assert len(principal_group_members_batch1) == 29
-        assert count == 29
+        assert len(principal_group_members_batch1) == 1
+        assert count == 1
 
         count, principal_group_members_batch2 = repo.get_principal_group_members(
             session=session, principal_group_id=2

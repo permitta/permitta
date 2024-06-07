@@ -44,9 +44,9 @@ def test_get_all(database: Database) -> None:
             page_size=1000000,
         )
 
-        assert principal_count == 198
+        assert principal_count == 4
         assert all([isinstance(p, PrincipalDbo) for p in principals])
-        assert len(principals) == 198
+        assert len(principals) == 4
 
         # check sorting
         first_names: list[str] = [p.first_name for p in principals][:20]
@@ -61,16 +61,16 @@ def test_get_all_paginated(database: Database) -> None:
 
     with database.Session.begin() as session:
         principal_count, principals_b1 = repo.get_all_with_search_and_pagination(
-            session=session, sort_col_name="first_name", page_number=0, page_size=40
+            session=session, sort_col_name="first_name", page_number=0, page_size=2
         )
-        assert principal_count == 198
-        assert len(principals_b1) == 40
+        assert principal_count == 4
+        assert len(principals_b1) == 2
 
         principal_count, principals_b2 = repo.get_all_with_search_and_pagination(
-            session=session, sort_col_name="first_name", page_number=1, page_size=40
+            session=session, sort_col_name="first_name", page_number=1, page_size=2
         )
-        assert principal_count == 198
-        assert len(principals_b2) == 40
+        assert principal_count == 4
+        assert len(principals_b2) == 2
 
         principals_b1_ids: list[int] = [p.principal_id for p in principals_b1]
         principals_b2_ids: list[int] = [p.principal_id for p in principals_b2]
@@ -115,8 +115,8 @@ def test_get_principal_with_attributes(database: Database) -> None:
             session=session, principal_id=3
         )
         assert principal.principal_id == 3
-        assert principal.first_name == "valtteri"
-        assert principal.last_name == "pulkkinen"
+        assert principal.first_name == "Frank"
+        assert principal.last_name == "Zappa"
 
         principal_attributes: list = [
             (attr.attribute_key, attr.attribute_value)
@@ -140,7 +140,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
     with database.Session.begin() as session:
         attributes = repo.get_all_unique_attributes(session=session)
-        assert len(attributes) == 19
+        assert len(attributes) == 16  # 4 AD groups plus 12 tags
 
         # check they are all unique
         unique_key_values: list[str] = []
@@ -152,7 +152,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
         # with a search term on the key
         attributes = repo.get_all_unique_attributes(session=session, search_term="ad_")
-        assert len(attributes) == 7
+        assert len(attributes) == 4
 
         # with a search term on the value
         attributes = repo.get_all_unique_attributes(

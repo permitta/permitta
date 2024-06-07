@@ -1,4 +1,4 @@
-from models import AttributeDto, DataObjectTableAttributeDbo
+from models import ObjectAttributeDbo
 from sqlalchemy import Row, and_, or_
 
 from .repository_base import RepositoryBase
@@ -7,32 +7,30 @@ from .repository_base import RepositoryBase
 class DataObjectRepository(RepositoryBase):
 
     @staticmethod
-    def get_all_unique_attributes(session, search_term: str = "") -> list[AttributeDto]:
+    def get_all_unique_attributes(
+        session, search_term: str = ""
+    ) -> list[ObjectAttributeDbo]:
         """
         Returns a list of all the unique attributes that a data object can have
         :param session:
         :return:
         """
-        attributes: list[DataObjectTableAttributeDbo] = (
+        attributes: list[ObjectAttributeDbo] = (
             session.query(
-                DataObjectTableAttributeDbo.attribute_key,
-                DataObjectTableAttributeDbo.attribute_value,
+                ObjectAttributeDbo.attribute_key,
+                ObjectAttributeDbo.attribute_value,
             )
             .distinct()
-            .order_by(
-                DataObjectTableAttributeDbo.attribute_key,
-                DataObjectTableAttributeDbo.attribute_value,
-            )
             .filter(
                 or_(
-                    DataObjectTableAttributeDbo.attribute_key.ilike(f"%{search_term}%"),
-                    DataObjectTableAttributeDbo.attribute_value.ilike(
-                        f"%{search_term}%"
-                    ),
+                    ObjectAttributeDbo.attribute_key.ilike(f"%{search_term}%"),
+                    ObjectAttributeDbo.attribute_value.ilike(f"%{search_term}%"),
                 )
+            )
+            .order_by(
+                ObjectAttributeDbo.attribute_key,
+                ObjectAttributeDbo.attribute_value,
             )
             .all()
         )
-        return [
-            AttributeDto(attribute_key=a[0], attribute_value=a[1]) for a in attributes
-        ]
+        return attributes

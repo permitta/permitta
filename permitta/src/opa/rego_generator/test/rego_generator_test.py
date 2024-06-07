@@ -8,20 +8,19 @@ from repositories import PolicyRepository
 
 def test_generate_snippet_for_policy(database: Database):
     with database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=1)
+        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=3)
 
         assert dedent(
             RegoGenerator.generate_snippet_for_policy(policy=policy)
         ) == dedent(
             """
-            permit if {
-                # Policy ID: 1
-                # Policy Name: Sales
+            allow if {
+                # Policy ID: 3
+                # Policy Name: Sales & Marketing Analysts
     
                 # Required Principal Attributes
     
                 "Sales", "Commercial" in data.principals[input.principal]
-                "Marketing", "Commercial" in data.principals[input.principal]
     
                 # Permitted Object Attributes
     
@@ -39,12 +38,11 @@ def test_generate_snippet_for_dsl_policy(database: Database):
             RegoGenerator.generate_snippet_for_policy(policy=policy)
         ) == dedent(
             """
-            permit if {
+            allow if {
                 # Global Policy
                 # All attributes on the object must exist on the principal
                 every k, v in data.data_objects[input.data_object] {
                     k, v in data.principals[input.principal]
                 }
-            }
-            """
+            }"""
         )

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, column_property, declared_attr, relationship
 from sqlalchemy.sql.functions import current_timestamp
 
 from .policy_attribute_dbo import PolicyAttributeDbo
+from .policy_action_dbo import PolicyActionDbo
 
 
 class PolicyDbo(BaseModel):
@@ -51,5 +52,9 @@ class PolicyDbo(BaseModel):
     record_updated_by: str = Column(String)
 
     policy_attributes: Mapped[list[PolicyAttributeDbo]] = relationship(
+        back_populates="policy", cascade="all, delete-orphan"
+    )
+
+    policy_actions: Mapped[list[PolicyActionDbo]] = relationship(
         back_populates="policy", cascade="all, delete-orphan"
     )

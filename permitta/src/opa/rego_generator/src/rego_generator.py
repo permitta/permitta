@@ -23,3 +23,7 @@ class RegoGenerator:
             return policy.policy_dsl
         else:
             raise ValueError(f"Unknown policy type {policy.policy_type}")
+
+    # @staticmethod
+    # def generate_rego_file() -> None:
+    #
