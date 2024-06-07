@@ -1,0 +1,47 @@
+- name: Super User Account
+  description: Super user has access to do anything within the platform
+  policy_type: DSL
+  author: system
+  policy_dsl: |-
+    allow if {
+      input_principal_name == "super_account"
+    }
+
+- name: Global ABAC
+  description: Global policy to allow access to objects which match the attributes or principals
+  policy_type: DSL
+  author: alice
+  policy_dsl: |-
+    
+    allow if {
+        # Global Policy
+        # All attributes on the object must exist on the principal
+        every k, v in data.data_objects[input.data_object] {
+            k, v in data.principals[input.principal]
+        }
+    }
+
+- name: Sales & Marketing Analysts
+  description: Sales analysts have access to Commercial sales and marketing data
+  policy_type: Builder
+  action_group: read
+  author: alice
+  principal_attributes:
+    - key: Sales
+      value: Commercial
+  object_attributes:
+    - key: Sales
+      value: Commercial
+    - key: Marketing
+      value: Commercial
+
+- name: API User impersonation
+  description: This policy allows the API user to impersonate any other user
+  policy_type: DSL
+  author: alice
+  policy_dsl: |-
+    allow if {
+      input_principal_name == "api_impersonation_account"
+      action == "ImpersonateUser"
+    }
+
