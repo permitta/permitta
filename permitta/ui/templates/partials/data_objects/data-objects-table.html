@@ -26,7 +26,7 @@
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
                                     hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
-                                    hx-vals='{"sort_key": "platform"}'
+                                    hx-vals='{"sort_key": "platforms.platform_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
                                     hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
-                                    hx-vals='{"sort_key": "database"}'
+                                    hx-vals='{"sort_key": "databases.database_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -57,10 +57,10 @@
                             <div class="flex items-center">
                                 Schema
                                 <a href="#"
-                                    hx-get="/data-objects/"
+                                    hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
                                     hx-include="#data-objects-search"
-                                    hx-vals='{"sort-key": "schema"}'
+                                    hx-vals='{"sort_key": "schemas.schema_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
                                     hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
-                                    hx-vals='{"sort_key": "object"}'
+                                    hx-vals='{"sort_key": "tables.table_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,19 @@
                         </th>
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                            Attributes
+                            Platform Attributes
+                        </th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Database Attributes
+                        </th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Schema Attributes
+                        </th>
+                        <th scope="col"
+                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                            Table Attributes
                         </th>
                     </tr>
                     </thead>

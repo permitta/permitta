@@ -13,9 +13,9 @@ from flask import (
     url_for,
 )
 from flask_pydantic import validate
+from models import DecisionLogDbo
 from repositories import DecisionLogRepository
 from views.models import TableQueryDto
-from models import DecisionLogDbo
 
 bp = Blueprint("decision_logs", __name__, url_prefix="/decision-logs")
 

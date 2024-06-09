@@ -1,26 +1,30 @@
 import json
 import random
 import uuid
-import yaml
 from datetime import datetime
-from textwrap import dedent
+from typing import Type
 
-from database import Database
+import yaml
+from database import BaseModel, Database
 from models import (
-    ObjectAttributeDbo,
-    PlatformDbo,
-    DatabaseDbo,
-    SchemaDbo,
-    TableDbo,
+    ColumnAttributeDbo,
     ColumnDbo,
+    DatabaseAttributeDbo,
+    DatabaseDbo,
     IngestionProcessDbo,
+    PlatformAttributeDbo,
+    PlatformDbo,
+    PolicyActionDbo,
     PolicyAttributeDbo,
     PolicyDbo,
     PrincipalAttributeDbo,
     PrincipalDbo,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
-    PolicyActionDbo,
+    SchemaAttributeDbo,
+    SchemaDbo,
+    TableAttributeDbo,
+    TableDbo,
 )
 
 
@@ -106,7 +110,7 @@ class DatabaseSeeder:
         def _get_platform_dbo(mock_data: dict) -> PlatformDbo:
             platform_dbo: PlatformDbo = PlatformDbo()
             platform_dbo.platform_id = mock_data["platform_id"]  # autoincremented
-            platform_dbo.platform_display_name = mock_data["display_name"]
+            platform_dbo.platform_name = mock_data["display_name"]
             platform_dbo.platform_type = mock_data["type"]
             return platform_dbo
 
@@ -117,10 +121,12 @@ class DatabaseSeeder:
         return platforms
 
     @staticmethod
-    def _get_attributes(raw_attrs: list[dict]) -> list[ObjectAttributeDbo]:
-        attributes: list[ObjectAttributeDbo] = []
+    def _get_attributes(
+        object_type: Type[BaseModel], raw_attrs: list[dict]
+    ) -> list[BaseModel]:
+        attributes: list[object_type] = []
         for raw_attr in raw_attrs:
-            attribute = ObjectAttributeDbo()
+            attribute = object_type()
             attribute.attribute_key = raw_attr["key"]
             attribute.attribute_value = raw_attr["value"]
             attributes.append(attribute)
@@ -135,7 +141,7 @@ class DatabaseSeeder:
                 database_dbo: DatabaseDbo = DatabaseDbo()
                 database_dbo.database_name = raw_database.get("name")
                 database_dbo.attributes = DatabaseSeeder._get_attributes(
-                    raw_database.get("attributes")
+                    DatabaseAttributeDbo, raw_database.get("attributes")
                 )
                 database_dbo.platform_id = 1
                 database_dbos.append(database_dbo)
@@ -144,7 +150,7 @@ class DatabaseSeeder:
                     schema_dbo: SchemaDbo = SchemaDbo()
                     schema_dbo.schema_name = raw_schema.get("name")
                     schema_dbo.attributes = DatabaseSeeder._get_attributes(
-                        raw_schema.get("attributes")
+                        SchemaAttributeDbo, raw_schema.get("attributes")
                     )
                     database_dbo.schemas.append(schema_dbo)
 
@@ -152,7 +158,7 @@ class DatabaseSeeder:
                         table_dbo: TableDbo = TableDbo()
                         table_dbo.table_name = raw_table.get("name")
                         table_dbo.attributes = DatabaseSeeder._get_attributes(
-                            raw_table.get("attributes")
+                            TableAttributeDbo, raw_table.get("attributes")
                         )
                         schema_dbo.tables.append(table_dbo)
 
@@ -160,7 +166,7 @@ class DatabaseSeeder:
                             column: ColumnDbo = ColumnDbo()
                             column.column_name = raw_column.get("name")
                             column.attributes = DatabaseSeeder._get_attributes(
-                                raw_column.get("attributes")
+                                ColumnAttributeDbo, raw_column.get("attributes")
                             )
                             table_dbo.columns.append(column)
 

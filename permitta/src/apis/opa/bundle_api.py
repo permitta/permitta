@@ -1,12 +1,13 @@
 import gzip
 from itertools import chain
+
 from app_logger import Logger, get_logger
 
 logger: Logger = get_logger("opa.bundle_api")
 
+from flask import Blueprint, g, jsonify, request
+from models import PrincipalAttributeDbo, PrincipalDbo
 from repositories import PrincipalRepository
-from models import PrincipalDbo, PrincipalAttributeDbo
-from flask import Blueprint, request, g, jsonify
 
 bp = Blueprint("opa_bundle", __name__, url_prefix="/opa/bundle")
 

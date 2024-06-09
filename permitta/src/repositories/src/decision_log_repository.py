@@ -1,7 +1,9 @@
+from datetime import datetime
 from typing import Tuple
+
 from models import DecisionLogDbo
 from sqlalchemy import Row, and_, or_
-from datetime import datetime
+
 from .repository_base import RepositoryBase
 
 

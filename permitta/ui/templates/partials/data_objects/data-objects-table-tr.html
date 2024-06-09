@@ -1,4 +1,4 @@
-{% for data_object in data_objects %}
+{% for table in tables %}
 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
     <td class="w-4 p-4">
 {#        <div class="flex items-center">#}
@@ -8,20 +8,41 @@
 {#        </div>#}
     </td>
     <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ data_object.platform.platform_display_name }}</div>
-        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ data_object.search_value }}</div>
+        <div class="text-base font-semibold text-gray-900 dark:text-white">{{ table.platform_name }}</div>
+{#        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ table.platform_name }}</div>#}
     </td>
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {{ data_object.database_name }}
+        {{ table.database_name }}
     </td>
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {{ data_object.schema_name }}
+        {{ table.schema_name }}
     </td>
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-        {{ data_object.object_name }}
+        {{ table.table_name }}
     </td>
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-        {{ attribute_pill_list(data_object.data_object_table_attributes) }}
+        {{ attribute_pill_list(table.platform_attributes) }}
+{#        {{ attribute_pill_list(table.database_attributes) }}#}
+{#        {{ attribute_pill_list(table.schema_attributes) }}#}
+{#        {{ attribute_pill_list(table.table_attributes) }}#}
+    </td>
+    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+{#        {{ attribute_pill_list(table.platform_attributes) }}#}
+        {{ attribute_pill_list(table.database_attributes) }}
+{#        {{ attribute_pill_list(table.schema_attributes) }}#}
+{#        {{ attribute_pill_list(table.table_attributes) }}#}
+    </td>
+    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+{#        {{ attribute_pill_list(table.platform_attributes) }}#}
+{#        {{ attribute_pill_list(table.database_attributes) }}#}
+        {{ attribute_pill_list(table.schema_attributes) }}
+{#        {{ attribute_pill_list(table.table_attributes) }}#}
+    </td>
+    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+{#        {{ attribute_pill_list(table.platform_attributes) }}#}
+{#        {{ attribute_pill_list(table.database_attributes) }}#}
+{#        {{ attribute_pill_list(table.schema_attributes) }}#}
+        {{ attribute_pill_list(table.table_attributes) }}
     </td>
 </tr>
 {% endfor %}

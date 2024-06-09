@@ -1,5 +1,6 @@
 import responses
 from responses import matchers
+
 from ..src.opa_client import OpaClient
 
 

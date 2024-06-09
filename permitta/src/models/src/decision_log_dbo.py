@@ -1,6 +1,7 @@
-from database import BaseModel
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, DateTime
+
+from database import BaseModel
+from sqlalchemy import Boolean, Column, DateTime, String
 
 
 class DecisionLogDbo(BaseModel):

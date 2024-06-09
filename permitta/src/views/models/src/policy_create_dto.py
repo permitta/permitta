@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from models import PolicyDbo
 from enum import Enum
+
+from models import PolicyDbo
+from pydantic import BaseModel, Field
 
 
 class PolicyTypeEnum(Enum):

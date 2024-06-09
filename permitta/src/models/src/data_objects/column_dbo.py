@@ -1,8 +1,7 @@
 from database import BaseModel
+from models.src.common_mixin_dbo import IngestionDboMixin
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from models.src.common_mixin_dbo import IngestionDboMixin
 
 
 class ColumnDbo(IngestionDboMixin, BaseModel):
@@ -14,6 +13,20 @@ class ColumnDbo(IngestionDboMixin, BaseModel):
     table_id: Mapped[int] = mapped_column(ForeignKey("tables.table_id"))
     table: Mapped["TableDbo"] = relationship(back_populates="columns")
 
-    attributes: Mapped[list["ObjectAttributeDbo"]] = relationship(
+    attributes: Mapped[list["ColumnAttributeDbo"]] = relationship(
         back_populates="column", cascade="all, delete"
     )
+
+
+class ColumnAttributeDbo(BaseModel):
+    __tablename__ = "column_attributes"
+
+    attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
+    attribute_key: str = Column(String)
+    attribute_value: str = Column(String)
+
+    # column FK
+    columntable_id: Mapped[int] = mapped_column(
+        ForeignKey("columns.column_id"), nullable=True
+    )
+    column: Mapped["ColumnDbo"] = relationship(back_populates="attributes")

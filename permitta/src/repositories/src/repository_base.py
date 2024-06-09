@@ -15,9 +15,20 @@ class RepositoryBase:
         pass
 
     @staticmethod
+    def get_model_by_name(table_name: str) -> Type[BaseModel]:
+        matching_models: list[BaseModel] = [
+            cls for cls in BaseModel.__subclasses__() if cls.__tablename__ == table_name
+        ]
+        if not matching_models:
+            raise ValueError(f"No model found for table {table_name}")
+        return matching_models[0]
+
+    @staticmethod
     def get_column_by_name(
-        model: Type[BaseModel], column_name: str
+        table_name: str, column_name: str
     ) -> NamedColumn | ColumnProperty:
+        model: BaseModel = RepositoryBase.get_model_by_name(table_name=table_name)
+
         matching_columns: list[ColumnProperty] = [
             c
             for c in [
@@ -53,14 +64,46 @@ class RepositoryBase:
         sort_col_name: str | None = None,
         search_term: str = "",
     ) -> Tuple[int, list[BaseModel]]:
+        query: Query = session.query(model)
+        query = RepositoryBase._get_search_query(
+            query=query,
+            search_column_names=[
+                f"{model.__tablename__}.{s}" for s in search_column_names
+            ],
+            search_term=search_term,
+        )
+
+        count: int = query.count()
+
+        if sort_col_name:
+            query = RepositoryBase._get_sort_query(
+                query=query,
+                sort_col_name=f"{model.__tablename__}.{sort_col_name}",
+                sort_ascending=sort_ascending,
+            )
+
+        query: Query = RepositoryBase._get_pagination_query(
+            query=query, page_number=page_number, page_size=page_size
+        )
+
+        results: list[BaseModel] = query.all()
+        return count, results
+
+    @staticmethod
+    def _get_search_query(
+        query: Query,
+        search_column_names: list[str],
+        search_term: str = "",
+    ) -> Query:
         search_columns: list[NamedColumn] | list[ColumnProperty] = [
             RepositoryBase.get_column_by_name(
-                model=model, column_name=search_column_name
+                table_name=search_column_name.split(".")[0],
+                column_name=search_column_name.split(".")[1],
             )
             for search_column_name in search_column_names
         ]
 
-        query: Query = session.query(model).filter(
+        query = query.filter(
             or_(
                 *[
                     search_column.ilike(f"%{search_term}%")
@@ -68,20 +111,22 @@ class RepositoryBase:
                 ]
             )
         )
-        count: int = query.count()
+        return query
 
-        if sort_col_name:
-            sort_column: NamedColumn | ColumnProperty = (
-                RepositoryBase.get_column_by_name(
-                    model=model, column_name=sort_col_name
-                )
-            )
-            if sort_ascending:
-                query = query.order_by(sort_column)
-            else:
-                query = query.order_by(desc(sort_column))
+    @staticmethod
+    def _get_sort_query(
+        query: Query, sort_col_name: str, sort_ascending: bool = True
+    ) -> Query:
+        sort_column: NamedColumn | ColumnProperty = RepositoryBase.get_column_by_name(
+            table_name=sort_col_name.split(".")[0],
+            column_name=sort_col_name.split(".")[1],
+        )
+        if sort_ascending:
+            query = query.order_by(sort_column)
+        else:
+            query = query.order_by(desc(sort_column))
+        return query
 
-        results: list[BaseModel] = query.slice(
-            page_number * page_size, (page_number + 1) * page_size
-        ).all()
-        return count, results
+    @staticmethod
+    def _get_pagination_query(query: Query, page_number: int, page_size: int):
+        return query.slice(page_number * page_size, (page_number + 1) * page_size)

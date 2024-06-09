@@ -1,9 +1,11 @@
-import requests
 from dataclasses import asdict
+
+import requests
 from app_logger import Logger, get_logger
-from .opa_request_model import OpaRequestModel, OpaRequestInputModel
-from .opa_response_model import OpaResponseModel, OpaResponseAllowModel
+
 from .opa_client_config import OpaClientConfig
+from .opa_request_model import OpaRequestInputModel, OpaRequestModel
+from .opa_response_model import OpaResponseAllowModel, OpaResponseModel
 
 logger: Logger = get_logger("opa_client")
 

@@ -5,8 +5,8 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import Mapped, column_property, declared_attr, relationship
 from sqlalchemy.sql.functions import current_timestamp
 
-from .policy_attribute_dbo import PolicyAttributeDbo
 from .policy_action_dbo import PolicyActionDbo
+from .policy_attribute_dbo import PolicyAttributeDbo
 
 
 class PolicyDbo(BaseModel):

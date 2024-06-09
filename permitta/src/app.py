@@ -1,3 +1,4 @@
+from apis import bundle_api_bp, decision_logs_api_bp
 from app_config import AppConfigModelBase
 from database import Database
 from extensions import oidc, oidc_auth_provider
@@ -6,14 +7,13 @@ from flask import Blueprint, Flask, g, redirect, render_template
 # blueprints
 from views import (
     data_objects_bp,
+    decision_logs_bp,
     groups_bp,
     healthz_bp,
     policies_bp,
     principals_bp,
     root_bp,
-    decision_logs_bp,
 )
-from apis import decision_logs_api_bp, bundle_api_bp
 
 
 class FlaskConfig(AppConfigModelBase):

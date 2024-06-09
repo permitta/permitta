@@ -1,11 +1,12 @@
 import gzip
 import json
+
 from app_logger import Logger, get_logger
 
 logger: Logger = get_logger("opa.decision_log_api")
 
+from flask import Blueprint, g, request
 from repositories import DecisionLogRepository
-from flask import Blueprint, request, g
 
 bp = Blueprint("opa_decision", __name__, url_prefix="/opa/decision")
 

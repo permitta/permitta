@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+
 from app_logger import Logger, get_logger
 from extensions import oidc
 from flask import (
@@ -17,9 +18,9 @@ from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
 from views.models import (
     PolicyAttributeDto,
+    PolicyCreateDto,
     PolicyDslDto,
     PolicyMetadataDto,
-    PolicyCreateDto,
     TableQueryDto,
 )
 
