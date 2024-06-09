@@ -13,6 +13,8 @@ class ColumnDbo(IngestionDboMixin, BaseModel):
     table_id: Mapped[int] = mapped_column(ForeignKey("tables.table_id"))
     table: Mapped["TableDbo"] = relationship(back_populates="columns")
 
+    mask: str = Column(String, server_default="NULL")
+
     attributes: Mapped[list["ColumnAttributeDbo"]] = relationship(
         back_populates="column", cascade="all, delete"
     )

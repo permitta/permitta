@@ -15,13 +15,21 @@ from models import (
     TableDto,
 )
 from sqlalchemy import Row, and_, or_
-from sqlalchemy.orm import ColumnProperty, Query, class_mapper
-from sqlalchemy.sql.elements import NamedColumn
+from sqlalchemy.orm import ColumnProperty, Query
 
 from .repository_base import RepositoryBase
 
 
 class DataObjectRepository(RepositoryBase):
+
+    @staticmethod
+    def get_platform_by_id(session, platform_id: int) -> PlatformDbo:
+        platform: PlatformDbo = (
+            session.query(PlatformDbo)
+            .filter(PlatformDbo.platform_id == platform_id)
+            .first()
+        )
+        return platform
 
     @staticmethod
     def get_all_unique_attributes(session, search_term: str = "") -> list:

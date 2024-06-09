@@ -10,10 +10,6 @@
         {
           "key": "Sales",
           "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
-          "value": "Commercial"
         }
       ]
     },
@@ -31,14 +27,23 @@
         {
           "key": "Sales",
           "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "name": "Sales Directors",
+      "membership_property": {
+        "key": "ad_group",
+        "value": "SALES_DIRECTORS_GL"
+      },
+      "inheriting_properties": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
         },
         {
           "key": "Sales",
           "value": "Privacy"
-        },
-        {
-          "key": "Marketing",
-          "value": "Commercial"
         }
       ]
     },
@@ -52,10 +57,6 @@
         {
           "key": "Marketing",
           "value": "Commercial"
-        },
-        {
-          "key": "Marketing",
-          "value": "Restricted"
         }
       ]
     },
@@ -73,10 +74,36 @@
         {
           "key": "Marketing",
           "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "name": "Marketing Directors",
+      "membership_property": {
+        "key": "ad_group",
+        "value": "MARKETING_DIRECTORS_GL"
+      },
+      "inheriting_properties": [
+        {
+          "key": "Marketing",
+          "value": "Commercial"
         },
         {
           "key": "Marketing",
           "value": "Privacy"
+        }
+      ]
+    },
+    {
+      "name": "Human Resources Analysts",
+      "membership_property": {
+        "key": "ad_group",
+        "value": "HR_ANALYSTS_GL"
+      },
+      "inheriting_properties": [
+        {
+          "key": "HR",
+          "value": "Commercial"
         }
       ]
     },
@@ -94,6 +121,19 @@
         {
           "key": "HR",
           "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "name": "Human Resources Directors",
+      "membership_property": {
+        "key": "ad_group",
+        "value": "HR_DIRECTORS_GL"
+      },
+      "inheriting_properties": [
+        {
+          "key": "HR",
+          "value": "Commercial"
         },
         {
           "key": "HR",
@@ -111,18 +151,14 @@
         {
           "key": "IT",
           "value": "Commercial"
-        },
-        {
-          "key": "IT",
-          "value": "Restricted"
         }
       ]
     },
     {
-      "name": "Information Technology Analysts",
+      "name": "Information Technology Supervisors",
       "membership_property": {
         "key": "ad_group",
-        "value": "HR_ANALYSTS_GL"
+        "value": "IT_SUPERVISORS_GL"
       },
       "inheriting_properties": [
         {
@@ -132,6 +168,19 @@
         {
           "key": "IT",
           "value": "Restricted"
+        }
+      ]
+    },
+    {
+      "name": "Information Technology Directors",
+      "membership_property": {
+        "key": "ad_group",
+        "value": "IT_DIRECTORS_GL"
+      },
+      "inheriting_properties": [
+        {
+          "key": "IT",
+          "value": "Commercial"
         },
         {
           "key": "IT",

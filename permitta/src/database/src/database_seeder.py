@@ -29,8 +29,6 @@ from models import (
 
 
 class DatabaseSeeder:
-    db: Database
-
     def __init__(self, db: Database):
         self.db = db
 
@@ -41,12 +39,6 @@ class DatabaseSeeder:
             principals: list[PrincipalDbo] = []
             group_prop_index = 0
 
-            with open("permitta/mock_data/principal_groups.json") as tags_file:
-                all_group_props = [
-                    g.get("membership_property")
-                    for g in json.load(tags_file).get("groups")
-                ]
-
             for mock_user in mock_users:
                 principal_dbo: PrincipalDbo = PrincipalDbo()
                 principal_dbo.source_uid = str(uuid.uuid4())
@@ -55,19 +47,14 @@ class DatabaseSeeder:
                 principal_dbo.first_name = mock_user.get("first_name")
                 principal_dbo.last_name = mock_user.get("last_name")
                 principal_dbo.user_name = mock_user.get("username")
-                principal_dbo.job_title = random.choice([""])
 
                 # apply groups
-                group_prop: dict = all_group_props[group_prop_index]
-                group_prop_index += 1
-                if group_prop_index == len(all_group_props):
-                    group_prop_index = 0
-
-                principal_attribute_dbo = PrincipalAttributeDbo()
-                principal_attribute_dbo.attribute_key = group_prop["key"]
-                principal_attribute_dbo.attribute_value = group_prop["value"]
-                principal_attribute_dbo.activated_at = datetime.utcnow()
-                principal_dbo.principal_attributes.append(principal_attribute_dbo)
+                for group in mock_user.get("groups"):
+                    principal_attribute_dbo = PrincipalAttributeDbo()
+                    principal_attribute_dbo.attribute_key = "ad_group"
+                    principal_attribute_dbo.attribute_value = group
+                    principal_attribute_dbo.activated_at = datetime.utcnow()
+                    principal_dbo.principal_attributes.append(principal_attribute_dbo)
 
                 principals.append(principal_dbo)
             return principals
@@ -165,6 +152,7 @@ class DatabaseSeeder:
                         for raw_column in raw_table.get("columns", []):
                             column: ColumnDbo = ColumnDbo()
                             column.column_name = raw_column.get("name")
+                            column.mask = raw_column.get("mask")
                             column.attributes = DatabaseSeeder._get_attributes(
                                 ColumnAttributeDbo, raw_column.get("attributes")
                             )

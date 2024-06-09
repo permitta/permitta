@@ -1,4 +1,5 @@
-from database import Database, DatabaseSeeder
+from database import Database
+from database.src.database_seeder import DatabaseSeeder
 
 db: Database = Database()
 db.connect()

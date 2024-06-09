@@ -3,10 +3,6 @@
     {
       "name": "datalake",
       "attributes": [
-        {
-          "key": "IT",
-          "value": "Commercial"
-        }
       ],
       "schemas": [
         {
@@ -29,7 +25,8 @@
                       "key": "HR",
                       "value": "Privacy"
                     }
-                  ]
+                  ],
+                  "mask": "'XXXX'"
                 }
               ]
             },
