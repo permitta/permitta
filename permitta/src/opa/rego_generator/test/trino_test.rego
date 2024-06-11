@@ -88,6 +88,7 @@ allow if {
 }
 
 # All valid users should have SelectFromColumns on system
+# TODO replace with catalog tags?
 allow if {
   input.action.resource.table.catalogName == "system"
   input.action.operation == "SelectFromColumns"
@@ -130,12 +131,6 @@ allow if {
 # filter columns - all allowed as masking is default when inaccessible
 allow if {
   input.action.operation == "FilterColumns"
-#  some data_object in data_objects
-#	data_object.object.database == input.action.resource.table.catalogName
-#	data_object.object.schema == input.action.resource.table.schemaName
-#	data_object.object.table == input.action.resource.table.tableName
-#	all_object_attrs_exist_on_principal
-#	all_classified_column_attrs_exist_on_principal
 }
 
 # running the select
@@ -179,37 +174,4 @@ columnmask := {"expression": mask} if {
 
   # either return the mask or a default which is null
   mask := object.get(column, "mask", "NULL")
-}
-
-
-# batch mode - run with both the input and output resources if they exist
-#batch contains i if {
-#	some i
-#	raw_resource := input.action.filterResources[i]
-#	allow with input.action.resource as raw_resource
-#}
-#
-#data_object_columns contains column if {
-##  some i
-#	input.action.operation == "FilterColumns"
-#	count(input.action.filterResources) == 1
-#	raw_resource := input.action.filterResources[0]
-#	count(raw_resource.table.columns) > 0
-#	new_resources := [
-#    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
-#	]
-#	some column in new_resources
-#}
-
-batch contains i if {
-	some i
-	input.action.operation == "FilterColumns"
-	count(input.action.filterResources) == 1
-	raw_resource := input.action.filterResources[0]
-	count(raw_resource.table.columns) > 0
-	new_resources := [
-    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
-	]
-	print(new_resources)
-	allow with input.action.resource as new_resources[i]
 }

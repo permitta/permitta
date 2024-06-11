@@ -28,3 +28,5 @@ ldap_connector.attr_first_name: givenname
 ldap_connector.attr_last_name: sn
 ldap_connector.attr_email: mail
 ldap_connector.attr_groups: memberOf
+
+bundle_generator.temp_directory: /tmp

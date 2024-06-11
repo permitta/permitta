@@ -14,7 +14,7 @@ from models import (
     TableDbo,
     TableDto,
 )
-from sqlalchemy import Row, and_, or_
+from sqlalchemy import Row, and_, func, or_
 from sqlalchemy.orm import ColumnProperty, Query
 
 from .repository_base import RepositoryBase
@@ -30,6 +30,24 @@ class DataObjectRepository(RepositoryBase):
             .first()
         )
         return platform
+
+    @staticmethod
+    def get_table_by_id(session, table_id: int) -> TableDbo:
+        table: TableDbo = (
+            session.query(TableDbo).filter(TableDbo.table_id == table_id).first()
+        )
+        return table
+
+    # @staticmethod
+    # def get_table_dto_by_id(session, table_id: int) -> TableDto:
+    #     table: TableDbo = (
+    #         session.query(TableDbo).filter(TableDbo.table_id == table_id).first()
+    #     )
+    #     table_dto: TableDto = TableDto(
+    #
+    #
+    #     )
+    #     return table
 
     @staticmethod
     def get_all_unique_attributes(session, search_term: str = "") -> list:
@@ -103,8 +121,23 @@ class DataObjectRepository(RepositoryBase):
             "table_attributes.attribute_value",
         ]
 
+        count_subquery = (
+            session.query(
+                ColumnDbo.table_id,
+                func.count(1).label("column_count"),
+            )
+            .group_by(ColumnDbo.table_id)
+            .subquery()
+        )
+
         query: Query = (
-            session.query(PlatformDbo, DatabaseDbo, SchemaDbo, TableDbo)
+            session.query(
+                PlatformDbo,
+                DatabaseDbo,
+                SchemaDbo,
+                TableDbo,
+                func.coalesce(count_subquery.c.column_count, 0),
+            )
             .join(DatabaseDbo, DatabaseDbo.platform_id == PlatformDbo.platform_id)
             .join(SchemaDbo, SchemaDbo.database_id == DatabaseDbo.database_id)
             .join(TableDbo, TableDbo.schema_id == SchemaDbo.schema_id)
@@ -126,6 +159,11 @@ class DataObjectRepository(RepositoryBase):
             .join(
                 TableAttributeDbo,
                 TableAttributeDbo.table_id == TableDbo.table_id,
+                isouter=True,
+            )
+            .join(
+                count_subquery,
+                count_subquery.c.table_id == TableDbo.table_id,
                 isouter=True,
             )
         )
@@ -174,6 +212,7 @@ class DataObjectRepository(RepositoryBase):
                     table_id=result[3].table_id,
                     table_name=result[3].table_name,
                     table_attributes=_get_attribute_dtos(result[3]),
+                    column_count=result[4],
                 )
             )
 

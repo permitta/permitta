@@ -8,3 +8,17 @@ decision_logs:
   reporting:
     min_delay_seconds: 1
     max_delay_seconds: 10
+
+bundles:
+  trino:
+    service: permitta
+    resource: /opa/bundle/1
+    persist: true
+    polling:
+      min_delay_seconds: 10
+      max_delay_seconds: 20
+#    signing:
+#      keyid: global_key
+#      scope: write
+
+persistence_directory: /policy/persistence

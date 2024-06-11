@@ -9,7 +9,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
     with database.Session.begin() as session:
         attributes = repo.get_all_unique_attributes(session=session)
-        assert len(attributes) == 9
+        assert len(attributes) == 8
 
         # check they are all unique
         unique_key_values: list[str] = []
@@ -40,15 +40,14 @@ def test_get_all_tables_with_search_and_pagination(database: Database) -> None:
             page_size=10,
         )
         assert table_count == 10
+        assert len(tables) == 10
         assert tables[0] == TableDto(
             platform_id=1,
             platform_name="Trino",
             platform_attributes=[],
             database_id=1,
             database_name="datalake",
-            database_attributes=[
-                AttributeDto(attribute_key="IT", attribute_value="Commercial")
-            ],
+            database_attributes=[],
             schema_id=3,
             schema_name="sales",
             schema_attributes=[],
@@ -57,6 +56,7 @@ def test_get_all_tables_with_search_and_pagination(database: Database) -> None:
             table_attributes=[
                 AttributeDto(attribute_key="Sales", attribute_value="Privacy")
             ],
+            column_count=0,
         )
 
 
@@ -73,15 +73,14 @@ def test_get_all_tables_with_search_and_pagination__table_name_search(
             search_term="employ",
         )
         assert table_count == 2
+        assert len(tables) == 2
         assert tables[0] == TableDto(
             platform_id=1,
             platform_name="Trino",
             platform_attributes=[],
             database_id=1,
             database_name="datalake",
-            database_attributes=[
-                AttributeDto(attribute_key="IT", attribute_value="Commercial")
-            ],
+            database_attributes=[],
             schema_id=1,
             schema_name="hr",
             schema_attributes=[
@@ -90,6 +89,7 @@ def test_get_all_tables_with_search_and_pagination__table_name_search(
             table_id=1,
             table_name="employees",
             table_attributes=[],
+            column_count=1,
         )
 
 
@@ -106,15 +106,14 @@ def test_get_all_tables_with_search_and_pagination__table_attr_search(
             search_term="Privacy",
         )
         assert table_count == 2
+        assert len(tables) == 2
         assert tables[0] == TableDto(
             platform_id=1,
             platform_name="Trino",
             platform_attributes=[],
             database_id=1,
             database_name="datalake",
-            database_attributes=[
-                AttributeDto(attribute_key="IT", attribute_value="Commercial")
-            ],
+            database_attributes=[],
             schema_id=3,
             schema_name="sales",
             schema_attributes=[],
@@ -123,4 +122,5 @@ def test_get_all_tables_with_search_and_pagination__table_attr_search(
             table_attributes=[
                 AttributeDto(attribute_key="Sales", attribute_value="Privacy")
             ],
+            column_count=0,
         )

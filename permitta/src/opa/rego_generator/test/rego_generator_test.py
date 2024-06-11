@@ -46,3 +46,11 @@ def test_generate_snippet_for_dsl_policy(database: Database):
                 }
             }"""
         )
+
+
+def test_generate_rego_document():
+    with open("permitta/src/opa/rego_generator/test/trino_test.rego") as f:
+        expected: str = f.read()
+
+    actual: str = RegoGenerator.generate_rego_document()
+    assert expected == actual

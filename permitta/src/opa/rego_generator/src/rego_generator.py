@@ -24,6 +24,12 @@ class RegoGenerator:
         else:
             raise ValueError(f"Unknown policy type {policy.policy_type}")
 
-    # @staticmethod
-    # def generate_rego_file() -> None:
-    #
+    @staticmethod
+    def generate_rego_document() -> str:
+        """
+        First pass - just directly render the template and return it
+        """
+        environment = jinja2.Environment()
+        with open("permitta/src/opa/rego_generator/src/trino.rego.j2") as f:
+            template = environment.from_string(f.read())
+            return template.render()

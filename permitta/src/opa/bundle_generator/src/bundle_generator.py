@@ -1,11 +1,69 @@
+import json
+import os
+import subprocess
+import uuid
+from typing import Tuple
+
 from app_logger import Logger, get_logger
 from models import PlatformDbo, PrincipalAttributeDbo
+from opa.rego_generator import RegoGenerator
 from repositories import DataObjectRepository, PrincipalRepository
+
+from .bundle_generator_config import BundleGeneratorConfig
 
 logger: Logger = get_logger("opa.bundle_generator")
 
 
 class BundleGenerator:
+
+    @staticmethod
+    def generate_bundle(session, platform_id: int, bundle_name: str) -> Tuple[str, str]:
+        config: BundleGeneratorConfig = BundleGeneratorConfig().load()
+        bundle_directory: str = f"{config.temp_directory}/{uuid.uuid4()}"
+        data_directory: str = f"{bundle_directory}/{bundle_name}"
+        os.makedirs(os.path.join(data_directory), exist_ok=True)
+
+        # write the rego file
+        rego_file_path: str = os.path.join(bundle_directory, f"{bundle_name}.rego")
+        rego_file_content: str = RegoGenerator.generate_rego_document()
+        with open(rego_file_path, "w") as f:
+            f.write(rego_file_content)
+
+        # write the data file
+        data_file_path: str = os.path.join(
+            bundle_directory, f"{bundle_name}", "data.json"
+        )
+        with open(data_file_path, "w") as f:
+            f.write(
+                json.dumps(
+                    BundleGenerator.generate_data_object(
+                        session=session, platform_id=platform_id
+                    )
+                )
+            )
+
+        # build the bundle
+        result = subprocess.run(
+            ["opa", "build", "-b", "."],  # TODO optimise
+            capture_output=True,
+            text=True,
+            cwd=bundle_directory,
+        )
+        if result.returncode != 0:
+            raise ValueError(
+                f"OPA bundler failed with exit code {result.returncode}, Output: {result.stdout}, Error: {result.stderr}"
+            )
+
+        logger.info(
+            f"Generated bundle with output: {result.stdout}  Error: {result.stderr}"
+        )
+
+        # clean up
+        os.remove(data_file_path)
+        os.remove(rego_file_path)
+        os.rmdir(data_directory)
+
+        return bundle_directory, "bundle.tar.gz"
 
     @staticmethod
     def generate_data_object(session, platform_id: int) -> dict:

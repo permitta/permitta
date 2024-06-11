@@ -7,7 +7,7 @@ services:
         token: "bGFza2RqZmxha3NkamZsa2Fqc2Rsa2ZqYWtsc2RqZmtramRmYWxkc2tm"
 
 bundles:
-  authz:
+  trino:
     service: django
     resource: bundles/django/bundle.tar.gz
     persist: true

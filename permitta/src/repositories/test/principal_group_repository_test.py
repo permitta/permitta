@@ -16,7 +16,7 @@ def test_get_principal_groups(database: Database) -> None:
         count, principal_groups = repo.get_all(
             session=session, sort_col_name="name", page_number=0, page_size=100000
         )
-        assert count == 7
+        assert count == 12
         assert all([isinstance(pg, PrincipalGroupDbo) for pg in principal_groups])
 
 

@@ -84,15 +84,12 @@ def test_get_all_paginated(database: Database) -> None:
         connected_group: PrincipalGroupDbo = (
             principals_b1[0].principal_attributes[0].principal_groups[0]
         )
-        assert connected_group.membership_attribute_value == "SALES_SUPERVISORS_GL"
+        assert connected_group.membership_attribute_value == "SALES_ANALYSTS_GL"
         assert [
             f"{pga.attribute_key}: {pga.attribute_value}"
             for pga in connected_group.principal_group_attributes
         ] == [
             "Sales: Commercial",
-            "Sales: Restricted",
-            "Sales: Privacy",
-            "Marketing: Commercial",
         ]
 
         # and via the prop on the principal class
@@ -101,9 +98,10 @@ def test_get_all_paginated(database: Database) -> None:
             for pga in principals_b1[0].group_membership_attributes
         ] == [
             "Sales: Commercial",
-            "Sales: Restricted",
-            "Sales: Privacy",
             "Marketing: Commercial",
+            "Marketing: Privacy",
+            "IT: Commercial",
+            "IT: Restricted",
         ]
 
 
@@ -128,10 +126,14 @@ def test_get_principal_with_attributes(database: Database) -> None:
             for attr in principal.group_attributes
         ]
 
-        assert principal_attributes == [("ad_group", "MARKETING_ANALYSTS_GL")]
+        assert principal_attributes == [
+            ("ad_group", "SALES_SUPERVISORS_GL"),
+            ("ad_group", "MARKETING_ANALYSTS_GL"),
+            ("ad_group", "HR_DIRECTORS_GL"),
+        ]
         assert principal_group_attributes == [
-            ("Marketing", "Commercial"),
-            ("Marketing", "Restricted"),
+            ("Sales", "Commercial"),
+            ("Sales", "Restricted"),
         ]
 
 
@@ -140,7 +142,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
     with database.Session.begin() as session:
         attributes = repo.get_all_unique_attributes(session=session)
-        assert len(attributes) == 16  # 4 AD groups plus 12 tags
+        assert len(attributes) == 24  # 12 AD groups plus 12 tags
 
         # check they are all unique
         unique_key_values: list[str] = []
@@ -152,7 +154,7 @@ def test_get_all_unique_attributes(database: Database) -> None:
 
         # with a search term on the key
         attributes = repo.get_all_unique_attributes(session=session, search_term="ad_")
-        assert len(attributes) == 4
+        assert len(attributes) == 12
 
         # with a search term on the value
         attributes = repo.get_all_unique_attributes(

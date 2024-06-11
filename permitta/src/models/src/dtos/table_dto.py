@@ -21,3 +21,5 @@ class TableDto:
     table_id: int
     table_name: str
     table_attributes: list[AttributeDto]
+
+    column_count: int

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Type
 
 from extensions import oidc
-from flask import Blueprint, g, render_template, request
+from flask import Blueprint, Response, g, make_response, render_template
 from flask_pydantic import validate
 from models import PlatformDbo, TableDbo
 from repositories import DataObjectRepository
@@ -26,15 +26,6 @@ def index():
 @oidc.oidc_auth("default")
 @validate()
 def tables_table(query: TableQueryDto):
-    # if query.sort_key == "platform":
-    #     sort_col_name = TableDbo.platform
-    # elif query.sort_key == "schema":
-    #     sort_col_name = TableDbo.schema_name
-    # elif query.sort_key == "object":
-    #     sort_col_name = TableDbo.object_name
-    # else:
-    #     sort_col_name = TableDbo.database_name
-
     with g.database.Session.begin() as session:
         table_count, tables = (
             DataObjectRepository.get_all_tables_with_search_and_pagination(
@@ -46,9 +37,31 @@ def tables_table(query: TableQueryDto):
             )
         )
         query.record_count = table_count
-        return render_template(
-            template_name_or_list="partials/data_objects/data-objects-table.html",
-            tables=tables,
-            table_count=table_count,
-            query_state=query,
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/data_objects/data-objects-table.html",
+                tables=tables,
+                table_count=table_count,
+                query_state=query,
+            )
         )
+    response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
+    return response
+
+
+@bp.route("/table-detail-modal/<table_id>", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def table_detail_modal(table_id: int):
+    with g.database.Session.begin() as session:
+        table: TableDbo = DataObjectRepository.get_table_by_id(
+            session=session, table_id=table_id
+        )
+
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/data_objects/table-detail-modal.html",
+                table=table,
+            )
+        )
+        return response

@@ -20,10 +20,11 @@
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
         {{ table.table_name }}
     </td>
+{#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
+{#        {{ attribute_pill_list(table.platform_attributes) }}#}
+{#    </td>#}
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.platform_attributes) }}
-    </td>
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.database_attributes) }}
     </td>
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -31,6 +32,24 @@
     </td>
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.table_attributes) }}
+    </td>
+    <td class="p-4 space-x-2 whitespace-nowrap">
+        {% if table.column_count > 0 %}
+        <button
+            hx-get="/data-objects/table-detail-modal/{{ table.table_id }}"
+            hx-trigger="click consume"
+            hx-target="#table-detail-modal-content"
+            type="button"
+            id="table-detail-modal-button"
+            data-modal-target="table-detail-modal"
+            data-modal-toggle="table-detail-modal"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path>
+            </svg>
+            Columns
+        </button>
+        {% endif %}
     </td>
 </tr>
 {% endfor %}

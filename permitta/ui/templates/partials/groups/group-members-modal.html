@@ -4,7 +4,7 @@
             <div class="inline-block min-w-full align-middle">
                 <div class="overflow-hidden shadow">
                     <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
-                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-700">
+                        <caption class="p-5 text-lg text-center font-semibold text-gray-900 bg-white dark:text-white dark:bg-gray-700">
                             {{ group_name }}
                             <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
                                 {{ group_description }}
@@ -12,25 +12,11 @@
                         </caption>
                         <thead class="bg-gray-100 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="p-4">
-                                <div class="flex items-center">
-                                    <input id="checkbox-all" name="checkbox-all" aria-describedby="checkbox-1"
-                                           type="checkbox"
-                                           class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="checkbox-all" class="sr-only">checkbox</label>
-                                </div>
-                            </th>
                             <th scope="col"
                                 class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
                             >
                                 <div class="flex items-center">
                                     Principal Name
-                                </div>
-                            </th>
-                            <th scope="col"
-                                class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                <div class="flex items-center">
-                                    Job Title
                                 </div>
                             </th>
                             <th scope="col"
@@ -43,19 +29,9 @@
                                class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                         {% for principal in principals %}
                             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <td class="w-4 p-4">
-                                    <div class="flex items-center">
-                                        <input id="checkbox-id" aria-describedby="checkbox-1" type="checkbox"
-                                               class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-                                        <label for="checkbox-id" class="sr-only">checkbox</label>
-                                    </div>
-                                </td>
                                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                                     <div class="text-base font-semibold text-gray-900 dark:text-white">{{ principal.first_name }} {{ principal.last_name }}</div>
                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ principal.user_name }}</div>
-                                </td>
-                                <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-                                    {{ principal.job_title }}
                                 </td>
                                 <td class="p-4 whitespace-nowrap">
                                     <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Active Directory</span>
