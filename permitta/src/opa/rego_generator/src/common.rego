@@ -35,6 +35,11 @@ principal_exists(principal_name) if {
   principal.name == principal_name
 }
 
+data_object_is_tagged(data_object) if {
+  data_object
+  count(data_object.attributes) > 0
+}
+
 # if columns are specified on the data object, they they have their
 # own classification, we need to test them here
 # if a column is selected then we need to check it on the object
@@ -52,14 +57,6 @@ classified_columns contains classified_column if {
   classified_column.name == input_column
 }
 
-all_object_attrs_exist_on_principal if {
-  # ensure all attrs on object exist on principal
-	every data_object_attribute in data_object_attributes {
-    some principal_attribute in principal_attributes
-    data_object_attribute == principal_attribute
-  }
-}
-
 all_classified_column_attrs_exist_on_principal if {
   # for all columns which are in both the input and data
   every classified_column in classified_columns {
@@ -70,9 +67,7 @@ all_classified_column_attrs_exist_on_principal if {
     }
   }
 }
-allow if {
-  input_principal_name == "admin"
-}
+
 # ExecuteQuery comes with no parameters
 allow if {
   # ensure we have a valid user
@@ -101,6 +96,7 @@ allow if {
   input.action.operation in ["FilterCatalogs", "AccessCatalog"]
   some data_object in data_objects
 	data_object.object.database == input.action.resource.catalog.name
+	data_object_is_tagged(data_object)
 	all_object_attrs_exist_on_principal
 }
 
@@ -115,6 +111,7 @@ allow if {
   some data_object in data_objects
 	data_object.object.database == input.action.resource.schema.catalogName
 	data_object.object.schema == input.action.resource.schema.schemaName
+	data_object_is_tagged(data_object)
 	all_object_attrs_exist_on_principal
 }
 
@@ -122,15 +119,20 @@ allow if {
 allow if {
   input.action.operation == "FilterTables"
   some data_object in data_objects
-	data_object.object.database == input.action.resource.table.catalogName
-	data_object.object.schema == input.action.resource.table.schemaName
-	data_object.object.table == input.action.resource.table.tableName
+	data_object.object == input_table
+	data_object_is_tagged(data_object)
 	all_object_attrs_exist_on_principal
 }
 
 # filter columns - all allowed as masking is default when inaccessible
 allow if {
   input.action.operation == "FilterColumns"
+#  some data_object in data_objects
+#	data_object.object.database == input.action.resource.table.catalogName
+#	data_object.object.schema == input.action.resource.table.schemaName
+#	data_object.object.table == input.action.resource.table.tableName
+#	all_object_attrs_exist_on_principal
+#	all_classified_column_attrs_exist_on_principal
 }
 
 # running the select
@@ -140,13 +142,12 @@ allow if {
   principal_exists(input_principal_name)
 
   # ensure the object is tagged
-  count(data_object_attributes) > 0
+  some data_object in data_objects
+	data_object.object == input_table
+  data_object_is_tagged(data_object)
 
   # ensure all attrs on object exist on principal
 	all_object_attrs_exist_on_principal
-
-  # ensure all attrs on classified columns exist on principal
-#  all_classified_column_attrs_exist_on_principal  # removed as we mask these columns ATM
 }
 
 # ----------------- column masking rules ---------------------
@@ -175,3 +176,36 @@ columnmask := {"expression": mask} if {
   # either return the mask or a default which is null
   mask := object.get(column, "mask", "NULL")
 }
+
+
+# batch mode - run with both the input and output resources if they exist
+#batch contains i if {
+#	some i
+#	raw_resource := input.action.filterResources[i]
+#	allow with input.action.resource as raw_resource
+#}
+#
+#data_object_columns contains column if {
+##  some i
+#	input.action.operation == "FilterColumns"
+#	count(input.action.filterResources) == 1
+#	raw_resource := input.action.filterResources[0]
+#	count(raw_resource.table.columns) > 0
+#	new_resources := [
+#    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
+#	]
+#	some column in new_resources
+#}
+
+#batch contains i if {
+#	some i
+#	input.action.operation == "FilterColumns"
+#	count(input.action.filterResources) == 1
+#	raw_resource := input.action.filterResources[0]
+#	count(raw_resource.table.columns) > 0
+#	new_resources := [
+#    object.union(raw_resource, {"table": {"column": column_name}}) | column_name := raw_resource.table.columns[_]
+#	]
+#	print(new_resources)
+#	allow with input.action.resource as new_resources[i]
+#}

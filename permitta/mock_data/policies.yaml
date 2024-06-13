@@ -4,7 +4,7 @@
   author: system
   policy_dsl: |-
     allow if {
-      input_principal_name == "super_account"
+      input_principal_name == "admin"
     }
 
 - name: Global ABAC
@@ -13,12 +13,13 @@
   author: alice
   policy_dsl: |-
     
-    allow if {
-        # Global Policy
-        # All attributes on the object must exist on the principal
-        every k, v in data.data_objects[input.data_object] {
-            k, v in data.principals[input.principal]
-        }
+    # global policy - if all object tags are on the principal, then allow
+    all_object_attrs_exist_on_principal if {
+      # ensure all attrs on object exist on principal
+        every data_object_attribute in data_object_attributes {
+        some principal_attribute in principal_attributes
+        data_object_attribute == principal_attribute
+      }
     }
 
 - name: Sales & Marketing Analysts

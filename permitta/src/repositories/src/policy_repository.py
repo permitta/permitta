@@ -28,6 +28,10 @@ class PolicyRepository(RepositoryBase):
         return policy
 
     @staticmethod
+    def get_all(session) -> list[PolicyDbo]:
+        return session.query(PolicyDbo).order_by(PolicyDbo.policy_id).all()
+
+    @staticmethod
     def clone(
         session,
         policy_id: int,

@@ -25,7 +25,7 @@ class BundleGenerator:
 
         # write the rego file
         rego_file_path: str = os.path.join(bundle_directory, f"{bundle_name}.rego")
-        rego_file_content: str = RegoGenerator.generate_rego_document()
+        rego_file_content: str = RegoGenerator.generate_rego_document(session=session)
         with open(rego_file_path, "w") as f:
             f.write(rego_file_content)
 
