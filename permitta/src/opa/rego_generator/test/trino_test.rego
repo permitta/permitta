@@ -210,14 +210,7 @@ columnmask := {"expression": mask} if {
 #	allow with input.action.resource as new_resources[i]
 #}
 
-# Policy ID: 1
-# Policy Name: Super User Account
-allow if {
-  input_principal_name == "admin"
-}
-
-
-# Policy ID: 2
+# Policy ID: 4
 # Policy Name: Global ABAC
 
 # global policy - if all object tags are on the principal, then allow
@@ -230,7 +223,7 @@ all_object_attrs_exist_on_principal if {
 }
 
 
-# Policy ID: 3
+# Policy ID: 5
 # Policy Name: Sales & Marketing Analysts
 all_object_attrs_exist_on_principal if {
     required_principal_attributes := [
@@ -259,13 +252,5 @@ all_object_attrs_exist_on_principal if {
     some permitted_object_attribute in permitted_object_attributes
     permitted_object_attribute == data_object_attributes[_]
     count(permitted_object_attributes) == count(data_object_attributes)
-}
-
-
-# Policy ID: 4
-# Policy Name: API User impersonation
-allow if {
-  input_principal_name == "api_impersonation_account"
-  action == "ImpersonateUser"
 }
 

@@ -8,13 +8,13 @@ from repositories import PolicyRepository
 
 def test_generate_snippet_for_policy(database: Database):
     with database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=3)
+        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=5)
 
         assert dedent(
             RegoGenerator.generate_snippet_for_policy(policy=policy)
         ) == dedent(
             """
-            # Policy ID: 3
+            # Policy ID: 5
             # Policy Name: Sales & Marketing Analysts
             all_object_attrs_exist_on_principal if {
                 required_principal_attributes := [
@@ -50,13 +50,13 @@ def test_generate_snippet_for_policy(database: Database):
 
 def test_generate_snippet_for_dsl_policy(database: Database):
     with database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=2)
+        policy: PolicyDbo = PolicyRepository.get_by_id(session=session, policy_id=4)
 
         assert dedent(
             RegoGenerator.generate_snippet_for_policy(policy=policy)
         ) == dedent(
             """
-            # Policy ID: 2
+            # Policy ID: 4
             # Policy Name: Global ABAC
             
             # global policy - if all object tags are on the principal, then allow

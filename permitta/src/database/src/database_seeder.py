@@ -173,6 +173,7 @@ class DatabaseSeeder:
             policy.author = policy_data.get("author")
             policy.description = policy_data.get("description")
             policy.record_updated_by = policy.author
+            policy.status = policy_data.get("status")
 
             if policy.policy_type == PolicyDbo.POLICY_TYPE_DSL:
                 policy.policy_dsl = policy_data.get("policy_dsl")

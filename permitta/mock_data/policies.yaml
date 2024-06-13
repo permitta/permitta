@@ -2,15 +2,37 @@
   description: Super user has access to do anything within the platform
   policy_type: DSL
   author: system
+  status: Pending Publish
   policy_dsl: |-
     allow if {
       input_principal_name == "admin"
+    }
+
+- name: Internal User Account
+  description: Internal admin user has access to do anything within the platform
+  policy_type: DSL
+  author: system
+  status: Pending Delete
+  policy_dsl: |-
+    allow if {
+      input_principal_name == "internal_admin"
+    }
+
+- name: External User Account
+  description: External user has access to do anything within the platform (disabled)
+  policy_type: DSL
+  author: system
+  status: Disabled
+  policy_dsl: |-
+    allow if {
+      input_principal_name == "external_admin"
     }
 
 - name: Global ABAC
   description: Global policy to allow access to objects which match the attributes or principals
   policy_type: DSL
   author: alice
+  status: Published
   policy_dsl: |-
     
     # global policy - if all object tags are on the principal, then allow
@@ -27,6 +49,7 @@
   policy_type: Builder
   action_group: read
   author: alice
+  status: Published
   principal_attributes:
     - key: Sales
       value: Commercial
@@ -40,6 +63,7 @@
   description: This policy allows the API user to impersonate any other user
   policy_type: DSL
   author: alice
+  status: Draft
   policy_dsl: |-
     allow if {
       input_principal_name == "api_impersonation_account"

@@ -1,6 +1,9 @@
 import jinja2
 from models import PolicyDbo
 from repositories import PolicyRepository
+from app_logger import Logger, get_logger
+
+logger: Logger = get_logger("opa.bundle_generator")
 
 
 class RegoGenerator:
@@ -21,12 +24,23 @@ class RegoGenerator:
         """
         First pass - just directly render the template and return it
         """
-        with open("permitta/src/opa/rego_generator/src/common.rego") as f:
+        logger.info(f"Generating rego document")
+        common_rego_file_path: str = "permitta/src/opa/rego_generator/src/common.rego"
+        with open(common_rego_file_path) as f:
+            logger.info(f"Loaded {common_rego_file_path}")
             rego_content: str = f.read()
 
         policies: list[PolicyDbo] = PolicyRepository.get_all(session=session)
         for policy in policies:
-            snippet: str = RegoGenerator.generate_snippet_for_policy(policy=policy)
-            rego_content += snippet + "\n"
+            if policy.status == PolicyDbo.STATUS_PUBLISHED:
+                snippet: str = RegoGenerator.generate_snippet_for_policy(policy=policy)
+                rego_content += snippet + "\n"
+                logger.info(
+                    f"Rendered policy ID: {policy.policy_id}, Name: {policy.name}"
+                )
+            else:
+                logger.info(
+                    f"Skipped rendering policy ID: {policy.policy_id}, Name: {policy.name}, Status: {policy.status}"
+                )
 
         return rego_content
