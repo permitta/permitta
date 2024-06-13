@@ -152,6 +152,35 @@
           "value": "Privacy"
         }
       ]
+    },
+    {
+      "object": {
+        "database": "datalake",
+        "schema": "sales",
+        "table": "customers_markets"
+      },
+      "attributes": [
+        {
+          "key": "Sales",
+          "value": "Commercial"
+        },
+        {
+          "key": "Marketing",
+          "value": "Commercial"
+        }
+      ],
+      "columns": [
+        {
+          "name": "type_name",
+          "attributes": [
+            {
+              "key": "IT",
+              "value": "Privacy"
+            }
+          ],
+          "mask": "'no!'"
+        }
+      ]
     }
   ],
   "principals": [
@@ -227,6 +256,15 @@
         },
         {
           "key": "HR",
+          "value": "Commercial"
+        }
+      ]
+    },
+    {
+      "name": "janis",
+      "attributes": [
+        {
+          "key": "IT",
           "value": "Commercial"
         }
       ]
