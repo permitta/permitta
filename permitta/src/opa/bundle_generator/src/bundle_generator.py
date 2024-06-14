@@ -1,7 +1,9 @@
 import json
 import os
+import shutil
 import subprocess
 import uuid
+from dataclasses import dataclass
 from typing import Tuple
 
 from app_logger import Logger, get_logger
@@ -14,30 +16,48 @@ from .bundle_generator_config import BundleGeneratorConfig
 logger: Logger = get_logger("opa.bundle_generator")
 
 
-class BundleGenerator:
+@dataclass
+class Bundle:
+    @property
+    def path(self) -> str:
+        return os.path.join(self.directory, self.filename)
 
-    @staticmethod
-    def generate_bundle(session, platform_id: int, bundle_name: str) -> Tuple[str, str]:
+    directory: str
+    filename: str
+
+
+class BundleGenerator:
+    def __init__(self, session, platform_id: int, bundle_name: str):
+        self.session = session
+        self.platform_id = platform_id
+        self.bundle_name = bundle_name
+
         config: BundleGeneratorConfig = BundleGeneratorConfig().load()
-        bundle_directory: str = f"{config.temp_directory}/{uuid.uuid4()}"
-        data_directory: str = f"{bundle_directory}/{bundle_name}"
-        os.makedirs(os.path.join(data_directory), exist_ok=True)
+        self.bundle_directory: str = f"{config.temp_directory}/{uuid.uuid4()}"
+        self.data_directory: str = f"{self.bundle_directory}/{bundle_name}"
+        self.rego_file_path: str = os.path.join(
+            self.bundle_directory, f"{bundle_name}.rego"
+        )
+        self.data_file_path: str = os.path.join(
+            self.bundle_directory, f"{bundle_name}", "data.json"
+        )
+
+    def __enter__(self) -> Bundle:
+        os.makedirs(os.path.join(self.data_directory), exist_ok=True)
 
         # write the rego file
-        rego_file_path: str = os.path.join(bundle_directory, f"{bundle_name}.rego")
-        rego_file_content: str = RegoGenerator.generate_rego_document(session=session)
-        with open(rego_file_path, "w") as f:
+        rego_file_content: str = RegoGenerator.generate_rego_document(
+            session=self.session
+        )
+        with open(self.rego_file_path, "w") as f:
             f.write(rego_file_content)
 
         # write the data file
-        data_file_path: str = os.path.join(
-            bundle_directory, f"{bundle_name}", "data.json"
-        )
-        with open(data_file_path, "w") as f:
+        with open(self.data_file_path, "w") as f:
             f.write(
                 json.dumps(
                     BundleGenerator.generate_data_object(
-                        session=session, platform_id=platform_id
+                        session=self.session, platform_id=self.platform_id
                     )
                 )
             )
@@ -47,7 +67,7 @@ class BundleGenerator:
             ["opa", "build", "-b", "."],  # TODO optimise
             capture_output=True,
             text=True,
-            cwd=bundle_directory,
+            cwd=self.bundle_directory,
         )
         if result.returncode != 0:
             raise ValueError(
@@ -57,13 +77,14 @@ class BundleGenerator:
         logger.info(
             f"Generated bundle with output: {result.stdout}  Error: {result.stderr}"
         )
+        return Bundle(directory=self.bundle_directory, filename="bundle.tar.gz")
 
-        # clean up
-        os.remove(data_file_path)
-        os.remove(rego_file_path)
-        os.rmdir(data_directory)
-
-        return bundle_directory, "bundle.tar.gz"
+    def __exit__(self, *args):
+        # os.remove(self.data_file_path)
+        # os.remove(self.rego_file_path)
+        # os.rmdir(self.data_directory)
+        # os.remove(os.path.join(bundle_directory, "bundle.tar.gz"))
+        shutil.rmtree(self.bundle_directory, ignore_errors=True)
 
     @staticmethod
     def generate_data_object(session, platform_id: int) -> dict:

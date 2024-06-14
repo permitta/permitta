@@ -1,7 +1,7 @@
 import jinja2
+from app_logger import Logger, get_logger
 from models import PolicyDbo
 from repositories import PolicyRepository
-from app_logger import Logger, get_logger
 
 logger: Logger = get_logger("opa.bundle_generator")
 

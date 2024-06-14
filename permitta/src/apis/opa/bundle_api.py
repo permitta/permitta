@@ -13,12 +13,13 @@ bp = Blueprint("opa_bundle", __name__, url_prefix="/opa/bundle")
 
 @bp.route("/<platform_id>", methods=["GET"])
 @validate()
-def bundle(platform_id: int):
+def get_bundle(platform_id: int):
     with g.database.Session.begin() as session:
-        directory, filename = BundleGenerator.generate_bundle(
+        with BundleGenerator(
             session=session, platform_id=platform_id, bundle_name="trino"
-        )
-
-    return send_from_directory(
-        directory=directory, path=filename, mimetype="application/octet-stream"
-    )
+        ) as bundle:
+            return send_from_directory(
+                directory=bundle.directory,
+                path=bundle.filename,
+                mimetype="application/octet-stream",
+            )

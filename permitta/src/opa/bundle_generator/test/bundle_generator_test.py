@@ -9,12 +9,12 @@ from ..src.bundle_generator import BundleGenerator
 
 def test_generate_bundle(tmp_path, database: Database):
     with database.Session() as session:
-        directory, filename = BundleGenerator.generate_bundle(
+        with BundleGenerator(
             session=session, platform_id=1, bundle_name="trino"
-        )
-        subprocess.run(["tar", "-xf", os.path.join(directory, filename)], cwd=tmp_path)
+        ) as bundle:
+            subprocess.run(["tar", "-xf", bundle.path], cwd=tmp_path)
         bundle_files: list[str] = os.listdir(tmp_path)
-        assert bundle_files == ["trino.rego", "data.json", ".manifest"]
+        assert bundle_files == ["trino.rego", "trino/data.json", ".manifest"]
 
 
 def test_generate_data_object(database: Database):

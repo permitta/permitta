@@ -1,4 +1,4 @@
-from apis import bundle_api_bp, decision_logs_api_bp
+from apis import opa_bundle_api_bp, opa_decision_logs_api_bp, opa_status_bp
 from app_config import AppConfigModelBase
 from database import Database
 from extensions import oidc, oidc_auth_provider
@@ -50,8 +50,9 @@ def create_app() -> Flask:
     flask_app.register_blueprint(groups_bp)
     flask_app.register_blueprint(decision_logs_bp)
 
-    flask_app.register_blueprint(decision_logs_api_bp)
-    flask_app.register_blueprint(bundle_api_bp)
+    flask_app.register_blueprint(opa_bundle_api_bp)
+    flask_app.register_blueprint(opa_decision_logs_api_bp)
+    flask_app.register_blueprint(opa_status_bp)
 
     # Database
     database: Database = Database()

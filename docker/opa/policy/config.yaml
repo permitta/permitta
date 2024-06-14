@@ -1,10 +1,10 @@
 services:
   permitta:
-    url: http://host.docker.internal:8000/
+    url: http://host.docker.internal:8000/opa/
 
 decision_logs:
   service: permitta
-  resource: /opa/decision/
+  resource: /decision
   reporting:
     min_delay_seconds: 1
     max_delay_seconds: 10
@@ -12,13 +12,16 @@ decision_logs:
 bundles:
   trino:
     service: permitta
-    resource: /opa/bundle/1
-    persist: true
+    resource: /bundle/1
+#    persist: true
     polling:
       min_delay_seconds: 10
       max_delay_seconds: 20
 #    signing:
 #      keyid: global_key
 #      scope: write
+
+status:
+  service: permitta
 
 persistence_directory: /policy/persistence
