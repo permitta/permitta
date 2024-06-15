@@ -40,6 +40,12 @@ data_object_is_tagged(data_object) if {
   count(data_object.attributes) > 0
 }
 
+principal_has_all_required_attributes(required_principal_attributes) if {
+  # assert that the principal has all required_principal_attributes
+  some required_principal_attribute in required_principal_attributes
+  required_principal_attribute == principal_attributes[_]
+}
+
 # if columns are specified on the data object, they they have their
 # own classification, we need to test them here
 # if a column is selected then we need to check it on the object

@@ -24,8 +24,7 @@ all_object_attrs_exist_on_principal if {
   ]
 
   # assert that the principal has all required_principal_attributes
-  some required_principal_attribute in required_principal_attributes
-  required_principal_attribute == principal_attributes[_]
+  principal_has_all_required_attributes(required_principal_attributes)
 
   # logic:
   # scenario 1: no column level attributes

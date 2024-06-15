@@ -15,6 +15,8 @@ input_table := {
 	"table": input.action.resource.table.tableName
 }
 
+fully_qualified_input_table_name(input_table) := concat(".", [input_table.database, input_table.schema, input_table.table])
+
 input_columns := input.action.resource.table.columns
 
 data_object_attributes contains attribute if {
@@ -38,6 +40,12 @@ principal_exists(principal_name) if {
 data_object_is_tagged(data_object) if {
   data_object
   count(data_object.attributes) > 0
+}
+
+principal_has_all_required_attributes(required_principal_attributes) if {
+  # assert that the principal has all required_principal_attributes
+  some required_principal_attribute in required_principal_attributes
+  required_principal_attribute == principal_attributes[_]
 }
 
 # if columns are specified on the data object, they they have their

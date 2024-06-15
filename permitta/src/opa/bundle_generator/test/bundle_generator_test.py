@@ -14,7 +14,7 @@ def test_generate_bundle(tmp_path, database: Database):
         ) as bundle:
             subprocess.run(["tar", "-xf", bundle.path], cwd=tmp_path)
         bundle_files: list[str] = os.listdir(tmp_path)
-        assert bundle_files == ["trino.rego", "trino/data.json", ".manifest"]
+        assert bundle_files == ["trino.rego", "data.json", ".manifest"]
 
 
 def test_generate_data_object(database: Database):

@@ -67,6 +67,14 @@ class DecisionLogRepository(RepositoryBase):
             "FilterTables",
             "FilterColumns",
             "FilterSchemas",
+            "CreateSchema",
+            "DropSchema",
+            "CreateTable",
+            "DropTable",
+            "ShowCreateTable",
+            "InsertIntoTable",
+            "UpdateTableColumns",
+            "DeleteFromTable",
         ]:
             data_object: dict = (
                 resource.get("column", {})
