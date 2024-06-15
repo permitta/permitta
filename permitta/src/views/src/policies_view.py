@@ -30,12 +30,13 @@ bp = Blueprint("policies", __name__, url_prefix="/policies")
 
 logger: Logger = get_logger("views.policy")
 
+DEFAULT_SORT_KEY: str = "name"
+
 
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key="name")
-
+    query_state: TableQueryDto = TableQueryDto(sort_key=DEFAULT_SORT_KEY)
     response: Response = make_response(
         render_template(
             "partials/policies/policies-search.html", query_state=query_state

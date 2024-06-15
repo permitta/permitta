@@ -40,8 +40,9 @@
                                hx-get="/policies/table"
                                hx-trigger="load, keyup changed delay:0.2s"
                                hx-target="#policies-table"
+                               hx-include="#app-state-sort-key"
                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                               placeholder="Search by name or tag">
+                               placeholder="Search by name or description">
                     </div>
                 </form>
                 <div class="flex items-center w-full sm:justify-end">
@@ -95,6 +96,7 @@
     </div>
 </div>
 <div id="policies-table">
+    {% include 'partials/policies/policies-table.html' %}
 </div>
 
 
