@@ -8,6 +8,7 @@ database.password: "test_password"
 database.host: "localhost"
 database.port: "5432"
 database.database: "permitta"
+database.seed_data_path: "permitta/seed_data"
 
 oidc_auth_provider.issuer: "http://localhost:8080/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"

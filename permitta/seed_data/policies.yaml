@@ -2,6 +2,7 @@
   description: Super user has access to do anything within the platform
   policy_type: DSL
   author: system
+  publisher: system
   status: Published
   policy_dsl: |-
     allow if {
@@ -12,6 +13,7 @@
   description: Internal admin user has access to do anything within the platform
   policy_type: DSL
   author: system
+  publisher: system
   status: Pending Delete
   policy_dsl: |-
     allow if {
@@ -22,6 +24,7 @@
   description: External user has access to do anything within the platform (disabled)
   policy_type: DSL
   author: system
+  publisher: system
   status: Disabled
   policy_dsl: |-
     allow if {
@@ -32,6 +35,7 @@
   description: Global policy to allow access to objects which match the attributes or principals
   policy_type: DSL
   author: alice
+  publisher: system
   status: Published
   policy_dsl: |-
     
@@ -49,6 +53,7 @@
   policy_type: Builder
   action_group: read
   author: alice
+  publisher: system
   status: Published
   principal_attributes:
     - key: Sales
@@ -71,9 +76,10 @@
     }
 
 - name: Developers
-  description: This policy allows the API user to impersonate any other user
+  description: Allows developers to perform DDL and write operations on iceberg.workspace schema with v_ and u_ table prefixes
   policy_type: DSL
-  author: alice
+  author: system
+  publisher: system
   status: Published
   policy_dsl: |-
     allow if {

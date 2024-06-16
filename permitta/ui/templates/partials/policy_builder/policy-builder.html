@@ -27,19 +27,19 @@
                     </li>
                 </ol>
             </nav>
-            <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Policy Builder</h1>
-                <button
-                    id="savePolicyButton"
-                    hx-post="/policies/create"
-                    hx-target="#main"
-                    hx-include="#policy_metadata, #required-principal-attributes-form"
-                    hx-ext='json-enc'
-                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button"
-                >
-                    Request Publish
-                </button>
-            </div>
+{#            <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">#}
+{#                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Policy Builder</h1>#}
+{#                <button#}
+{#                    id="savePolicyButton"#}
+{#                    hx-post="/policies/create"#}
+{#                    hx-target="#main"#}
+{#                    hx-include="#policy_metadata, #required-principal-attributes-form"#}
+{#                    hx-ext='json-enc'#}
+{#                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button"#}
+{#                >#}
+{#                    Request Publish#}
+{#                </button>#}
+{#            </div>#}
         </div>
     </div>
 </div>

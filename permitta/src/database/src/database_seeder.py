@@ -1,5 +1,5 @@
 import json
-import random
+import os
 import uuid
 from datetime import datetime
 from typing import Type
@@ -27,6 +27,8 @@ from models import (
     TableDbo,
 )
 
+from .database_config import DatabaseConfig
+
 
 class DatabaseSeeder:
     def __init__(self, db: Database):
@@ -34,7 +36,9 @@ class DatabaseSeeder:
 
     @staticmethod
     def _get_principals() -> list[PrincipalDbo]:
-        with open("permitta/mock_data/principals.json") as json_file:
+        with open(
+            os.path.join(DatabaseConfig.load().seed_data_path, "principals.json")
+        ) as json_file:
             mock_users: list[dict] = json.load(json_file)
             principals: list[PrincipalDbo] = []
             group_prop_index = 0
@@ -61,7 +65,9 @@ class DatabaseSeeder:
 
     @staticmethod
     def _get_groups() -> list:
-        with open("permitta/mock_data/principal_groups.json") as json_file:
+        with open(
+            os.path.join(DatabaseConfig.load().seed_data_path, "principal_groups.json")
+        ) as json_file:
             principal_group_mock_data: list[dict] = json.load(json_file).get("groups")
             principal_groups: list[PrincipalGroupDbo] = []
             for principal_group in principal_group_mock_data:
@@ -101,7 +107,9 @@ class DatabaseSeeder:
             platform_dbo.platform_type = mock_data["type"]
             return platform_dbo
 
-        with open("permitta/mock_data/platforms.json") as platforms_file:
+        with open(
+            os.path.join(DatabaseConfig.load().seed_data_path, "platforms.json")
+        ) as platforms_file:
             platforms: list[PlatformDbo] = [
                 _get_platform_dbo(mock_data) for mock_data in json.load(platforms_file)
             ]
@@ -122,7 +130,9 @@ class DatabaseSeeder:
     # data objects
     @staticmethod
     def _get_data_objects():
-        with open("permitta/mock_data/data_objects_hier.json") as data_objects_file:
+        with open(
+            os.path.join(DatabaseConfig.load().seed_data_path, "data_objects_hier.json")
+        ) as data_objects_file:
             database_dbos: list[DatabaseDbo] = []
             for raw_database in json.load(data_objects_file).get("databases"):
                 database_dbo: DatabaseDbo = DatabaseDbo()
@@ -162,7 +172,9 @@ class DatabaseSeeder:
 
     @staticmethod
     def _get_policies():
-        with open("permitta/mock_data/policies.yaml") as policies_file:
+        with open(
+            os.path.join(DatabaseConfig.load().seed_data_path, "policies.yaml")
+        ) as policies_file:
             policies_data = yaml.safe_load(policies_file)
 
         policies: list[PolicyDbo] = []
@@ -171,6 +183,7 @@ class DatabaseSeeder:
             policy.policy_type = policy_data.get("policy_type")
             policy.name = policy_data.get("name")
             policy.author = policy_data.get("author")
+            policy.publisher = policy_data.get("publisher", None)
             policy.description = policy_data.get("description")
             policy.record_updated_by = policy.author
             policy.status = policy_data.get("status")

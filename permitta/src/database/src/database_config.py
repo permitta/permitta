@@ -14,3 +14,4 @@ class DatabaseConfig(AppConfigModelBase):
     host: str = None
     port: int = None
     database: str = None
+    seed_data_path: str = None

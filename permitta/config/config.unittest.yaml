@@ -12,6 +12,7 @@ database.password: "password"
 database.host: "localhost"
 database.port: "5432"
 database.database: "unittest"
+database.seed_data_path: "permitta/test/seed_data"
 
 connector.json_file.principals.file_path: "config/principals.json"
 oidc_auth_provider.issuer: "http://example.com/realms/permitta"

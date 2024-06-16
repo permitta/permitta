@@ -15,8 +15,6 @@ input_table := {
 	"table": input.action.resource.table.tableName
 }
 
-fully_qualified_input_table_name(input_table) := concat(".", [input_table.database, input_table.schema, input_table.table])
-
 input_columns := input.action.resource.table.columns
 
 data_object_attributes contains attribute if {
