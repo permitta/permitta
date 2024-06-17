@@ -1,8 +1,11 @@
-from apis import opa_bundle_api_bp, opa_decision_logs_api_bp, opa_status_bp
+from datetime import datetime, timezone
+
+from apis import opa_bundle_api_bp, opa_decision_logs_api_bp, opa_status_api_bp
 from app_config import AppConfigModelBase
+from app_logger import Logger, get_logger
 from database import Database
 from extensions import oidc, oidc_auth_provider
-from flask import Blueprint, Flask, g, redirect, render_template
+from flask import Flask, g, redirect, request
 
 # blueprints
 from views import (
@@ -14,6 +17,8 @@ from views import (
     principals_bp,
     root_bp,
 )
+
+logger: Logger = get_logger("app")
 
 
 class FlaskConfig(AppConfigModelBase):
@@ -52,7 +57,7 @@ def create_app() -> Flask:
 
     flask_app.register_blueprint(opa_bundle_api_bp)
     flask_app.register_blueprint(opa_decision_logs_api_bp)
-    flask_app.register_blueprint(opa_status_bp)
+    flask_app.register_blueprint(opa_status_api_bp)
 
     # Database
     database: Database = Database()
@@ -62,6 +67,20 @@ def create_app() -> Flask:
     def before_request():
         # connect DB
         g.database = database
+
+    @flask_app.after_request
+    def after_request(response):
+        timestamp = datetime.now(tz=timezone.utc).strftime("[%Y-%b-%d %H:%M]")
+        logger.info(
+            "%s %s %s %s %s %s",
+            timestamp,
+            request.remote_addr,
+            request.method,
+            request.scheme,
+            request.full_path,
+            response.status,
+        )
+        return response
 
     @flask_app.route("/logout")
     @oidc.oidc_logout
