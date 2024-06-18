@@ -47,7 +47,26 @@ test_access_system_catalog_for_all_users if {
   }
 }
 
-# all valid users should habe information_schema on all catalog
+# all valid users should be able to show schemas on system
+test_show_schema_in_system_for_all_users if {
+  allow with input as {
+    "action": {
+      "operation": "ShowSchemas",
+      "resource": {
+        "catalog": {
+          "name": "system"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "alice"
+      }
+    }
+  }
+}
+
+# all valid users should have information_schema on all catalog
 test_select_from_information_schema_for_all_users if {
   allow with input as {
     "action": {
@@ -61,11 +80,7 @@ test_select_from_information_schema_for_all_users if {
     },
     "context": {
       "identity": {
-        "groups": [],
         "user": "bob"
-      },
-      "softwareStack": {
-        "trinoVersion": "448"
       }
     }
   }
@@ -97,7 +112,7 @@ test_select_from_system_catalog_for_all_users if {
 }
 
 # All valid users should have FilterCatalogs on system
-test_select_from_system_catalog_for_all_users if {
+test_filter_catalogs_system_catalog_for_all_users if {
   allow with input as {
     "action": {
       "operation": "FilterCatalogs",
@@ -242,8 +257,64 @@ test_bob_allow_catalogs if {
   }
 }
 
-# filter schemas should return hr, logistics and sales
-# TODO
+# filter schemas should allow hr for bob
+test_bob_filter_schemas_in_datalake if {
+  allow with input as {
+    "action": {
+      "operation": "FilterSchemas",
+      "resource": {
+        "schema": {
+          "catalogName": "datalake",
+          "schemaName": "hr"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "bob"
+      }
+    }
+  }
+}
+
+test_alice_filter_schemas_in_datalake if {
+  not allow with input as {
+    "action": {
+      "operation": "FilterSchemas",
+      "resource": {
+        "schema": {
+          "catalogName": "datalake",
+          "schemaName": "hr"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "alice"
+      }
+    }
+  }
+}
+
+test_anne_filter_schemas_in_datalake if {
+  not allow with input as {
+    "action": {
+      "operation": "FilterSchemas",
+      "resource": {
+        "schema": {
+          "catalogName": "datalake",
+          "schemaName": "sales"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "anne"
+      }
+    }
+  }
+}
+
 
 # filter tables
 test_filter_tables_alice_hr_employees if {

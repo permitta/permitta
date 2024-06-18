@@ -2,6 +2,8 @@ CREATE SCHEMA IF NOT EXISTS datalake.hr;
 CREATE SCHEMA IF NOT EXISTS datalake.logistics;
 CREATE SCHEMA IF NOT EXISTS datalake.sales;
 
+CREATE SCHEMA IF NOT EXISTS iceberg.workspace;
+
 CREATE TABLE IF NOT EXISTS datalake.hr.employees
 (
     Id
@@ -180,6 +182,36 @@ CREATE TABLE IF NOT EXISTS datalake.sales.customers
         format = 'CSV',
         skip_header_line_count = 1,
         external_location = 's3://datalake/customers/'
+        );
+
+CREATE TABLE IF NOT EXISTS datalake.sales.customer_markets
+(
+    Id
+    VARCHAR,
+    type_name
+    VARCHAR,
+    ContactName
+    VARCHAR,
+    ContactTitle
+    VARCHAR,
+    Address
+    VARCHAR,
+    City
+    VARCHAR,
+    Region
+    VARCHAR,
+    PostalCode
+    VARCHAR,
+    Country
+    VARCHAR,
+    Phone
+    VARCHAR
+)
+    WITH
+        (
+        format = 'CSV',
+        skip_header_line_count = 1,
+        external_location = 's3://datalake/customer_markets/'
         );
 
 

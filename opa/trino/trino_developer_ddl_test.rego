@@ -118,7 +118,7 @@ test_alice_filter_schema_workspace if {
     },
     "context": {
       "identity": {
-        "user": "bob"
+        "user": "alice"
       }
     }
   }

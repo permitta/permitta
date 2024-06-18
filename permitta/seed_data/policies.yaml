@@ -59,10 +59,24 @@
     - key: Sales
       value: Commercial
   object_attributes:
-    - key: Sales
-      value: Commercial
     - key: Marketing
       value: Commercial
+
+- name: IT Directors
+  description: IT directors with access to IT privacy can see objects which are both sales and marketing privacy
+  policy_type: Builder
+  action_group: read
+  author: alice
+  publisher: system
+  status: Published
+  principal_attributes:
+    - key: IT
+      value: Restricted
+  object_attributes:
+    - key: Sales
+      value: Privacy
+    - key: Marketing
+      value: Privacy
 
 - name: API User impersonation
   description: This policy allows the API user to impersonate any other user
@@ -95,8 +109,8 @@
 
       required_principal_attributes := [
         {
-          "key": "Sales",
-          "value": "Commercial"
+          "key": "ad_group",
+          "value": "DEVELOPERS"
         }
       ]
 
@@ -132,8 +146,8 @@
 
       required_principal_attributes := [
         {
-          "key": "Sales",
-          "value": "Commercial"
+          "key": "ad_group",
+          "value": "DEVELOPERS"
         }
       ]
 
@@ -165,8 +179,8 @@
 
       required_principal_attributes := [
         {
-          "key": "Sales",
-          "value": "Commercial"
+          "key": "ad_group",
+          "value": "DEVELOPERS"
         }
       ]
 

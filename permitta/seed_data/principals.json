@@ -6,8 +6,7 @@
     "email": "bob.dylan@permitta.com",
     "groups": [
       "SALES_DIRECTORS_GL",
-      "HR_SUPERVISORS_GL",
-      "IT_ANALYSTS_GL"
+      "HR_SUPERVISORS_GL"
     ]
   },
   {
@@ -18,7 +17,7 @@
     "groups": [
       "SALES_ANALYSTS_GL",
       "MARKETING_DIRECTORS_GL",
-      "IT_SUPERVISORS_GL"
+      "DEVELOPERS"
     ]
   },
   {
@@ -28,7 +27,6 @@
     "email": "frank.zappa@permitta.com",
     "groups": [
       "SALES_SUPERVISORS_GL",
-      "MARKETING_ANALYSTS_GL",
       "HR_DIRECTORS_GL"
     ]
   },
@@ -39,8 +37,16 @@
     "email": "anne.murray@permitta.com",
     "groups": [
       "MARKETING_SUPERVISORS_GL",
-      "HR_ANALYSTS_GL",
-      "IT_DIRECTORS_GL"
+      "HR_ANALYSTS_GL"
+    ]
+  },
+  {
+    "username": "janis",
+    "first_name": "Janis",
+    "last_name": "Joplin",
+    "email": "janis.joplin@permitta.com",
+    "groups": [
+      "IT_SUPERVISORS_GL"
     ]
   }
 ]

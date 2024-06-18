@@ -128,6 +128,31 @@
                   "value": "Privacy"
                 }
               ]
+            },
+            {
+              "name": "customer_markets",
+              "attributes": [
+                {
+                  "key": "Sales",
+                  "value": "Privacy"
+                },
+                {
+                  "key": "Marketing",
+                  "value": "Privacy"
+                }
+              ],
+              "columns": [
+                {
+                  "name": "type_name",
+                  "attributes": [
+                    {
+                      "key": "IT",
+                      "value": "Restricted"
+                    }
+                  ],
+                  "mask": "substring(type_name, 3)"
+                }
+              ]
             }
           ]
         }

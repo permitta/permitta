@@ -4,22 +4,22 @@ import rego.v1
 import data.trino
 
 
-all_object_attrs_exist_on_principal if {
+builder_policy_allows_principal_access_by_mapping(data_object) if {
   required_principal_attributes := [
     {
       "key": "IT",
-      "value": "Commercial"
+      "value": "Privacy"
     }
   ]
 
   permitted_object_attributes := [
     {
       "key": "Sales",
-      "value": "Commercial"
+      "value": "Privacy"
     },
     {
       "key": "Marketing",
-      "value": "Commercial"
+      "value": "Privacy"
     }
   ]
 
@@ -44,7 +44,8 @@ all_object_attrs_exist_on_principal if {
   #  - this must be implemented in the column mask request
 
   # assert that the object has permitted_object_attributes and no others
-  some permitted_object_attribute in permitted_object_attributes
-  permitted_object_attribute == data_object_attributes[_]
-  count(permitted_object_attributes) == count(data_object_attributes)
+  every permitted_object_attribute in permitted_object_attributes {
+    permitted_object_attribute == data_object.attributes[_]
+  }
+  count(permitted_object_attributes) == count(data_object.attributes)
 }

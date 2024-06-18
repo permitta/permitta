@@ -188,7 +188,10 @@ def set_policy_status(policy_id: int, status: str):
         session.commit()
 
     response: Response = make_response(
-        render_template("partials/policies/policies-search.html")
+        render_template(
+            "partials/policies/policies-search.html",
+            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+        )
     )
     response.headers.set(
         "HX-Trigger-After-Swap",

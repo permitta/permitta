@@ -157,16 +157,16 @@
       "object": {
         "database": "datalake",
         "schema": "sales",
-        "table": "customers_markets"
+        "table": "customer_markets"
       },
       "attributes": [
         {
           "key": "Sales",
-          "value": "Commercial"
+          "value": "Privacy"
         },
         {
           "key": "Marketing",
-          "value": "Commercial"
+          "value": "Privacy"
         }
       ],
       "columns": [
@@ -175,10 +175,10 @@
           "attributes": [
             {
               "key": "IT",
-              "value": "Privacy"
+              "value": "Restricted"
             }
           ],
-          "mask": "'no!'"
+          "mask": "substring(type_name, 3)"
         }
       ]
     }
@@ -266,6 +266,10 @@
         {
           "key": "IT",
           "value": "Commercial"
+        },
+        {
+          "key": "IT",
+          "value": "Privacy"
         }
       ]
     }

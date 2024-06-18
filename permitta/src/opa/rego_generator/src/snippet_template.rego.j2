@@ -2,7 +2,7 @@
 # Policy ID: {{ policy.policy_id }}
 # Policy Name: {{ policy.name }}
 {%- if policy.policy_type == "Builder" %}
-all_object_attrs_exist_on_principal if {
+builder_policy_allows_principal_access_by_mapping(data_object) if {
     required_principal_attributes := [
     {%- for attribute in policy.principal_attributes %}
         {
@@ -22,14 +22,14 @@ all_object_attrs_exist_on_principal if {
     ]
 
     # assert that the principal has all required_principal_attributes
-    some required_principal_attribute in required_principal_attributes
-    required_principal_attribute == principal_attributes[_]
+    principal_has_all_required_attributes(required_principal_attributes)
 
     # assert that the object has permitted_object_attributes and no others
-    some permitted_object_attribute in permitted_object_attributes
-    permitted_object_attribute == data_object_attributes[_]
-    count(permitted_object_attributes) == count(data_object_attributes)
+    every permitted_object_attribute in permitted_object_attributes {
+      permitted_object_attribute == data_object.attributes[_]
+    }
+    count(permitted_object_attributes) == count(data_object.attributes)
 }
 {% else %}
-{{ policy.policy_dsl }}
+{{ policy.policy_dsl | default('', true) }}
 {% endif %}
