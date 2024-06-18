@@ -343,7 +343,7 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
             session=session,
             policy_id=policy_id,
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL,
-            merge_attributes=body.attributes,
+            merge_attributes=body.attribute_list,
         )
         policy_type: str = policy.policy_type
         session.commit()
@@ -420,7 +420,7 @@ def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
             session=session,
             policy_id=policy_id,
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT,
-            merge_attributes=body.attributes,
+            merge_attributes=body.attribute_list,
         )
         policy_type: str = policy.policy_type
         session.commit()
