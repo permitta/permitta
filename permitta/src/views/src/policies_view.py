@@ -103,7 +103,10 @@ def clone_policy(policy_id: int):
         session.commit()
 
     response: Response = make_response(
-        render_template("partials/policies/policies-search.html")
+        render_template(
+            "partials/policies/policies-search.html",
+            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+        )
     )
     response.headers.set(
         "HX-Trigger", '{"toast_success": {"message": "Cloned Successfully"}}'
@@ -215,7 +218,10 @@ def delete_policy(policy_id: int):
         session.commit()
 
     response: Response = make_response(
-        render_template("partials/policies/policies-search.html")
+        render_template(
+            "partials/policies/policies-search.html",
+            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+        )
     )
     response.headers.set(
         "HX-Trigger-After-Swap",

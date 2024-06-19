@@ -172,8 +172,6 @@ allow if {
   data_object_is_tagged(data_object)
 
   # ensure all attrs on object exist on principal
-  print("data_object.attributes", data_object.attributes)
-  print("principal_attributes", principal_attributes)
 	principal_has_all_required_attributes(data_object.attributes)
 }
 
@@ -181,7 +179,7 @@ allow if {
 # the mask value should be applied when a user doesnt have access to it
 # when a user doesn't have access, they will still get a true on the column
 # if that column doesnt have a defined mask
-all_attributes_on_principal(attributes) if {
+principal_has_access_to_column(attributes) if {
   every attribute in attributes {
     # all attrs must be on the principal
     attribute == principal_attributes[_]
@@ -198,7 +196,7 @@ columnmask := {"expression": mask} if {
 	column.name == input.action.resource.column.columnName
 	# true if not all attrs on the column are on the principal
 	# therefore we should not return a mask
-  not all_attributes_on_principal(column.attributes)
+  not principal_has_access_to_column(column.attributes)
 
   # either return the mask or a default which is null
   mask := object.get(column, "mask", "NULL")

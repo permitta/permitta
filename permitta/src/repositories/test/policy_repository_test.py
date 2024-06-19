@@ -66,14 +66,53 @@ def test_clone(database: Database) -> None:
             session=session, policy_id=cloned_policy_id
         )
         assert policy.policy_id == cloned_policy_id
-        assert policy.name == "my policy"
+        assert policy.name == "my policy - Clone"
         assert policy.description == "A fully sick policy"
         assert policy.author == "margesimpson"
         assert policy.status == PolicyDbo.STATUS_DRAFT
+        assert policy.policy_type == "Builder"
         assert policy.policy_attributes[0].attribute_key == "attr1"
         assert policy.policy_attributes[0].attribute_value == "val1"
         assert policy.policy_attributes[1].attribute_key == "attr2"
         assert policy.policy_attributes[1].attribute_value == "val2"
+
+
+def test_clone_dsl_policy(database: Database) -> None:
+    # create a policy
+    with database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.create(
+            session=session,
+            name="my policy",
+            description="A fully sick policy",
+            logged_in_user="homersimpson",
+        )
+        policy.policy_type = PolicyDbo.POLICY_TYPE_DSL
+        policy.policy_dsl = "some dsl content"
+
+        session.flush()
+        original_policy_id = policy.policy_id
+        session.commit()
+
+    # clone it
+    with database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.clone(
+            session=session, policy_id=original_policy_id, logged_in_user="margesimpson"
+        )
+        session.flush()
+        cloned_policy_id = policy.policy_id
+        session.commit()
+
+    with database.Session.begin() as session:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=cloned_policy_id
+        )
+        assert policy.policy_id == cloned_policy_id
+        assert policy.name == "my policy - Clone"
+        assert policy.description == "A fully sick policy"
+        assert policy.author == "margesimpson"
+        assert policy.status == PolicyDbo.STATUS_DRAFT
+        assert policy.policy_type == "DSL"
+        assert policy.policy_dsl == "some dsl content"
 
 
 def test_merge_policy_attributes(database: Database) -> None:

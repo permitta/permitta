@@ -170,7 +170,7 @@ test_janis_column_mask_type_name if {
       }
     }
   }
-  actual == {"expression": "substring(type_name, 3)"}
+  actual == {"expression": "substring(type_name,1,3)"}
 }
 
 

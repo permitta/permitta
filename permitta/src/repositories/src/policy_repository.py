@@ -15,7 +15,7 @@ class PolicyRepository(RepositoryBase):
 
     @staticmethod
     def create(
-        session, logged_in_user: str, name: str = "", description: str = ""
+        session, logged_in_user: str, name: str = "New Policy", description: str = ""
     ) -> PolicyDbo:
         policy: PolicyDbo = PolicyDbo(
             name=name,
@@ -36,22 +36,23 @@ class PolicyRepository(RepositoryBase):
         session,
         policy_id: int,
         logged_in_user: str,
-        policy_type: str = PolicyDbo.POLICY_TYPE_BUILDER,
     ) -> PolicyDbo:
         new_policy_dbo: PolicyDbo = PolicyRepository.create(
             session=session, logged_in_user=logged_in_user
         )
-        new_policy_dbo.policy_type = policy_type
-
         source_policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
         )
         if not source_policy:
             raise ValueError(f"Policy with id {policy_id} does not exist")
 
-        new_policy_dbo.name = source_policy.name
+        new_policy_dbo.name = f"{source_policy.name} - Clone"
         new_policy_dbo.description = source_policy.description
+        new_policy_dbo.policy_type = source_policy.policy_type
         new_policy_dbo.author = logged_in_user
+
+        if source_policy.policy_type == PolicyDbo.POLICY_TYPE_DSL:
+            new_policy_dbo.policy_dsl = source_policy.policy_dsl
 
         for source_attribute in source_policy.policy_attributes:
             new_policy_attribute_dbo: PolicyAttributeDbo = PolicyAttributeDbo()

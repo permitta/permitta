@@ -1,6 +1,6 @@
-from trino.dbapi import connect, Connection
-from trino.exceptions import TrinoUserError
 from app_logger import Logger, get_logger
+from trino.dbapi import Connection, connect
+from trino.exceptions import TrinoUserError
 
 logger: Logger = get_logger("test_script")
 
@@ -280,3 +280,5 @@ execute_single_row_query(
 execute_single_row_query(
     query="drop table iceberg.workspace.u_a_table", connection=connection
 )
+
+# API User

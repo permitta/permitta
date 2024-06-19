@@ -3,6 +3,29 @@ package permitta.trino
 import rego.v1
 
 # ------------------ masked column -----------------------
+# admin should have no masked columns
+test_column_mask_admin_select_hr_employees if {
+  not columnmask with input as {
+    "action": {
+      "operation": "GetColumnMask",
+      "resource": {
+        "column": {
+          "catalogName": "datalake",
+          "schemaName": "hr",
+          "tableName": "employees",
+          "columnName": "phonenumber",
+          "columnType": "integer"
+        }
+      }
+    },
+    "context": {
+      "identity": {
+        "user": "admin"
+      }
+    }
+  }
+}
+
 # frank should not have this column masked as he can access it
 test_column_mask_frank_select_hr_employees if {
   not columnmask with input as {
