@@ -5,7 +5,7 @@ from app_logger import Logger, get_logger
 
 from .opa_client_config import OpaClientConfig
 from .opa_request_model import OpaRequestModel
-from .opa_response_model import OpaResponseAllowModel, OpaResponseModel
+from .opa_response_model import OpaResponseModel
 
 logger: Logger = get_logger("opa_client")
 
@@ -17,7 +17,7 @@ class OpaClient:
     def _get_opa_url(self) -> str:
         return f"{self.config.scheme}://{self.config.hostname}:{self.config.port}{self.config.path}"
 
-    def authorise_request(self, request_method: str) -> bool:
+    def authorise_request(self, request_method: str) -> bool | None:
         opa_request: OpaRequestModel = OpaRequestModel(
             input={"request_method": request_method}
         )
@@ -27,7 +27,7 @@ class OpaClient:
 
     def authorise_table(
         self, username: str, database: str, schema: str, table: str
-    ) -> bool:
+    ) -> bool | None:
         opa_request: OpaRequestModel = OpaRequestModel(
             input={
                 "action": {
@@ -53,15 +53,17 @@ class OpaClient:
 
     def _send_opa_authorize_request(
         self, url: str, opa_request: OpaRequestModel
-    ) -> bool:
+    ) -> bool | None:
         opa_payload: dict = opa_request.dict()
 
         try:
             logger.info(f"OPA request: url: {url} payload: {opa_payload}")
-            response: requests.Response = requests.post(url=url, json=opa_payload)
+            response: requests.Response = requests.post(
+                url=url, json=opa_payload, timeout=float(self.config.timeout_seconds)
+            )
         except Exception as e:
             logger.exception(f"Unexpected error querying OPA: {e}")
-            return False
+            return None
 
         logger.info(
             f"OPA response: status code: {response.status_code} Json: {response.json()} Body: {response.text}"
@@ -73,4 +75,4 @@ class OpaClient:
             return False
 
         opa_response: OpaResponseModel = OpaResponseModel(**response.json())
-        return opa_response.result.allow
+        return opa_response.result

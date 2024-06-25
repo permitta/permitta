@@ -24,6 +24,13 @@ It is recommended to run the dependencies under `docker-compose` and debug the p
 * Unit tests are under `pytest`
 * ORM is SQLAlchemy with postgres16, unit tests use `DatabaseJanitor` with dockerised postgres 
 
+### UI API
+* Structure is traditional Model-View-Controller
+* View models, controllers and views reside under `/views/` (refactor)
+* DBO models are returned to template renderer, this is to be refactored to pure view models
+* The view module owns the DB session, attained from `flask.g`
+* View modules should not directly reference repositories, only via controllers
+
 #### Ingestion
 Data ingestion is treated as first-class ETL in Permitta
 * Ingestion jobs are asynchronous and CLI-driven. Best deployed using kubernetes CronJobs or similar

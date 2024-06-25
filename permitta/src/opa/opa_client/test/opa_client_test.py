@@ -10,7 +10,7 @@ def test_authorise_request():
         responses.POST,
         "http://localhost:8181/v1/data/permitta/authz",
         match=[matchers.json_params_matcher({"input": {"request_method": "GET"}})],
-        json={"result": {"allow": True}},
+        json={"result": True},
         status=200,
     )
 
@@ -18,7 +18,7 @@ def test_authorise_request():
         responses.POST,
         "http://localhost:8181/v1/data/permitta/authz",
         match=[matchers.json_params_matcher({"input": {"request_method": "PUT"}})],
-        json={"result": {"allow": False}},
+        json={},
         status=200,
     )
 
@@ -58,7 +58,7 @@ def test_authorise_table():
                 }
             )
         ],
-        json={"result": {"allow": True}},
+        json={"result": True},
         status=200,
     )
 

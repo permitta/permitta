@@ -6,6 +6,10 @@ from .attribute_dto import AttributeDto
 @dataclass
 class TableDto:
 
+    @property
+    def f_q_table_name(self) -> str:
+        return f"{self.platform_name}.{self.database_name}.{self.schema_name}.{self.table_name}"
+
     platform_id: int
     platform_name: str
     platform_attributes: list[AttributeDto]
@@ -23,3 +27,5 @@ class TableDto:
     table_attributes: list[AttributeDto]
 
     column_count: int
+
+    accessible: bool | None = None
