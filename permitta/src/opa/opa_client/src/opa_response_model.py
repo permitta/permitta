@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class OpaResponseAllowModel(BaseModel):
@@ -6,4 +7,4 @@ class OpaResponseAllowModel(BaseModel):
 
 
 class OpaResponseModel(BaseModel):
-    result: OpaResponseAllowModel = Field()
+    result: Optional[OpaResponseAllowModel] = OpaResponseAllowModel(allow=False)

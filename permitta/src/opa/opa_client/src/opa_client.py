@@ -4,7 +4,7 @@ import requests
 from app_logger import Logger, get_logger
 
 from .opa_client_config import OpaClientConfig
-from .opa_request_model import OpaRequestInputModel, OpaRequestModel
+from .opa_request_model import OpaRequestModel
 from .opa_response_model import OpaResponseAllowModel, OpaResponseModel
 
 logger: Logger = get_logger("opa_client")
@@ -19,14 +19,46 @@ class OpaClient:
 
     def authorise_request(self, request_method: str) -> bool:
         opa_request: OpaRequestModel = OpaRequestModel(
-            input=OpaRequestInputModel(request_method=request_method)
+            input={"request_method": request_method}
         )
-        opa_url: str = self._get_opa_url()
+        return self._send_opa_authorize_request(
+            url=self._get_opa_url(), opa_request=opa_request
+        )
+
+    def authorise_table(
+        self, username: str, database: str, schema: str, table: str
+    ) -> bool:
+        opa_request: OpaRequestModel = OpaRequestModel(
+            input={
+                "action": {
+                    "operation": "FilterTables",
+                    "resource": {
+                        "table": {
+                            "catalogName": database,
+                            "schemaName": schema,
+                            "tableName": table,
+                        }
+                    },
+                },
+                "context": {
+                    "identity": {"user": username},
+                    "softwareStack": {"permittaVersion": "0.1.0"},
+                },
+            }
+        )
+        return self._send_opa_authorize_request(
+            url=f"{self.config.scheme}://{self.config.hostname}:{self.config.port}/v1/data/permitta/trino/allow",
+            opa_request=opa_request,
+        )
+
+    def _send_opa_authorize_request(
+        self, url: str, opa_request: OpaRequestModel
+    ) -> bool:
         opa_payload: dict = opa_request.dict()
 
         try:
-            logger.info(f"OPA request: url: {opa_url} payload: {opa_payload}")
-            response: requests.Response = requests.post(url=opa_url, json=opa_payload)
+            logger.info(f"OPA request: url: {url} payload: {opa_payload}")
+            response: requests.Response = requests.post(url=url, json=opa_payload)
         except Exception as e:
             logger.exception(f"Unexpected error querying OPA: {e}")
             return False
