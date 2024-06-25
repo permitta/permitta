@@ -6,5 +6,6 @@ class OpaClientConfig(AppConfigModelBase):
 
     scheme: str = "http"
     hostname: str = "localhost"
-    port: int = 8181
+    port: str = "8181"
     path: str = "/v1/data/permitta/authz"
+    timeout_seconds: str = "1"

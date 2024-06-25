@@ -66,11 +66,75 @@
       ]
     },
     {
-      "id":"joelcoenraadts",
-      "email": "joelcoenraadts@permitta.co",
-      "username": "joelcoenraadts",
-      "firstName": "Joel",
-      "lastName": "Coenraadts",
+      "id":"alice",
+      "email": "alice@permitta.co",
+      "username": "alice",
+      "firstName": "Alice",
+      "lastName": "Cooper",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "admin"
+        }
+      ]
+    },
+    {
+      "id":"anne",
+      "email": "anne@permitta.co",
+      "username": "anne",
+      "firstName": "Anne",
+      "lastName": "Murray",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "admin"
+        }
+      ]
+    },
+    {
+      "id":"bob",
+      "email": "bob@permitta.co",
+      "username": "bob",
+      "firstName": "Bob",
+      "lastName": "Dylan",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "admin"
+        }
+      ]
+    },
+    {
+      "id":"frank",
+      "email": "frank@permitta.co",
+      "username": "frank",
+      "firstName": "Frank",
+      "lastName": "Zappa",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "admin"
+        }
+      ]
+    },
+    {
+      "id":"janis",
+      "email": "janis@permitta.co",
+      "username": "janis",
+      "firstName": "Janis",
+      "lastName": "Joplin",
       "enabled": true,
       "emailVerified": true,
       "credentials": [

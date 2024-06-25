@@ -1,9 +1,6 @@
 from pydantic import BaseModel, Field
-
-
-class OpaResponseAllowModel(BaseModel):
-    allow: bool = Field()
+from typing import Optional
 
 
 class OpaResponseModel(BaseModel):
-    result: OpaResponseAllowModel = Field()
+    result: Optional[bool] = False

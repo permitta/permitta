@@ -19,11 +19,6 @@ oidc_auth_provider.issuer: "http://example.com/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"
 oidc_auth_provider.client_secret: "super-secret"
 
-opa_authz_provider.scheme: "http"
-opa_authz_provider.host: "localhost"
-opa_authz_provider.port: "8181"
-opa_authz_provider.path: "/v1/data/permitta/authz"
-
 ldap_client.host: localhost
 ldap_client.port: "3890"
 ldap_client.base_dn: dc=example,dc=com
