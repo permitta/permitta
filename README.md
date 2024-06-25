@@ -64,6 +64,9 @@ black permitta/src
 # run dependencies
 docker-compose up -d
 
+# populate LLDAP:
+docker compose exec lldap /bootstrap/bootstrap.sh
+
 export PYTHONPATH=permitta/src
 flask --app permitta.src.app run --debug --port 8000
 

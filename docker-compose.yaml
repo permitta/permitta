@@ -34,7 +34,7 @@ services:
     volumes:
       # Alternatively, you can mount a local folder
       - ./instance/lldap:/data
-      - ./lldap/bootstrap:/bootstrap
+      - ./docker/lldap/bootstrap:/bootstrap
     environment:
       - UID=1000
       - GID=1000
