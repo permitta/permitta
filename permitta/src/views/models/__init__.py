@@ -1,4 +1,5 @@
 # from .src.web_session import WebSession
+from .src.breadcrumbs_dto import BreadcrumbsDto
 from .src.policy_attribute_dto import PolicyAttributeDto
 from .src.policy_create_dto import PolicyCreateDto
 from .src.policy_dsl_dto import PolicyDslDto

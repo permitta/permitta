@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify
 from app_logger import Logger, get_logger
+from flask import Blueprint, jsonify
 
 logger: Logger = get_logger("views.healthz")
 bp = Blueprint("healthz", __name__, url_prefix="/healthz")

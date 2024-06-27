@@ -30,9 +30,9 @@
                             <div class="flex items-center">
                                 Platform
                                 <a href="#"
-                                    hx-get="/data-objects/table"
+                                    hx-get="/data-objects/{{ query_state.scope }}/table"
                                     hx-target="#data-objects-table"
-                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
+                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size, #app-state-scope"
                                     hx-vals='{"sort_key": "platforms.platform_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@
                                 <a href="#"
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
-                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
+                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size, #app-state-scope"
                                     hx-vals='{"sort_key": "databases.database_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
                                 <a href="#"
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
-                                    hx-include="#data-objects-search"
+                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size, #app-state-scope"
                                     hx-vals='{"sort_key": "schemas.schema_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -76,6 +76,7 @@
                                 </a>
                             </div>
                         </th>
+                        {% if query_state.scope == "tables" %}
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                             <div class="flex items-center">
@@ -83,7 +84,7 @@
                                 <a href="#"
                                     hx-get="/data-objects/table"
                                     hx-target="#data-objects-table"
-                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size"
+                                    hx-include="#app-state-sort-key, #app-state-search-term, #app-state-page-size, #app-state-scope"
                                     hx-vals='{"sort_key": "tables.table_name"}'
                                 >
                                     <svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -93,6 +94,7 @@
                                 </a>
                             </div>
                         </th>
+                        {% endif %}
 {#                        <th scope="col"#}
 {#                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">#}
 {#                            Platform Attributes#}
@@ -105,6 +107,7 @@
                             class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
                             Schema Attributes
                         </th>
+                        {% if query_state.scope == "tables" %}
                         <th scope="col"
                             class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
                             Table Attributes
@@ -113,6 +116,7 @@
                             class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
                             Actions
                         </th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody id="attributes-tables-body"
