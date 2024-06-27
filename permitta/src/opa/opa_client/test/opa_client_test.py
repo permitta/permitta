@@ -32,7 +32,7 @@ def test_authorise_request():
 
 
 @responses.activate
-def test_authorise_table():
+def test_filter_table():
     responses.add(
         responses.POST,
         "http://localhost:8181/v1/data/permitta/trino/allow",
@@ -94,11 +94,80 @@ def test_authorise_table():
     opa_client: OpaClient = OpaClient()
 
     # alice is allowed
-    assert opa_client.authorise_table(
+    assert opa_client.filter_table(
         username="alice", database="datalake", schema="hr", table="employees"
     )
 
     # bob is not allowed
-    assert not opa_client.authorise_table(
+    assert not opa_client.filter_table(
         username="bob", database="datalake", schema="hr", table="employees"
+    )
+
+
+@responses.activate
+def test_filter_schema():
+    responses.add(
+        responses.POST,
+        "http://localhost:8181/v1/data/permitta/trino/allow",
+        match=[
+            matchers.json_params_matcher(
+                {
+                    "input": {
+                        "action": {
+                            "operation": "FilterSchemas",
+                            "resource": {
+                                "schema": {
+                                    "catalogName": "datalake",
+                                    "schemaName": "hr",
+                                }
+                            },
+                        },
+                        "context": {
+                            "identity": {"user": "alice"},
+                            "softwareStack": {"permittaVersion": "0.1.0"},
+                        },
+                    }
+                }
+            )
+        ],
+        json={"result": True},
+        status=200,
+    )
+
+    responses.add(
+        responses.POST,
+        "http://localhost:8181/v1/data/permitta/trino/allow",
+        match=[
+            matchers.json_params_matcher(
+                {
+                    "input": {
+                        "action": {
+                            "operation": "FilterSchemas",
+                            "resource": {
+                                "schema": {
+                                    "catalogName": "datalake",
+                                    "schemaName": "hr",
+                                }
+                            },
+                        },
+                        "context": {
+                            "identity": {"user": "bob"},
+                            "softwareStack": {"permittaVersion": "0.1.0"},
+                        },
+                    }
+                }
+            )
+        ],
+        json={},
+        status=200,
+    )
+
+    opa_client: OpaClient = OpaClient()
+
+    # alice is allowed
+    assert opa_client.filter_schema(username="alice", database="datalake", schema="hr")
+
+    # bob is not allowed
+    assert not opa_client.filter_schema(
+        username="bob", database="datalake", schema="hr"
     )

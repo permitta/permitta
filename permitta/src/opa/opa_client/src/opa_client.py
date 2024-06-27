@@ -25,7 +25,7 @@ class OpaClient:
             url=self._get_opa_url(), opa_request=opa_request
         )
 
-    def authorise_table(
+    def filter_table(
         self, username: str, database: str, schema: str, table: str
     ) -> bool | None:
         opa_request: OpaRequestModel = OpaRequestModel(
@@ -37,6 +37,29 @@ class OpaClient:
                             "catalogName": database,
                             "schemaName": schema,
                             "tableName": table,
+                        }
+                    },
+                },
+                "context": {
+                    "identity": {"user": username},
+                    "softwareStack": {"permittaVersion": "0.1.0"},
+                },
+            }
+        )
+        return self._send_opa_authorize_request(
+            url=f"{self.config.scheme}://{self.config.hostname}:{self.config.port}/v1/data/permitta/trino/allow",
+            opa_request=opa_request,
+        )
+
+    def filter_schema(self, username: str, database: str, schema: str) -> bool | None:
+        opa_request: OpaRequestModel = OpaRequestModel(
+            input={
+                "action": {
+                    "operation": "FilterSchemas",
+                    "resource": {
+                        "schema": {
+                            "catalogName": database,
+                            "schemaName": schema,
                         }
                     },
                 },

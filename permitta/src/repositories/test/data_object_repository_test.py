@@ -1,5 +1,5 @@
 from database import Database
-from models import AttributeDto, TableDto
+from models import AttributeDto, SchemaDto, TableDto
 
 from ..src.data_object_repository import DataObjectRepository
 
@@ -56,7 +56,8 @@ def test_get_all_tables_with_search_and_pagination(database: Database) -> None:
             table_attributes=[
                 AttributeDto(attribute_key="Sales", attribute_value="Privacy")
             ],
-            column_count=0,
+            child_count=0,
+            accessible=None,
         )
 
 
@@ -89,7 +90,8 @@ def test_get_all_tables_with_search_and_pagination__table_name_search(
             table_id=1,
             table_name="employees",
             table_attributes=[],
-            column_count=1,
+            child_count=1,
+            accessible=None,
         )
 
 
@@ -122,5 +124,63 @@ def test_get_all_tables_with_search_and_pagination__table_attr_search(
             table_attributes=[
                 AttributeDto(attribute_key="Sales", attribute_value="Privacy")
             ],
-            column_count=0,
+            child_count=0,
+            accessible=None,
         )
+
+
+def test_get_all_schemas_with_search_and_pagination(database: Database) -> None:
+    repo: DataObjectRepository = DataObjectRepository()
+    with database.Session.begin() as session:
+        count, schemas = repo.get_all_schemas_with_search_and_pagination(
+            session=session,
+            sort_col_name="schemas.schema_name",
+            page_number=0,
+            page_size=10,
+        )
+        assert count == 3
+        assert len(schemas) == 3
+
+        assert schemas == [
+            SchemaDto(
+                platform_id=1,
+                platform_name="Trino",
+                platform_attributes=[],
+                database_id=1,
+                database_name="datalake",
+                database_attributes=[],
+                schema_id=1,
+                schema_name="hr",
+                schema_attributes=[
+                    AttributeDto(attribute_key="HR", attribute_value="Commercial")
+                ],
+                child_count=2,
+                accessible=None,
+            ),
+            SchemaDto(
+                platform_id=1,
+                platform_name="Trino",
+                platform_attributes=[],
+                database_id=1,
+                database_name="datalake",
+                database_attributes=[],
+                schema_id=2,
+                schema_name="logistics",
+                schema_attributes=[],
+                child_count=4,
+                accessible=None,
+            ),
+            SchemaDto(
+                platform_id=1,
+                platform_name="Trino",
+                platform_attributes=[],
+                database_id=1,
+                database_name="datalake",
+                database_attributes=[],
+                schema_id=3,
+                schema_name="sales",
+                schema_attributes=[],
+                child_count=4,
+                accessible=None,
+            ),
+        ]

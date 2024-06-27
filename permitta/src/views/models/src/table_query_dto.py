@@ -37,3 +37,4 @@ class TableQueryDto(BaseModel):
     page_number: int = Field(default=0)
     page_size: int = Field(default=20)
     record_count: int = Field(default=0)
+    scope: str = Field(default=None)

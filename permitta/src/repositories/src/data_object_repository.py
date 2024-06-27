@@ -10,6 +10,7 @@ from models import (
     PlatformDbo,
     SchemaAttributeDbo,
     SchemaDbo,
+    SchemaDto,
     TableAttributeDbo,
     TableDbo,
     TableDto,
@@ -124,7 +125,7 @@ class DataObjectRepository(RepositoryBase):
         count_subquery = (
             session.query(
                 ColumnDbo.table_id,
-                func.count(1).label("column_count"),
+                func.count(1).label("child_count"),
             )
             .group_by(ColumnDbo.table_id)
             .subquery()
@@ -136,7 +137,7 @@ class DataObjectRepository(RepositoryBase):
                 DatabaseDbo,
                 SchemaDbo,
                 TableDbo,
-                func.coalesce(count_subquery.c.column_count, 0),
+                func.coalesce(count_subquery.c.child_count, 0),
             )
             .join(DatabaseDbo, DatabaseDbo.platform_id == PlatformDbo.platform_id)
             .join(SchemaDbo, SchemaDbo.database_id == DatabaseDbo.database_id)
@@ -212,8 +213,118 @@ class DataObjectRepository(RepositoryBase):
                     table_id=result[3].table_id,
                     table_name=result[3].table_name,
                     table_attributes=_get_attribute_dtos(result[3]),
-                    column_count=result[4],
+                    child_count=result[4],
+                    accessible=None,
                 )
             )
 
         return count, table_dtos
+
+    @staticmethod
+    def get_all_schemas_with_search_and_pagination(
+        session,
+        sort_col_name: str,
+        page_number: int,
+        page_size: int,
+        sort_ascending: bool = True,
+        search_term: str = "",
+    ) -> Tuple[int, list[SchemaDto]]:
+        search_columns: list[str] = [
+            "platforms.platform_name",
+            "databases.database_name",
+            "schemas.schema_name",
+            "platform_attributes.attribute_key",
+            "platform_attributes.attribute_value",
+            "database_attributes.attribute_key",
+            "database_attributes.attribute_value",
+            "schema_attributes.attribute_key",
+            "schema_attributes.attribute_value",
+        ]
+
+        count_subquery = (
+            session.query(
+                TableDbo.schema_id,
+                func.count(1).label("child_count"),
+            )
+            .group_by(TableDbo.schema_id)
+            .subquery()
+        )
+
+        query: Query = (
+            session.query(
+                PlatformDbo,
+                DatabaseDbo,
+                SchemaDbo,
+                func.coalesce(count_subquery.c.child_count, 0),
+            )
+            .join(DatabaseDbo, DatabaseDbo.platform_id == PlatformDbo.platform_id)
+            .join(SchemaDbo, SchemaDbo.database_id == DatabaseDbo.database_id)
+            .join(
+                PlatformAttributeDbo,
+                PlatformAttributeDbo.platform_id == PlatformDbo.platform_id,
+                isouter=True,
+            )
+            .join(
+                DatabaseAttributeDbo,
+                DatabaseAttributeDbo.database_id == DatabaseDbo.database_id,
+                isouter=True,
+            )
+            .join(
+                SchemaAttributeDbo,
+                SchemaAttributeDbo.schema_id == SchemaDbo.schema_id,
+                isouter=True,
+            )
+            .join(
+                count_subquery,
+                count_subquery.c.schema_id == SchemaDbo.schema_id,
+                isouter=True,
+            )
+        )
+
+        query = RepositoryBase._get_search_query(
+            query=query,
+            search_column_names=search_columns,
+            search_term=search_term,
+        )
+        count: int = query.count()
+
+        query = DataObjectRepository._get_sort_query(
+            query=query,
+            sort_col_name=sort_col_name,
+            sort_ascending=sort_ascending,
+        )
+        query: Query = DataObjectRepository._get_pagination_query(
+            query=query, page_number=page_number, page_size=page_size
+        )
+        results = query.all()
+
+        def _get_attribute_dtos(
+            model: PlatformDbo | DatabaseDbo | SchemaDbo | TableDbo,
+        ) -> list[AttributeDto]:
+            return [
+                AttributeDto(
+                    attribute_key=a.attribute_key, attribute_value=a.attribute_value
+                )
+                for a in model.attributes
+            ]
+
+        # construct table dto
+        schema_dtos: list[SchemaDto] = []
+        for result in results:
+            schema_dtos.append(
+                SchemaDto(
+                    platform_id=result[0].platform_id,
+                    platform_name=result[0].platform_name,
+                    platform_attributes=_get_attribute_dtos(result[0]),
+                    database_id=result[1].database_id,
+                    database_name=result[1].database_name,
+                    database_attributes=_get_attribute_dtos(result[1]),
+                    schema_id=result[2].schema_id,
+                    schema_name=result[2].schema_name,
+                    schema_attributes=_get_attribute_dtos(result[2]),
+                    child_count=result[3],
+                    accessible=None,
+                )
+            )
+
+        return count, schema_dtos

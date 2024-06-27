@@ -30,9 +30,11 @@
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
         {{ table.schema_name }}
     </td>
+    {% if query_state.scope == "tables" %}
     <td class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
         {{ table.table_name }}
     </td>
+    {% endif %}
 {#    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">#}
 {#        {{ attribute_pill_list(table.platform_attributes) }}#}
 {#    </td>#}
@@ -43,11 +45,11 @@
     <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.schema_attributes) }}
     </td>
-    <td class="p-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+    {% if query_state.scope == "tables" %}
+    <td class="p-4 mx-auto text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.table_attributes) }}
     </td>
     <td class="p-4 space-x-2 whitespace-nowrap">
-
         <button
             hx-get="/data-objects/table-detail-modal/{{ table.table_id }}"
             hx-trigger="click consume"
@@ -56,7 +58,7 @@
             id="table-detail-modal-button"
             data-modal-target="table-detail-modal"
             data-modal-toggle="table-detail-modal"
-            {% if table.column_count == 0 %}
+            {% if table.child_count == 0 %}
                 disabled
                 class="inline-flex items-center px-3 py-2 text-xs font-medium text-center text-gray-900 rounded-lg bg-white border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
             {% else %}
@@ -68,7 +70,7 @@
 {#            </svg>#}
             Columns
         </button>
-
     </td>
+    {% endif %}
 </tr>
 {% endfor %}
