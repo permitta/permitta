@@ -9,5 +9,5 @@ class PolicyTypeEnum(Enum):
     DSL = PolicyDbo.POLICY_TYPE_DSL
 
 
-class PolicyCreateDto(BaseModel):
+class PolicyCreateVm(BaseModel):
     policy_type: PolicyTypeEnum = Field()

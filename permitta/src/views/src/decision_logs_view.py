@@ -15,7 +15,7 @@ from flask import (
 from flask_pydantic import validate
 from models import DecisionLogDbo
 from repositories import DecisionLogRepository
-from views.models import TableQueryDto
+from views.models import TableQueryVm
 
 bp = Blueprint("decision_logs", __name__, url_prefix="/decision-logs")
 
@@ -25,7 +25,7 @@ DEFAULT_SORT_KEY: str = "timestamp"
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key=DEFAULT_SORT_KEY)
+    query_state: TableQueryVm = TableQueryVm(sort_key=DEFAULT_SORT_KEY)
     return render_template(
         "partials/decision_logs/decision-logs-search.html", query_state=query_state
     )
@@ -34,7 +34,7 @@ def index():
 @bp.route("/table", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def decision_logs_table(query: TableQueryDto):
+def decision_logs_table(query: TableQueryVm):
     with g.database.Session.begin() as session:
         repo: DecisionLogRepository = DecisionLogRepository()
         count, decision_logs = repo.get_all_with_search_and_pagination(

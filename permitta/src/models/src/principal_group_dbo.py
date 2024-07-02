@@ -1,17 +1,9 @@
-from dataclasses import dataclass
-
 from database import BaseModel
-from sqlalchemy import Column, Integer, String, select
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import Mapped, column_property, relationship
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped, relationship
 
 from .common_mixin_dbo import IngestionDboMixin
-
-
-@dataclass
-class Attribute:
-    attribute_key: str
-    attribute_value: str
+from .dtos.attribute_dto import AttributeDto
 
 
 class PrincipalGroupDbo(IngestionDboMixin, BaseModel):
@@ -19,8 +11,8 @@ class PrincipalGroupDbo(IngestionDboMixin, BaseModel):
 
     # HACK this is for the UI and should be on a viewmodel
     @property
-    def membership_attribute(self) -> Attribute:
-        return Attribute(
+    def membership_attribute(self) -> AttributeDto:
+        return AttributeDto(
             attribute_key=self.membership_attribute_key,
             attribute_value=self.membership_attribute_value,
         )

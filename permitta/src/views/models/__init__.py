@@ -1,7 +1,7 @@
 # from .src.web_session import WebSession
-from .src.breadcrumbs_dto import BreadcrumbsDto
-from .src.policy_attribute_dto import PolicyAttributeDto
-from .src.policy_create_dto import PolicyCreateDto
-from .src.policy_dsl_dto import PolicyDslDto
-from .src.policy_metadata_dto import PolicyMetadataDto
-from .src.table_query_dto import TableQueryDto
+from .src.attribute_list_vm import AttributeListVm
+from .src.breadcrumbs_vm import BreadcrumbsVm
+from .src.policy_create_vm import PolicyCreateVm
+from .src.policy_dsl_vm import PolicyDslVm
+from .src.policy_metadata_vm import PolicyMetadataVm
+from .src.table_query_vm import TableQueryVm

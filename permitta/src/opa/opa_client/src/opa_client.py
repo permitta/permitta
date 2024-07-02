@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from typing import Tuple
 
 import requests
 from app_logger import Logger, get_logger
@@ -73,6 +73,11 @@ class OpaClient:
             url=f"{self.config.scheme}://{self.config.hostname}:{self.config.port}/v1/data/permitta/trino/allow",
             opa_request=opa_request,
         )
+
+    def filter_users_with_all_attributes(
+        self, username: str, attributes: Tuple[str, str]
+    ) -> list[str]:
+        pass
 
     def _send_opa_authorize_request(
         self, url: str, opa_request: OpaRequestModel

@@ -1,10 +1,13 @@
 from datetime import datetime
 from typing import Tuple
 
+from app_logger import Logger, get_logger
 from models import DecisionLogDbo
 from sqlalchemy import Row, and_, or_
 
 from .repository_base import RepositoryBase
+
+logger: Logger = get_logger("repositories.decision_log")
 
 
 class DecisionLogRepository(RepositoryBase):
@@ -40,13 +43,25 @@ class DecisionLogRepository(RepositoryBase):
     def create_bulk(session, decision_logs: list[dict]):
         decision_log_dbos: list[DecisionLogDbo] = []
         for decision_log in decision_logs:
-            decision_log_dbos.append(
-                DecisionLogRepository.create(decision_log=decision_log)
-            )
+            try:
+                decision_log_dbos.append(
+                    DecisionLogRepository.create(decision_log=decision_log)
+                )
+            except AttributeError as e:
+                logger.error(
+                    f"Decision log failed to create: {decision_log} with error: {e}"
+                )
+            except ValueError as e:
+                logger.info(f"Ignoring decision log: {decision_log} because: {e}")
+
         session.add_all(decision_log_dbos)
 
     @staticmethod
     def create(decision_log: dict) -> DecisionLogDbo:
+        # drop query logs, we dont want them
+        if "query" in decision_log:
+            raise ValueError("Query decision logs are not to be ingested")
+
         _input: dict = decision_log.get("input", {})
         action: dict = _input.get("action", {})
         context: dict = _input.get("context", {})

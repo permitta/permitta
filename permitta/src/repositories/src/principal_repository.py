@@ -8,14 +8,15 @@ from models import (
     PrincipalAttributeDbo,
     PrincipalAttributeStagingDbo,
     PrincipalDbo,
+    PrincipalDto,
     PrincipalGroupAttributeDbo,
     PrincipalGroupDbo,
     PrincipalHistoryDbo,
     PrincipalStagingDbo,
 )
-from sqlalchemy import Row, and_, or_
+from sqlalchemy import Row, and_, func, or_
 from sqlalchemy.orm import Query
-from sqlalchemy.sql import text
+from sqlalchemy.sql import Subquery, text
 from sqlalchemy.sql.elements import NamedColumn
 
 from .repository_base import RepositoryBase
@@ -50,6 +51,126 @@ class PrincipalRepository(RepositoryBase):
             search_term=search_term,
             search_column_names=["user_name"],
         )
+
+    @staticmethod
+    def get_all_with_search_and_pagination_and_attr_filter(
+        session,
+        sort_col_name: str,
+        page_number: int,
+        page_size: int,
+        sort_ascending: bool = True,
+        search_term: str = "",
+        attributes: list[AttributeDto] = None,
+    ) -> Tuple[int, list[PrincipalDbo]]:
+        search_columns: list[str] = [
+            "principals.first_name",
+            "principals.last_name",
+        ]
+
+        # union of direct and inherited attrs to make the filter much easier
+        if attributes:
+            principal_and_attr_query: Query = (
+                session.query(
+                    PrincipalDbo.principal_id,
+                    PrincipalGroupAttributeDbo.attribute_key,
+                    PrincipalGroupAttributeDbo.attribute_value,
+                )
+                .join(
+                    PrincipalAttributeDbo,
+                    PrincipalAttributeDbo.principal_id == PrincipalDbo.principal_id,
+                    isouter=True,
+                )
+                .join(
+                    PrincipalGroupDbo,
+                    and_(
+                        PrincipalAttributeDbo.attribute_key
+                        == PrincipalGroupDbo.membership_attribute_key,
+                        PrincipalAttributeDbo.attribute_value
+                        == PrincipalGroupDbo.membership_attribute_value,
+                    ),
+                    isouter=True,
+                )
+                .join(PrincipalGroupAttributeDbo)
+                .union(
+                    session.query(
+                        PrincipalDbo.principal_id,
+                        PrincipalAttributeDbo.attribute_key,
+                        PrincipalAttributeDbo.attribute_value,
+                    ).join(
+                        PrincipalAttributeDbo,
+                        PrincipalAttributeDbo.principal_id == PrincipalDbo.principal_id,
+                        isouter=True,
+                    )
+                )
+                .distinct()
+            )
+
+            row_number_column = (
+                func.row_number()
+                .over(partition_by=PrincipalDbo.principal_id)
+                .label("row_number")
+            )
+
+            principal_with_attr_filter_subquery: Subquery = (
+                principal_and_attr_query.filter(
+                    or_(
+                        *[
+                            and_(
+                                PrincipalAttributeDbo.attribute_key
+                                == attribute.attribute_key,
+                                PrincipalAttributeDbo.attribute_value
+                                == attribute.attribute_value,
+                            )
+                            for attribute in attributes
+                        ]
+                    )
+                )
+                .add_columns(row_number_column)
+                .subquery()
+            )
+
+            filtered_principal_ids_query: Subquery = (
+                session.query(
+                    principal_with_attr_filter_subquery.c.principals_principal_id.label(
+                        "principal_id"
+                    )
+                )
+                .filter(
+                    principal_with_attr_filter_subquery.c.row_number == len(attributes)
+                )
+                .subquery()
+            )
+
+            # join back to the source table to get the principals
+            principals_filtered_query: Query = session.query(PrincipalDbo).join(
+                filtered_principal_ids_query,
+                PrincipalDbo.principal_id
+                == filtered_principal_ids_query.c.principal_id,
+            )
+
+        else:
+            # when we have no attributes supplied, then skip that huge query
+            principals_filtered_query: Query = session.query(PrincipalDbo)
+
+        principals_filtered_query = RepositoryBase._get_search_query(
+            query=principals_filtered_query,
+            search_column_names=search_columns,
+            search_term=search_term,
+        )
+        count: int = principals_filtered_query.count()
+
+        principals_filtered_query = RepositoryBase._get_sort_query(
+            query=principals_filtered_query,
+            sort_col_name=sort_col_name,
+            sort_ascending=sort_ascending,
+        )
+        principals_filtered_query: Query = RepositoryBase._get_pagination_query(
+            query=principals_filtered_query,
+            page_number=page_number,
+            page_size=page_size,
+        )
+        results = principals_filtered_query.all()
+        return count, results
 
     @staticmethod
     def get_all(session) -> Tuple[int, list[PrincipalDbo]]:

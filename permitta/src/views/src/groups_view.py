@@ -16,7 +16,7 @@ from flask_pydantic import validate
 from models import PrincipalDbo, PrincipalGroupAttributeDbo, PrincipalGroupDbo
 from pydantic import BaseModel
 from repositories import PrincipalGroupRepository, PrincipalRepository
-from views.models import TableQueryDto
+from views.models import TableQueryVm
 
 bp = Blueprint("groups", __name__, url_prefix="/groups")
 
@@ -26,7 +26,7 @@ DEFAULT_SORT_KEY: str = "name"
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key=DEFAULT_SORT_KEY)
+    query_state: TableQueryVm = TableQueryVm(sort_key=DEFAULT_SORT_KEY)
     return render_template(
         "partials/groups/groups-search.html", query_state=query_state
     )
@@ -35,7 +35,7 @@ def index():
 @bp.route("/table", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def groups_table(query: TableQueryDto):
+def groups_table(query: TableQueryVm):
     with g.database.Session.begin() as session:
         repo: PrincipalGroupRepository = PrincipalGroupRepository()
         group_count, groups = repo.get_all(

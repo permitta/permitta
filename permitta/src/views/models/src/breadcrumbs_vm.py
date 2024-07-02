@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class BreadcrumbsDto(BaseModel):
+class BreadcrumbsVm(BaseModel):
     items: list[str]

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
 
 
-class PolicyDslDto(BaseModel):
+class PolicyDslVm(BaseModel):
     policy_dsl: str = Field()

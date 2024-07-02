@@ -3,7 +3,8 @@ from flask import Blueprint, g, render_template, request
 from flask_pydantic import validate
 from models import PrincipalDbo, PrincipalGroupAttributeDbo, PrincipalGroupDbo
 from repositories import PrincipalRepository
-from views.models import TableQueryDto
+from views.controllers import PrincipalsController
+from views.models import TableQueryVm
 
 bp = Blueprint("principals", __name__, url_prefix="/principals")
 
@@ -11,7 +12,7 @@ bp = Blueprint("principals", __name__, url_prefix="/principals")
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key="user_name")
+    query_state: TableQueryVm = TableQueryVm(sort_key="user_name")
 
     return render_template(
         "partials/principals/principals-search.html", query_state=query_state
@@ -21,15 +22,17 @@ def index():
 @bp.route("/table", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def principals_table(query: TableQueryDto):
+def principals_table(query: TableQueryVm):
     with g.database.Session.begin() as session:
-        repo: PrincipalRepository = PrincipalRepository()
-        principal_count, principals = repo.get_all_with_search_and_pagination(
-            session=session,
-            sort_col_name=query.sort_key,  # TODO is this SQL injection?
-            page_number=query.page_number,
-            page_size=query.page_size,
-            search_term=query.search_term,
+        principal_count, principals = (
+            PrincipalsController.get_all_principals_with_search_pagination_and_attr_filter(
+                session=session,
+                sort_col_name=query.sort_key,  # TODO is this SQL injection?
+                page_number=query.page_number,
+                page_size=query.page_size,
+                search_term=query.search_term,
+                attributes=query.attribute_dtos,
+            )
         )
         query.record_count = principal_count
         return render_template(

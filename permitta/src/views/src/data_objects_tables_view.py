@@ -4,7 +4,7 @@ from flask import session as flask_session
 from flask_pydantic import validate
 from models import TableDbo
 from views.controllers import DataObjectsController
-from views.models import BreadcrumbsDto, TableQueryDto
+from views.models import BreadcrumbsVm, TableQueryVm
 
 bp = Blueprint("data_objects", __name__, url_prefix="/data-objects")
 
@@ -17,10 +17,10 @@ SCOPE_SCHEMAS: str = "schemas"
 @bp.route("/tables", methods=["GET"])
 @oidc.oidc_auth("default")
 def index_tables():
-    query_state: TableQueryDto = TableQueryDto(
+    query_state: TableQueryVm = TableQueryVm(
         sort_key=TABLES_SORT_KEY, scope=SCOPE_TABLES
     )
-    breadcrumbs: BreadcrumbsDto = BreadcrumbsDto(
+    breadcrumbs: BreadcrumbsVm = BreadcrumbsVm(
         items=["Data Objects", "All Schemas", "Tables"]
     )
     return render_template(
@@ -33,10 +33,10 @@ def index_tables():
 @bp.route("/schemas", methods=["GET"])  # TODO can these be compressed?
 @oidc.oidc_auth("default")
 def index_schemas():
-    query_state: TableQueryDto = TableQueryDto(
+    query_state: TableQueryVm = TableQueryVm(
         sort_key=SCHEMAS_SORT_KEY, scope=SCOPE_SCHEMAS
     )
-    breadcrumbs: BreadcrumbsDto = BreadcrumbsDto(items=["Data Objects", "Schemas"])
+    breadcrumbs: BreadcrumbsVm = BreadcrumbsVm(items=["Data Objects", "Schemas"])
     return render_template(
         "partials/data_objects/data-objects-search.html",
         query_state=query_state,
@@ -47,7 +47,7 @@ def index_schemas():
 @bp.route("/table", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def table(query: TableQueryDto):
+def table(query: TableQueryVm):
     logged_in_user: str = flask_session.get("userinfo", {}).get(
         "preferred_username", ""
     )

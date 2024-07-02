@@ -1,9 +1,10 @@
 import math
 
+from models import AttributeDto
 from pydantic import BaseModel, Field
 
 
-class TableQueryDto(BaseModel):
+class TableQueryVm(BaseModel):
     @property
     def page_count(self) -> int:
         return math.ceil(float(self.record_count) / self.page_size)
@@ -32,9 +33,25 @@ class TableQueryDto(BaseModel):
     def previous_page_disabled(self) -> bool:
         return self.page_number == 0
 
+    @property
+    def attribute_dtos(self) -> list[AttributeDto] | None:
+        if self.attributes is None:
+            return None
+
+        return [
+            AttributeDto(
+                attribute_key=attr_str.split(":")[0],
+                attribute_value=attr_str.split(":")[1],
+            )
+            for attr_str in self.attributes
+        ]
+
     search_term: str = Field(default="")  # TODO validate to avoid sql injection
     sort_key: str = Field(default=None)
     page_number: int = Field(default=0)
     page_size: int = Field(default=20)
     record_count: int = Field(default=0)
     scope: str = Field(default=None)
+    attributes: list[str] = Field(
+        default=None
+    )  # TODO regex a colon in this to avoid the split breaking

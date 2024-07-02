@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+import pytest
 from database import Database
 from models import DecisionLogDbo
 
@@ -426,3 +427,56 @@ def test_create_filter_columns() -> None:
     assert decision_log_dbo.schema == "logistics"
     assert decision_log_dbo.table == "regions"
     assert decision_log_dbo.column == "column1"
+
+
+def test_create_decision_log_with_query() -> None:
+    """
+    Query logs should be dropped
+    """
+    with pytest.raises(ValueError):
+        decision_log_dbo: DecisionLogDbo = DecisionLogRepository.create(
+            {
+                "labels": {
+                    "id": "35b99e4c-d032-40ac-87de-be5f93a5f19a",
+                    "version": "0.64.1",
+                },
+                "decision_id": "589ab8b4-223e-483f-9129-ce3526b82cf2",
+                "bundles": {"trino": {}},
+                "query": "data.permitta.trino.data_objects_with_all_attributes = object",
+                "input": {
+                    "permitted_object_attributes": [
+                        {"key": "Sales", "value": "Commercial"}
+                    ]
+                },
+                "result": [
+                    {
+                        "object": [
+                            {
+                                "database": "datalake",
+                                "schema": "logistics",
+                                "table": "shippers",
+                            },
+                            {
+                                "database": "datalake",
+                                "schema": "logistics",
+                                "table": "territories",
+                            },
+                            {
+                                "database": "datalake",
+                                "schema": "sales",
+                                "table": "products",
+                            },
+                        ]
+                    }
+                ],
+                "requested_by": "192.168.65.1:48330",
+                "timestamp": "2024-06-28T22:44:32.857512543Z",
+                "metrics": {
+                    "timer_rego_external_resolve_ns": 542,
+                    "timer_rego_query_compile_ns": 170375,
+                    "timer_rego_query_eval_ns": 1280500,
+                    "timer_server_handler_ns": 0,
+                },
+                "req_id": 635,
+            }
+        )
