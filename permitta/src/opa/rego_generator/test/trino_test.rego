@@ -1,3 +1,4 @@
+
 package permitta.trino
 
 import rego.v1

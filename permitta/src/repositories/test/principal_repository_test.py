@@ -2,6 +2,7 @@ from textwrap import dedent
 
 from database import Database
 from models import (
+    AttributeDto,
     PrincipalAttributeDbo,
     PrincipalAttributeStagingDbo,
     PrincipalDbo,
@@ -61,13 +62,19 @@ def test_get_all_paginated(database: Database) -> None:
 
     with database.Session.begin() as session:
         principal_count, principals_b1 = repo.get_all_with_search_and_pagination(
-            session=session, sort_col_name="first_name", page_number=0, page_size=2
+            session=session,
+            sort_col_name="first_name",
+            page_number=0,
+            page_size=2,
         )
         assert principal_count == 4
         assert len(principals_b1) == 2
 
         principal_count, principals_b2 = repo.get_all_with_search_and_pagination(
-            session=session, sort_col_name="first_name", page_number=1, page_size=2
+            session=session,
+            sort_col_name="first_name",
+            page_number=1,
+            page_size=2,
         )
         assert principal_count == 4
         assert len(principals_b2) == 2
@@ -103,6 +110,97 @@ def test_get_all_paginated(database: Database) -> None:
             "IT: Commercial",
             "IT: Restricted",
         ]
+
+
+def test_get_all_with_search_and_pagination_and_attr_filter_no_attrs(
+    database: Database,
+) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        principal_count, principals = (
+            repo.get_all_with_search_and_pagination_and_attr_filter(
+                session=session,
+                sort_col_name="principals.first_name",
+                page_number=0,
+                page_size=1000000,
+                attributes=[],
+            )
+        )
+
+        assert principal_count == 4  # all should match
+
+
+def test_get_all_with_search_and_pagination_and_attr_filter__1_attr(
+    database: Database,
+) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        principal_count, principals = (
+            repo.get_all_with_search_and_pagination_and_attr_filter(
+                session=session,
+                sort_col_name="principals.first_name",
+                page_number=0,
+                page_size=1000000,
+                attributes=[
+                    AttributeDto(attribute_key="HR", attribute_value="Commercial"),
+                ],
+            )
+        )
+
+        assert principal_count == 3  # bob, frank and anne
+        assert principals[0].first_name == "Anne"
+        assert principals[1].first_name == "Bob"
+        assert principals[2].first_name == "Frank"
+
+
+def test_get_all_with_search_and_pagination_and_attr_filter__2_attrs(
+    database: Database,
+) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        principal_count, principals = (
+            repo.get_all_with_search_and_pagination_and_attr_filter(
+                session=session,
+                sort_col_name="principals.first_name",
+                page_number=0,
+                page_size=1000000,
+                attributes=[
+                    AttributeDto(attribute_key="HR", attribute_value="Commercial"),
+                    AttributeDto(attribute_key="Sales", attribute_value="Commercial"),
+                ],
+            )
+        )
+
+        assert principal_count == 2  # bob and frank
+        assert principals[0].first_name == "Bob"
+        assert principals[1].first_name == "Frank"
+
+
+def test_get_all_with_search_and_pagination_and_attr_filter__search(
+    database: Database,
+) -> None:
+    repo: PrincipalRepository = PrincipalRepository()
+
+    with database.Session.begin() as session:
+        principal_count, principals = (
+            repo.get_all_with_search_and_pagination_and_attr_filter(
+                session=session,
+                sort_col_name="principals.first_name",
+                page_number=0,
+                page_size=1000000,
+                search_term="bob",
+                attributes=[
+                    AttributeDto(attribute_key="HR", attribute_value="Commercial"),
+                    AttributeDto(attribute_key="Sales", attribute_value="Commercial"),
+                ],
+            )
+        )
+
+        assert principal_count == 1
+        assert principals[0].first_name == "Bob"
 
 
 def test_get_principal_with_attributes(database: Database) -> None:

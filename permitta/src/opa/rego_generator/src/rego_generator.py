@@ -1,3 +1,5 @@
+import os
+
 import jinja2
 from app_logger import Logger, get_logger
 from models import PolicyDbo
@@ -21,14 +23,18 @@ class RegoGenerator:
 
     @staticmethod
     def generate_rego_document(session) -> str:
-        """
-        First pass - just directly render the template and return it
-        """
         logger.info(f"Generating rego document")
-        common_rego_file_path: str = "permitta/src/opa/rego_generator/src/common.rego"
-        with open(common_rego_file_path) as f:
-            logger.info(f"Loaded {common_rego_file_path}")
-            rego_content: str = f.read()
+        rego_static_content_dir: str = "permitta/src/opa/rego_generator/src/static"
+        static_rego_files: list[str] = os.listdir(rego_static_content_dir)
+
+        rego_content: str = ""
+        for static_rego_file in static_rego_files:
+            static_rego_file_path: str = os.path.join(
+                rego_static_content_dir, static_rego_file
+            )
+            with open(static_rego_file_path) as f:
+                logger.info(f"Loaded {static_rego_file_path}")
+                rego_content = rego_content + "\n" + f.read()
 
         policies: list[PolicyDbo] = PolicyRepository.get_all(session=session)
         for policy in policies:

@@ -9,6 +9,7 @@ from models.src.data_objects.table_dbo import TableAttributeDbo, TableDbo
 # decision logs
 from .src.decision_log_dbo import DecisionLogDbo
 from .src.dtos.attribute_dto import AttributeDto
+from .src.dtos.principal_dto import PrincipalDto
 from .src.dtos.schema_dto import SchemaDto
 
 # DTOs

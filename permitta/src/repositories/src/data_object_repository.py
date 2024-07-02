@@ -186,16 +186,6 @@ class DataObjectRepository(RepositoryBase):
         )
         results = query.all()
 
-        def _get_attribute_dtos(
-            model: PlatformDbo | DatabaseDbo | SchemaDbo | TableDbo,
-        ) -> list[AttributeDto]:
-            return [
-                AttributeDto(
-                    attribute_key=a.attribute_key, attribute_value=a.attribute_value
-                )
-                for a in model.attributes
-            ]
-
         # construct table dto
         table_dtos: list[TableDto] = []
         for result in results:
@@ -203,16 +193,16 @@ class DataObjectRepository(RepositoryBase):
                 TableDto(
                     platform_id=result[0].platform_id,
                     platform_name=result[0].platform_name,
-                    platform_attributes=_get_attribute_dtos(result[0]),
+                    platform_attributes=RepositoryBase.get_attribute_dtos(result[0]),
                     database_id=result[1].database_id,
                     database_name=result[1].database_name,
-                    database_attributes=_get_attribute_dtos(result[1]),
+                    database_attributes=RepositoryBase.get_attribute_dtos(result[1]),
                     schema_id=result[2].schema_id,
                     schema_name=result[2].schema_name,
-                    schema_attributes=_get_attribute_dtos(result[2]),
+                    schema_attributes=RepositoryBase.get_attribute_dtos(result[2]),
                     table_id=result[3].table_id,
                     table_name=result[3].table_name,
-                    table_attributes=_get_attribute_dtos(result[3]),
+                    table_attributes=RepositoryBase.get_attribute_dtos(result[3]),
                     child_count=result[4],
                     accessible=None,
                 )
@@ -298,16 +288,6 @@ class DataObjectRepository(RepositoryBase):
         )
         results = query.all()
 
-        def _get_attribute_dtos(
-            model: PlatformDbo | DatabaseDbo | SchemaDbo | TableDbo,
-        ) -> list[AttributeDto]:
-            return [
-                AttributeDto(
-                    attribute_key=a.attribute_key, attribute_value=a.attribute_value
-                )
-                for a in model.attributes
-            ]
-
         # construct table dto
         schema_dtos: list[SchemaDto] = []
         for result in results:
@@ -315,13 +295,13 @@ class DataObjectRepository(RepositoryBase):
                 SchemaDto(
                     platform_id=result[0].platform_id,
                     platform_name=result[0].platform_name,
-                    platform_attributes=_get_attribute_dtos(result[0]),
+                    platform_attributes=RepositoryBase.get_attribute_dtos(result[0]),
                     database_id=result[1].database_id,
                     database_name=result[1].database_name,
-                    database_attributes=_get_attribute_dtos(result[1]),
+                    database_attributes=RepositoryBase.get_attribute_dtos(result[1]),
                     schema_id=result[2].schema_id,
                     schema_name=result[2].schema_name,
-                    schema_attributes=_get_attribute_dtos(result[2]),
+                    schema_attributes=RepositoryBase.get_attribute_dtos(result[2]),
                     child_count=result[3],
                     accessible=None,
                 )

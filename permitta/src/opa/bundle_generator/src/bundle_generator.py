@@ -80,10 +80,6 @@ class BundleGenerator:
         return Bundle(directory=self.bundle_directory, filename="bundle.tar.gz")
 
     def __exit__(self, *args):
-        # os.remove(self.data_file_path)
-        # os.remove(self.rego_file_path)
-        # os.rmdir(self.data_directory)
-        # os.remove(os.path.join(bundle_directory, "bundle.tar.gz"))
         shutil.rmtree(self.bundle_directory, ignore_errors=True)
 
     @staticmethod

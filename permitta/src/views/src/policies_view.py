@@ -17,11 +17,11 @@ from flask_pydantic import validate
 from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
 from views.models import (
-    PolicyAttributeDto,
-    PolicyCreateDto,
-    PolicyDslDto,
-    PolicyMetadataDto,
-    TableQueryDto,
+    AttributeListVm,
+    PolicyCreateVm,
+    PolicyDslVm,
+    PolicyMetadataVm,
+    TableQueryVm,
 )
 
 from opa import RegoGenerator
@@ -36,7 +36,7 @@ DEFAULT_SORT_KEY: str = "name"
 @bp.route("/", methods=["GET"])
 @oidc.oidc_auth("default")
 def index():
-    query_state: TableQueryDto = TableQueryDto(sort_key=DEFAULT_SORT_KEY)
+    query_state: TableQueryVm = TableQueryVm(sort_key=DEFAULT_SORT_KEY)
     response: Response = make_response(
         render_template(
             "partials/policies/policies-search.html", query_state=query_state
@@ -48,7 +48,7 @@ def index():
 @bp.route("/table", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def policies_table(query: TableQueryDto):
+def policies_table(query: TableQueryVm):
     with g.database.Session.begin() as session:
         policy_count, policies = PolicyRepository.get_all_with_search_and_pagination(
             session=session,
@@ -74,7 +74,7 @@ def policies_table(query: TableQueryDto):
 @bp.route("/create", methods=["POST"])
 @oidc.oidc_auth("default")
 @validate()
-def create_policy(body: PolicyCreateDto):
+def create_policy(body: PolicyCreateVm):
     web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.create(
@@ -105,7 +105,7 @@ def clone_policy(policy_id: int):
     response: Response = make_response(
         render_template(
             "partials/policies/policies-search.html",
-            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+            query_state=TableQueryVm(sort_key=DEFAULT_SORT_KEY),
         )
     )
     response.headers.set(
@@ -193,7 +193,7 @@ def set_policy_status(policy_id: int, status: str):
     response: Response = make_response(
         render_template(
             "partials/policies/policies-search.html",
-            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+            query_state=TableQueryVm(sort_key=DEFAULT_SORT_KEY),
         )
     )
     response.headers.set(
@@ -220,7 +220,7 @@ def delete_policy(policy_id: int):
     response: Response = make_response(
         render_template(
             "partials/policies/policies-search.html",
-            query_state=TableQueryDto(sort_key=DEFAULT_SORT_KEY),
+            query_state=TableQueryVm(sort_key=DEFAULT_SORT_KEY),
         )
     )
     response.headers.set(
@@ -258,7 +258,7 @@ def get_policy_metadata(policy_id: int):
 @bp.route("/<policy_id>/metadata", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
-def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
+def update_policy_metadata(policy_id: int, body: PolicyMetadataVm):
     web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
@@ -296,6 +296,8 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataDto):
 @oidc.oidc_auth("default")
 @validate()
 def get_principal_attributes_tab(policy_id: int):
+    query_state: TableQueryVm = TableQueryVm(sort_key="user_name")
+
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -309,13 +311,14 @@ def get_principal_attributes_tab(policy_id: int):
             active_tab="principals",
             policy_id=policy_id,
             policy_type=policy.policy_type,
+            query_state=query_state,
         )
 
 
 @bp.route("/<policy_id>/principal_attributes", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def get_principal_attribute(policy_id: int):
+def get_principal_attributes(policy_id: int):
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -324,16 +327,22 @@ def get_principal_attribute(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        return render_template(
-            template_name_or_list="partials/policy_builder/policy-attributes.html",
-            attributes=policy.principal_attributes,
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-attributes.html",
+                attributes=policy.principal_attributes,
+                attribute_list_name="policy-principal-attributes",
+            )
         )
+
+    response.headers.set("HX-Trigger-After-Swap", "policy-attribute-changed")
+    return response
 
 
 @bp.route("/<policy_id>/principal_attributes", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
-def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
+def put_principal_attributes(policy_id: int, body: AttributeListVm):
     # TODO regex the attributes to ensure they are legit
     # TODO auth the attributes
 
@@ -351,17 +360,15 @@ def put_principal_attributes(policy_id: int, body: PolicyAttributeDto):
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_PRINCIPAL,
             merge_attributes=body.attribute_list,
         )
-        policy_type: str = policy.policy_type
-        session.commit()
 
         response: Response = make_response(
             render_template(
-                template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
-                active_tab="principals",
-                policy_id=policy_id,
-                policy_type=policy_type,
+                template_name_or_list="partials/policy_builder/policy-attributes.html",
+                attributes=policy.principal_attributes,
+                attribute_list_name="policy-principal-attributes",
             )
         )
+        session.commit()
 
     response.headers.set(
         "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
@@ -401,16 +408,22 @@ def get_object_attributes(policy_id: int):
         if not policy:
             abort(404, "Policy not found")
 
-        return render_template(
-            template_name_or_list="partials/policy_builder/policy-attributes.html",
-            attributes=policy.object_attributes,
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-attributes.html",
+                attributes=policy.object_attributes,
+                attribute_list_name="policy-object-attributes",
+            )
         )
+
+    response.headers.set("HX-Trigger-After-Swap", "policy-attribute-changed")
+    return response
 
 
 @bp.route("/<policy_id>/object_attributes", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
-def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
+def put_object_attributes(policy_id: int, body: AttributeListVm):
     # TODO regex the attributes to ensure they are legit
     # TODO auth the attributes
 
@@ -449,7 +462,7 @@ def put_object_attributes(policy_id: int, body: PolicyAttributeDto):
 @bp.route("/create/all_principal_attributes", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def all_principal_attributes(query: TableQueryDto):
+def all_principal_attributes(query: TableQueryVm):
     with g.database.Session.begin() as session:
         principal_attributes: list[AttributeDto] = (
             PrincipalRepository.get_all_unique_attributes(
@@ -461,15 +474,16 @@ def all_principal_attributes(query: TableQueryDto):
             template_name_or_list="partials/policy_builder/policy-attributes.html",
             attributes=principal_attributes,
             attribute_id_prefix="principal_attribute",
+            attribute_list_name="all-principal-attributes",
         )
 
 
 @bp.route("/create/all_object_attributes", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def all_object_attributes(query: TableQueryDto):
+def all_object_attributes(query: TableQueryVm):
     with g.database.Session.begin() as session:
-        object_attributes: list[AttributeDto] = (
+        object_attributes: list[AttributeListVm] = (
             DataObjectRepository.get_all_unique_attributes(
                 session=session, search_term=query.search_term
             )
@@ -479,6 +493,7 @@ def all_object_attributes(query: TableQueryDto):
             template_name_or_list="partials/policy_builder/policy-attributes.html",
             attributes=object_attributes,
             attribute_id_prefix="object_attribute",
+            attribute_list_name="all-object-attributes",
         )
 
 
@@ -522,7 +537,7 @@ def get_dsl_tab(policy_id: int):
 @bp.route("/<policy_id>/dsl", methods=["PUT"])
 @oidc.oidc_auth("default")
 @validate()
-def put_dsl(policy_id: int, body: PolicyDslDto):
+def put_dsl(policy_id: int, body: PolicyDslVm):
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id

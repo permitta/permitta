@@ -2,7 +2,8 @@ import inspect
 from typing import Tuple, Type
 
 from database import BaseModel, Database
-from sqlalchemy import desc, or_
+from models import AttributeDto
+from sqlalchemy import and_, desc, func, or_
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.inspection import inspect as sa_inspect
 from sqlalchemy.orm import ColumnProperty, Query, class_mapper
@@ -13,6 +14,17 @@ class RepositoryBase:
 
     def __init__(self) -> None:
         pass
+
+    @staticmethod
+    def get_attribute_dtos(
+        model, attribute_list_property_name: str = "attributes"
+    ) -> list[AttributeDto]:
+        return [
+            AttributeDto(
+                attribute_key=a.attribute_key, attribute_value=a.attribute_value
+            )
+            for a in getattr(model, attribute_list_property_name)
+        ]
 
     @staticmethod
     def get_model_by_name(table_name: str) -> Type[BaseModel]:
