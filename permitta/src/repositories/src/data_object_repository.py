@@ -106,6 +106,7 @@ class DataObjectRepository(RepositoryBase):
         page_size: int,
         sort_ascending: bool = True,
         search_term: str = "",
+        attributes: list[AttributeDto] = None,
     ) -> Tuple[int, list[TableDto]]:
         search_columns: list[str] = [
             "platforms.platform_name",
@@ -168,6 +169,42 @@ class DataObjectRepository(RepositoryBase):
                 isouter=True,
             )
         )
+
+        # attribute filtering
+        if attributes:
+            query = query.filter(
+                and_(
+                    *[
+                        or_(
+                            and_(
+                                PlatformAttributeDbo.attribute_key
+                                == attribute.attribute_key,
+                                PlatformAttributeDbo.attribute_value
+                                == attribute.attribute_value,
+                            ),
+                            and_(
+                                DatabaseAttributeDbo.attribute_key
+                                == attribute.attribute_key,
+                                DatabaseAttributeDbo.attribute_value
+                                == attribute.attribute_value,
+                            ),
+                            and_(
+                                SchemaAttributeDbo.attribute_key
+                                == attribute.attribute_key,
+                                SchemaAttributeDbo.attribute_value
+                                == attribute.attribute_value,
+                            ),
+                            and_(
+                                TableAttributeDbo.attribute_key
+                                == attribute.attribute_key,
+                                TableAttributeDbo.attribute_value
+                                == attribute.attribute_value,
+                            ),
+                        )
+                        for attribute in attributes
+                    ]
+                )
+            )
 
         query = RepositoryBase._get_search_query(
             query=query,

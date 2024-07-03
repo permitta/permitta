@@ -1,5 +1,6 @@
 {% for table in tables %}
 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+    {% if compact == False %}
     <td class="w-4 p-4">
 {#        <div class="flex items-center">#}
 {#            <input id="checkbox-id" aria-describedby="checkbox-1" type="checkbox"#}
@@ -20,6 +21,7 @@
         </svg>
         {% endif %}
     </td>
+    {% endif %}
     <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
         <div class="text-base font-semibold text-gray-900 dark:text-white">{{ table.platform_name }}</div>
 {#        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ table.platform_name }}</div>#}
@@ -49,6 +51,7 @@
     <td class="p-4 mx-auto text-sm font-normal text-gray-500 dark:text-gray-400">
         {{ attribute_pill_list(table.table_attributes) }}
     </td>
+    {% if compact == False %}
     <td class="p-4 space-x-2 whitespace-nowrap">
         <button
             hx-get="/data-objects/table-detail-modal/{{ table.table_id }}"
@@ -71,6 +74,7 @@
             Columns
         </button>
     </td>
+    {% endif %}
     {% endif %}
 </tr>
 {% endfor %}

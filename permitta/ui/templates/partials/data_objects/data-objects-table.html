@@ -17,6 +17,7 @@
 {#                                <label for="checkbox-all" class="sr-only">checkbox</label>#}
 {#                            </div>#}
 {#                        </th>#}
+                        {% if compact == False %}
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
                         >
@@ -24,6 +25,7 @@
                                 Access
                             </div>
                         </th>
+                        {% endif %}
                         <th scope="col"
                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"
                         >
@@ -112,10 +114,12 @@
                             class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
                             Table Attributes
                         </th>
+                        {% if compact == False %}
                         <th scope="col"
                             class="p-4 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
                             Actions
                         </th>
+                        {% endif %}
                         {% endif %}
                     </tr>
                     </thead>
