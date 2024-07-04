@@ -95,7 +95,7 @@ def table_compact(query: TableQueryVm):
             page_number=query.page_number,
             page_size=query.page_size,
             search_term=query.search_term,
-            attributes=query.attribute_dtos,
+            attributes=query.attribute_dtos or [],
         )
 
         query.record_count = table_count

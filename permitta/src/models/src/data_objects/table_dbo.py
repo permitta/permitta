@@ -23,9 +23,9 @@ class TableDbo(IngestionDboMixin, BaseModel):
 class TableAttributeDbo(BaseModel):
     __tablename__ = "table_attributes"
 
-    attribute_id: int = Column(Integer, primary_key=True, autoincrement=True)
-    attribute_key: str = Column(String)
-    attribute_value: str = Column(String)
+    attribute_id = Column(Integer, primary_key=True, autoincrement=True)
+    attribute_key = Column(String)
+    attribute_value = Column(String)
 
     # table FK
     table_id: Mapped[int] = mapped_column(ForeignKey("tables.table_id"), nullable=True)
