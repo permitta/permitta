@@ -1,4 +1,4 @@
-from .src.data_objects_tables_view import bp as data_objects_bp
+from .src.data_objects_view import bp as data_objects_bp
 from .src.decision_logs_view import bp as decision_logs_bp
 from .src.groups_view import bp as groups_bp
 from .src.healthz_view import bp as healthz_bp

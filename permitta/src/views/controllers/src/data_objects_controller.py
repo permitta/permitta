@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from app_logger import Logger, get_logger
-from models import TableDbo, TableDto
+from models import AttributeDto, TableDbo, TableDto
 from models.src.dtos.schema_dto import SchemaDto
 from repositories import DataObjectRepository
 
@@ -22,38 +22,42 @@ class DataObjectsController:
     @staticmethod
     def get_tables_paginated_with_access(
         session,
-        logged_in_user: str,
+        logged_in_user: str | None,
         sort_col_name: str,
         page_number: int,
         page_size: int,
         search_term: str,
+        attributes: list[AttributeDto] = None,
     ) -> Tuple[int, list[TableDto]]:
-        schema_count, schemas = (
+        table_count, tables = (
             DataObjectRepository.get_all_tables_with_search_and_pagination(
                 session=session,
                 sort_col_name=sort_col_name,
                 page_number=page_number,
                 page_size=page_size,
                 search_term=search_term,
+                attributes=attributes,
             )
         )
 
-        opa_client: OpaClient = OpaClient()
-        table: TableDto
-        for table in schemas:
-            try:
-                table.accessible = opa_client.filter_table(
-                    username=logged_in_user,
-                    database=table.database_name,
-                    schema=table.schema_name,
-                    table=table.table_name,
-                )
-            except Exception as e:
-                logger.exception(
-                    f"Failed to get accessibility for {logged_in_user} on {table.f_q_table_name}"
-                )
-
-        return schema_count, schemas
+        if logged_in_user:
+            opa_client: OpaClient = OpaClient()
+            table: TableDto
+            for table in tables:
+                try:
+                    table.accessible = opa_client.filter_table(
+                        username=logged_in_user,
+                        database=table.database_name,
+                        schema=table.schema_name,
+                        table=table.table_name,
+                    )
+                except Exception as e:
+                    logger.exception(
+                        f"Failed to get accessibility for {logged_in_user} on {table.f_q_table_name}"
+                    )
+        else:
+            logger.info("No logged in user, skipping OPA requests")
+        return table_count, tables
 
     @staticmethod
     def get_schemas_paginated_with_access(
@@ -63,6 +67,7 @@ class DataObjectsController:
         page_number: int,
         page_size: int,
         search_term: str,
+        attributes: list[AttributeDto] = None,
     ) -> Tuple[int, list[SchemaDto]]:
         schema_count, schemas = (
             DataObjectRepository.get_all_schemas_with_search_and_pagination(

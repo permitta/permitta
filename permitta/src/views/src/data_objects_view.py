@@ -66,6 +66,7 @@ def table(query: TableQueryVm):
             page_number=query.page_number,
             page_size=query.page_size,
             search_term=query.search_term,
+            attributes=query.attribute_dtos,
         )
 
         query.record_count = table_count
@@ -75,6 +76,36 @@ def table(query: TableQueryVm):
                 tables=tables,
                 table_count=table_count,
                 query_state=query,
+                compact=False,
+            )
+        )
+    response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
+    return response
+
+
+@bp.route("/table-compact", methods=["GET"])
+@oidc.oidc_auth("default")
+@validate()
+def table_compact(query: TableQueryVm):
+    with g.database.Session.begin() as session:
+        table_count, tables = DataObjectsController.get_tables_paginated_with_access(
+            session=session,
+            logged_in_user=None,
+            sort_col_name=query.sort_key,
+            page_number=query.page_number,
+            page_size=query.page_size,
+            search_term=query.search_term,
+            attributes=query.attribute_dtos or [],
+        )
+
+        query.record_count = table_count
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/data_objects/data-objects-table.html",
+                tables=tables,
+                table_count=table_count,
+                query_state=query,
+                compact=True,
             )
         )
     response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")

@@ -380,6 +380,10 @@ def put_principal_attributes(policy_id: int, body: AttributeListVm):
 @oidc.oidc_auth("default")
 @validate()
 def get_object_attributes_tab(policy_id: int):
+    query_state: TableQueryVm = TableQueryVm(
+        sort_key="tables.table_name", scope="tables"
+    )
+
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -393,6 +397,7 @@ def get_object_attributes_tab(policy_id: int):
             active_tab="objects",
             policy_id=policy_id,
             policy_type=policy.policy_type,
+            query_state=query_state,
         )
 
 
@@ -441,17 +446,15 @@ def put_object_attributes(policy_id: int, body: AttributeListVm):
             attribute_type=PolicyAttributeDbo.ATTRIBUTE_TYPE_OBJECT,
             merge_attributes=body.attribute_list,
         )
-        policy_type: str = policy.policy_type
-        session.commit()
 
-    response: Response = make_response(
-        render_template(
-            template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
-            active_tab="objects",
-            policy_id=policy_id,
-            policy_type=policy_type,
+        response: Response = make_response(
+            render_template(
+                template_name_or_list="partials/policy_builder/policy-attributes.html",
+                attributes=policy.object_attributes,
+                attribute_list_name="policy-principal-attributes",
+            )
         )
-    )
+        session.commit()
 
     response.headers.set(
         "HX-Trigger-After-Swap", '{"toast_success": {"message": "Saved Successfully"}}'
