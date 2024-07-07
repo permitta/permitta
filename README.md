@@ -12,6 +12,10 @@ RABAC authorisation for Trino and OPA
 * Data object catalog
 * SSO Integration (OIDC)
 
+## Documentation Content
+* [Authentication & Authorisation](docs/auth.md)
+* [Policy Management](docs/policies.md)
+
 ## Development
 The Permitta dev environment relies on a postgres database, OPA, trino, hive-metastore, minio and lldap to run.
 All of these dependencies are present in the `docker-compose` in the repo root
