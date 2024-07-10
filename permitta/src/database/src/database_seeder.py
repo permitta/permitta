@@ -41,7 +41,6 @@ class DatabaseSeeder:
         ) as json_file:
             mock_users: list[dict] = json.load(json_file)
             principals: list[PrincipalDbo] = []
-            group_prop_index = 0
 
             for mock_user in mock_users:
                 principal_dbo: PrincipalDbo = PrincipalDbo()

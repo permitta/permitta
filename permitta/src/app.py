@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from apis import opa_bundle_api_bp, opa_decision_logs_api_bp, opa_status_api_bp
 from app_config import AppConfigModelBase
 from app_logger import Logger, get_logger
+from auth import OpaAuthzProvider
 from database import Database
 from extensions import oidc, oidc_auth_provider
 from flask import Flask, g, redirect, request
@@ -29,7 +30,7 @@ class FlaskConfig(AppConfigModelBase):
     template_folder: str = "../ui/templates"
 
 
-def create_app() -> Flask:
+def create_app(database: Database | None = None) -> Flask:
     flask_config = FlaskConfig.load()
 
     flask_app = Flask(
@@ -62,6 +63,10 @@ def create_app() -> Flask:
     # Database
     database: Database = Database()
     database.connect()
+
+    # AuthZ - set the policy doc on OPA at startup
+    authz: OpaAuthzProvider = OpaAuthzProvider(user_name="app", user_attributes=[])
+    authz.apply_policy_to_opa()
 
     @flask_app.before_request
     def before_request():

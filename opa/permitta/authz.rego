@@ -10,8 +10,8 @@ object_type_policy := "POLICY"
 object_type_principal := "PRINCIPAL"
 object_type_table := "TABLE"
 
-admin_role_attribute := {"key": "permitta_role", "value": "admin"}
-maintainer_role_attribute := {"key": "permitta_role", "value": "maintainer"}
+admin_role_attribute := {"key": "ad_group", "value": "ADMINISTRATORS"}
+maintainer_role_attribute := {"key": "ad_group", "value": "DEVELOPERS"}
 
 has_role(role_attribute) if {
   subject_has_all_object_attributes(input.subject.attributes, [role_attribute])
@@ -43,6 +43,7 @@ allow if {
 # allowed policy actions
 # based on the user attributes (admin?) and state, some policy actions can be performed
 
+policy_action_create := "CREATE_POLICY"
 policy_action_edit := "EDIT_POLICY"
 policy_action_clone := "CLONE_POLICY"
 policy_action_up_version := "UP_VERSION_POLICY"
@@ -55,6 +56,7 @@ policy_action_disable := "DISABLE_POLICY"
 policy_action_delete := "DELETE_POLICY"
 
 policy_actions := [
+  policy_action_create,
   policy_action_edit,
   policy_action_clone,
   policy_action_request_publish,
@@ -67,14 +69,16 @@ policy_actions := [
   policy_action_up_version
 ]
 
-policy_state_draft := "draft"
-policy_state_published := "published"
-policy_state_pending_publish := "pending_publish"
-policy_state_pending_disable := "pending_disable"
-policy_state_disabled := "disabled"
+policy_state_new := "New"
+policy_state_draft := "Draft"
+policy_state_published := "Published"
+policy_state_pending_publish := "Pending Publish"
+policy_state_pending_disable := "Pending Delete"
+policy_state_disabled := "Disabled"
 
 policy_actions_by_state := {
-  policy_state_draft: [policy_action_request_publish, policy_action_delete, policy_action_clone, policy_action_edit],
+  policy_state_new: [policy_action_create],
+  policy_state_draft: [policy_action_create, policy_action_request_publish, policy_action_delete, policy_action_clone, policy_action_edit],
   policy_state_published: [policy_action_request_disable, policy_action_clone, policy_action_up_version],
   policy_state_pending_publish: [policy_action_publish, policy_action_clone, policy_action_edit, policy_action_cancel_publish],
   policy_state_pending_disable: [policy_action_disable, policy_action_cancel_disable, policy_action_clone],
@@ -108,19 +112,3 @@ subject_has_all_object_attributes(subject_attributes, object_attributes) if {
     object_attribute == subject_attributes[_]
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

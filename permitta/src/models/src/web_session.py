@@ -1,12 +1,10 @@
 from flask.sessions import SessionMixin
-from flask_pyoidc.user_session import UserSession
 
 
 class WebSession:
-    _user_session: UserSession
 
     def __init__(self, flask_session: SessionMixin):
-        self._user_session = UserSession(session_storage=flask_session)
+        self._user_session = flask_session
 
     def as_dict(self) -> dict:
         return {
@@ -16,16 +14,12 @@ class WebSession:
         }
 
     @property
-    def is_authenticated(self) -> bool:
-        return self._user_session.is_authenticated()
-
-    @property
     def given_name(self) -> str:
-        return self._user_session.userinfo.get("given_name")
+        return self._user_session.get("userinfo").get("given_name")
 
     @property
     def family_name(self) -> str:
-        return self._user_session.userinfo.get("family_name")
+        return self._user_session.get("userinfo").get("family_name")
 
     @property
     def full_name(self) -> str:
@@ -33,7 +27,7 @@ class WebSession:
 
     @property
     def email(self) -> str:
-        return self._user_session.userinfo.get("email")
+        return self._user_session.get("userinfo").get("email")
 
     @property
     def username(self) -> str:

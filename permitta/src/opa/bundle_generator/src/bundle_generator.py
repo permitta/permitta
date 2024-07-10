@@ -41,6 +41,7 @@ class BundleGenerator:
         self.data_file_path: str = os.path.join(
             self.bundle_directory, f"{bundle_name}", "data.json"
         )
+        self.manifest_file_path: str = os.path.join(self.bundle_directory, ".manifest")
 
     def __enter__(self) -> Bundle:
         os.makedirs(os.path.join(self.data_directory), exist_ok=True)
@@ -61,6 +62,10 @@ class BundleGenerator:
                     )
                 )
             )
+
+        # write the manifest file to scope the bundle
+        with open(self.manifest_file_path, "w") as f:
+            f.write(json.dumps({"roots": ["trino", "permitta/trino"]}))
 
         # build the bundle
         result = subprocess.run(

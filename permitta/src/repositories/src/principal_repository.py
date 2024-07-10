@@ -201,6 +201,15 @@ class PrincipalRepository(RepositoryBase):
         return principal
 
     @staticmethod
+    def get_by_username(session, user_name: str) -> PrincipalDbo:
+        principal: PrincipalDbo = (
+            session.query(PrincipalDbo)
+            .filter(PrincipalDbo.user_name == user_name)
+            .first()
+        )
+        return principal
+
+    @staticmethod
     def get_all_unique_attributes(session, search_term: str = "") -> list[AttributeDto]:
         """
         Returns a list of all the unique attributes that a user can have
@@ -236,10 +245,17 @@ class PrincipalRepository(RepositoryBase):
         ]
 
     @staticmethod
-    def get_principal_with_attributes(session, principal_id: int) -> PrincipalDbo:
+    def get_principal_with_attributes(
+        session, principal_id: int = None, user_name: str = None
+    ) -> PrincipalDbo | None:
         principal_query: Query = (
             session.query(PrincipalDbo, PrincipalGroupDbo)
-            .filter(PrincipalDbo.principal_id == principal_id)
+            .filter(
+                or_(
+                    PrincipalDbo.principal_id == principal_id,
+                    PrincipalDbo.user_name == user_name,
+                )
+            )
             .join(PrincipalAttributeDbo)
             .join(
                 PrincipalGroupDbo,
@@ -249,14 +265,21 @@ class PrincipalRepository(RepositoryBase):
                     PrincipalAttributeDbo.attribute_value
                     == PrincipalGroupDbo.membership_attribute_value,
                 ),
+                isouter=True,
             )
         )
-        result: Row = principal_query.first()
-        principal: PrincipalDbo = result[0]
-        group: PrincipalGroupDbo = result[1]
+        results: list[Row] = principal_query.all()
+        if not results:
+            return None
+
+        principal: PrincipalDbo = results[0][0]
 
         # HACK this should really be a dataclass when returned
-        principal.group_attributes = group.principal_group_attributes
+        principal.group_attributes = []
+        for result in results:
+            group: PrincipalGroupDbo = result[1]
+            if group:
+                principal.group_attributes.extend(group.principal_group_attributes)
 
         return principal
 

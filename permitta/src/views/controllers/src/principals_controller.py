@@ -41,3 +41,22 @@ class PrincipalsController:
             search_term=search_term,
             attributes=attributes,
         )
+
+    @staticmethod
+    def get_principal_attributes_by_username(
+        session, user_name: str
+    ) -> list[AttributeDto]:
+        repo: PrincipalRepository = PrincipalRepository()
+        principal: PrincipalDbo = repo.get_principal_with_attributes(
+            session=session, user_name=user_name
+        )
+        if principal is None:
+            logger.error(f"User {user_name} could not be found")
+            raise ValueError(f"User {user_name} could not be found")
+
+        return [
+            AttributeDto(
+                attribute_key=a.attribute_key, attribute_value=a.attribute_value
+            )
+            for a in principal.principal_attributes + principal.group_attributes
+        ]
