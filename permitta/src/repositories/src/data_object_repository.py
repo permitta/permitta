@@ -259,7 +259,6 @@ class DataObjectRepository(RepositoryBase):
                 )
                 .filter(object_and_attr_cte.c.platform_attribute_key.is_not(None))
                 .distinct()
-                .add_columns()
             )
 
             object_and_attr_long_subquery: Subquery = object_and_attr_long.subquery()

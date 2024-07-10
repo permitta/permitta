@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timezone
 
 from app_logger import Logger, get_logger
+from auth import OpaPermittaAuthzActionEnum
 from extensions import oidc
 from flask import (
     Blueprint,
@@ -16,6 +17,7 @@ from flask import session as flask_session
 from flask_pydantic import validate
 from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
+from views.controllers import AuthzController
 from views.models import (
     AttributeListVm,
     PolicyCreateVm,
@@ -76,7 +78,15 @@ def policies_table(query: TableQueryVm):
 @validate()
 def create_policy(body: PolicyCreateVm):
     web_session: WebSession = WebSession(flask_session=flask_session)
+
     with g.database.Session.begin() as session:
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.CREATE_POLICY,
+            object_state="New",
+        )
+
         policy: PolicyDbo = PolicyRepository.create(
             session=session, logged_in_user=web_session.username
         )
@@ -96,10 +106,25 @@ def create_policy(body: PolicyCreateVm):
 def clone_policy(policy_id: int):
     web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.clone(
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.CLONE_POLICY,
+            object_state=policy.status,
+        )
+
+        cloned_policy: PolicyDbo = PolicyRepository.clone(
             session=session, policy_id=policy_id, logged_in_user=web_session.username
         )
-        session.add(policy)
+
+        session.add(cloned_policy)
         session.commit()
 
     response: Response = make_response(
@@ -169,24 +194,36 @@ def set_policy_status(policy_id: int, status: str):
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
         )
-
         if not policy:
             abort(404, "Policy not found")
 
         if status == "request-publish":
-            policy.status = PolicyDbo.STATUS_PENDING_PUBLISH
+            new_policy_status = PolicyDbo.STATUS_PENDING_PUBLISH
+            action = OpaPermittaAuthzActionEnum.REQUEST_PUBLISH_POLICY
         elif status == "request-delete":
-            policy.status = PolicyDbo.STATUS_PENDING_DELETE
+            new_policy_status = PolicyDbo.STATUS_PENDING_DELETE
+            action = OpaPermittaAuthzActionEnum.REQUEST_DISABLE_POLICY
         elif status == "published":
-            policy.status = PolicyDbo.STATUS_PUBLISHED
+            new_policy_status = PolicyDbo.STATUS_PUBLISHED
             policy.publisher = web_session.username
-        elif status == "draft":
-            policy.status = PolicyDbo.STATUS_DRAFT
+            action = OpaPermittaAuthzActionEnum.PUBLISH_POLICY
         elif status == "disabled":
-            policy.status = PolicyDbo.STATUS_DISABLED
+            new_policy_status = PolicyDbo.STATUS_DISABLED
+            action = OpaPermittaAuthzActionEnum.DISABLE_POLICY
         else:
             abort(400, "Invalid status")
 
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=action,
+            object_state=policy.status,
+        )
+
+        if not policy:
+            abort(404, "Policy not found")
+
+        policy.status = new_policy_status
         policy.record_updated_by = web_session.username
         session.commit()
 
@@ -207,6 +244,7 @@ def set_policy_status(policy_id: int, status: str):
 @oidc.oidc_auth("default")
 @validate()
 def delete_policy(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -214,6 +252,14 @@ def delete_policy(policy_id: int):
 
         if not policy:
             abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.DELETE_POLICY,
+            object_state=policy.status,
+        )
+
         session.delete(policy)
         session.commit()
 
@@ -267,6 +313,13 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataVm):
 
         if not policy:
             abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.EDIT_POLICY,
+            object_state=policy.status,
+        )
 
         policy.name = body.name
         policy.description = body.description
@@ -345,7 +398,7 @@ def get_principal_attributes(policy_id: int):
 def put_principal_attributes(policy_id: int, body: AttributeListVm):
     # TODO regex the attributes to ensure they are legit
     # TODO auth the attributes
-
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -353,6 +406,13 @@ def put_principal_attributes(policy_id: int, body: AttributeListVm):
 
         if not policy:
             abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.EDIT_POLICY,
+            object_state=policy.status,
+        )
 
         PolicyRepository.merge_policy_attributes(
             session=session,
@@ -432,6 +492,7 @@ def put_object_attributes(policy_id: int, body: AttributeListVm):
     # TODO regex the attributes to ensure they are legit
     # TODO auth the attributes
 
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -439,6 +500,13 @@ def put_object_attributes(policy_id: int, body: AttributeListVm):
 
         if not policy:
             abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.EDIT_POLICY,
+            object_state=policy.status,
+        )
 
         PolicyRepository.merge_policy_attributes(
             session=session,
@@ -541,6 +609,7 @@ def get_dsl_tab(policy_id: int):
 @oidc.oidc_auth("default")
 @validate()
 def put_dsl(policy_id: int, body: PolicyDslVm):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
         policy: PolicyDbo = PolicyRepository.get_by_id(
             session=session, policy_id=policy_id
@@ -548,6 +617,13 @@ def put_dsl(policy_id: int, body: PolicyDslVm):
 
         if not policy:
             abort(404, "Policy not found")
+
+        AuthzController().authorize(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.EDIT_POLICY,
+            object_state=policy.status,
+        )
 
         # TODO validate DSL
         if policy.policy_type != PolicyDbo.POLICY_TYPE_DSL:

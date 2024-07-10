@@ -1,6 +1,6 @@
 # unit test items - do not remove
 common.db_connection_string: "sqlite:///:memory:"
-common.super_secret: "https:/domain?username=$SUPER_SECRET_VALUE"
+common.super_secret: "https:/domain?username=$FLASK_SECRET_KEY"
 
 logger.root_level: "INFO"
 
@@ -18,6 +18,9 @@ connector.json_file.principals.file_path: "config/principals.json"
 oidc_auth_provider.issuer: "http://example.com/realms/permitta"
 oidc_auth_provider.client_id: "permitta-client"
 oidc_auth_provider.client_secret: "super-secret"
+
+opa_authz_provider.policy_name: "permitta/authz"
+opa_authz_provider.policy_file_path: "opa/permitta/authz.rego"
 
 ldap_client.host: localhost
 ldap_client.port: "3890"

@@ -14,3 +14,5 @@ class OpaAuthzProviderConfig(AppConfigModelBase):
     host: str = None
     port: str = None
     path: str = None
+    policy_name: str = None
+    policy_file_path: str = None

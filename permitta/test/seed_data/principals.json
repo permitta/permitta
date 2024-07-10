@@ -1,4 +1,12 @@
-[
+[{
+    "username": "admin",
+    "first_name": "Ad",
+    "last_name": "Min",
+    "email": "admin@permitta.com",
+    "groups": [
+      "ADMINISTRATORS"
+    ]
+  },
   {
     "username": "bob",
     "first_name": "Bob",
@@ -18,7 +26,8 @@
     "groups": [
       "SALES_ANALYSTS_GL",
       "MARKETING_DIRECTORS_GL",
-      "IT_SUPERVISORS_GL"
+      "IT_SUPERVISORS_GL",
+      "DEVELOPERS"
     ]
   },
   {

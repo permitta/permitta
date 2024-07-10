@@ -16,6 +16,9 @@ oidc_auth_provider.client_secret: "$OIDC_AUTH_PROVIDER_CLIENT_SECRET"
 
 opa_client.timeout_seconds: "0.1"
 
+opa_authz_provider.policy_name: "permitta/authz"
+opa_authz_provider.policy_file_path: "opa/permitta/authz.rego"
+
 ldap_client.host: localhost
 ldap_client.port: "3890"
 ldap_client.base_dn: dc=example,dc=com

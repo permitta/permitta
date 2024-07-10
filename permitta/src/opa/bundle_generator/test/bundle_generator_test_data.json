@@ -189,6 +189,15 @@
       "attributes": [
         {
           "key": "ad_group",
+          "value": "ADMINISTRATORS"
+        }
+      ],
+      "name": "admin"
+    },
+    {
+      "attributes": [
+        {
+          "key": "ad_group",
           "value": "SALES_ANALYSTS_GL"
         },
         {
@@ -198,6 +207,10 @@
         {
           "key": "ad_group",
           "value": "IT_SUPERVISORS_GL"
+        },
+        {
+          "key": "ad_group",
+          "value": "DEVELOPERS"
         },
         {
           "key": "Sales",
