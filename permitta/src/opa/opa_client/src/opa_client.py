@@ -2,6 +2,8 @@ from typing import Tuple
 
 import requests
 from app_logger import Logger, get_logger
+from opa.models.src.opa_query_model import OpaQueryModel
+from opa.models.src.opa_query_response_model import OpaQueryResponseModel
 from opa.models.src.opa_request_model import OpaRequestModel
 from opa.models.src.opa_response_model import OpaResponseModel
 from pydantic import BaseModel
@@ -73,6 +75,7 @@ class OpaClient:
             opa_request=opa_request,
         )
 
+    # TODO move to authz provider
     def filter_schema(self, username: str, database: str, schema: str) -> bool | None:
         opa_request: OpaRequestModel = OpaRequestModel(
             input={
@@ -96,16 +99,41 @@ class OpaClient:
             opa_request=opa_request,
         )
 
-    def filter_users_with_all_attributes(
-        self, username: str, attributes: Tuple[str, str]
-    ) -> list[str]:
-        pass
+    def get_allowed_policy_actions(self, request_model: BaseModel) -> list[str]:
+        opa_query: OpaQueryModel = OpaQueryModel(
+            query="data.permitta.authz.allowed_policy_actions = action",
+            input=request_model.dict(),
+        )
+        # TODO the response here comes from user input so should be validated with pydantic
+        opa_response: OpaQueryResponseModel | None = self._send_opa_query(
+            url=self._get_opa_url(path="/v1/query"),
+            opa_query=opa_query,
+        )
+        if opa_response is None:
+            return []
+        else:
+            return opa_response.result[0].get("action", [])
 
     def _send_opa_authorize_request(
         self, url: str, opa_request: OpaRequestModel
     ) -> bool | None:
-        opa_payload: dict = opa_request.dict()
+        opa_response_dict: dict | None = self._send_opa_request(
+            url=url, opa_request=opa_request
+        )
+        opa_response: OpaResponseModel = OpaResponseModel(**opa_response_dict)
+        return opa_response.result
 
+    def _send_opa_query(self, url, opa_query: OpaQueryModel) -> OpaQueryResponseModel:
+        opa_response_dict: dict | None = self._send_opa_request(
+            url=url, opa_request=opa_query
+        )
+        opa_response: OpaQueryResponseModel = OpaQueryResponseModel(**opa_response_dict)
+        return opa_response
+
+    def _send_opa_request(
+        self, url: str, opa_request: OpaRequestModel | OpaQueryModel
+    ) -> dict | None:
+        opa_payload: dict = opa_request.dict()
         try:
             logger.info(f"OPA request: url: {url} payload: {opa_payload}")
             response: requests.Response = requests.post(
@@ -122,7 +150,5 @@ class OpaClient:
             logger.exception(
                 f"OPA returned a non-200 status code: {response.status_code}"
             )
-            return False
-
-        opa_response: OpaResponseModel = OpaResponseModel(**response.json())
-        return opa_response.result
+            return None
+        return response.json()
