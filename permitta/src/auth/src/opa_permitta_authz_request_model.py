@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 
 class OpaPermittaAuthzActionEnum(Enum):
+    NO_OPERATION = "NO_OPERATION"
     CREATE_POLICY = "CREATE_POLICY"
     EDIT_POLICY = "EDIT_POLICY"
     CLONE_POLICY = "CLONE_POLICY"

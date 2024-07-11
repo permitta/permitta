@@ -76,9 +76,14 @@
                            hx-get="/policies/{{ policy.policy_id }}"
                            hx-target="#main"
                         >
+                            {% if "EDIT_POLICY" in policy.allowed_actions %}
                             Edit
+                            {% else %}
+                            View
+                            {% endif %}
                         </a>
                     </li>
+                    {% if "CLONE_POLICY" in policy.allowed_actions %}
                     <li>
                         <a href="#"
                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -89,6 +94,8 @@
                             Clone
                         </a>
                     </li>
+                    {% endif %}
+                    {% if "REQUEST_PUBLISH_POLICY" in policy.allowed_actions %}
                     <li>
                         <a href="#"
                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -99,6 +106,8 @@
                             Request Publish
                         </a>
                     </li>
+                    {% endif %}
+                    {% if "REQUEST_DISABLE_POLICY" in policy.allowed_actions %}
                     <li>
                         <a href="#"
                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -106,9 +115,11 @@
                            hx-confirm="Are you sure you want to request this policy to be deleted?"
                            hx-target="#main"
                         >
-                            Request Delete
+                            Request Disable
                         </a>
                     </li>
+                    {% endif %}
+                    {% if "PUBLISH_POLICY" in policy.allowed_actions %}
                     <li>
                         <a href="#"
                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -119,8 +130,8 @@
                             Publish
                         </a>
                     </li>
-                </ul>
-                <div class="py-2">
+                    {% endif %}
+                    {% if "DISABLE_POLICY" in policy.allowed_actions %}
                     <a href="#"
                            class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                            hx-post="/policies/{{ policy.policy_id }}/status/disabled"
@@ -129,6 +140,10 @@
                         >
                             Disable
                     </a>
+                    {% endif %}
+                </ul>
+                {% if "DELETE_POLICY" in policy.allowed_actions %}
+                <div class="py-2">
                     <a href="#"
                            class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                            hx-delete="/policies/{{ policy.policy_id }}"
@@ -138,6 +153,7 @@
                             Delete
                     </a>
                 </div>
+                {% endif %}
             </div>
 
             {#        <button#}

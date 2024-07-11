@@ -17,7 +17,7 @@ from flask import session as flask_session
 from flask_pydantic import validate
 from models import AttributeDto, PolicyAttributeDbo, PolicyDbo, WebSession
 from repositories import DataObjectRepository, PolicyRepository, PrincipalRepository
-from views.controllers import AuthzController
+from views.controllers import AuthzController, PoliciesController
 from views.models import (
     AttributeListVm,
     PolicyCreateVm,
@@ -39,9 +39,21 @@ DEFAULT_SORT_KEY: str = "name"
 @oidc.oidc_auth("default")
 def index():
     query_state: TableQueryVm = TableQueryVm(sort_key=DEFAULT_SORT_KEY)
+    web_session: WebSession = WebSession(flask_session=flask_session)
+
+    with g.database.Session.begin() as session:
+        user_can_create_policy: bool = AuthzController().check(
+            session=session,
+            user_name=web_session.username,
+            action=OpaPermittaAuthzActionEnum.CREATE_POLICY,
+            object_state="New",
+        )
+
     response: Response = make_response(
         render_template(
-            "partials/policies/policies-search.html", query_state=query_state
+            "partials/policies/policies-search.html",
+            query_state=query_state,
+            user_can_create_policy=user_can_create_policy,
         )
     )
     return response
@@ -51,24 +63,29 @@ def index():
 @oidc.oidc_auth("default")
 @validate()
 def policies_table(query: TableQueryVm):
-    with g.database.Session.begin() as session:
-        policy_count, policies = PolicyRepository.get_all_with_search_and_pagination(
-            session=session,
-            sort_col_name=query.sort_key,  # TODO is this SQL injection?
-            page_number=query.page_number,
-            page_size=query.page_size,
-            search_term=query.search_term,
-        )
+    web_session: WebSession = WebSession(flask_session=flask_session)
 
-        query.record_count = policy_count
-        response: Response = make_response(
-            render_template(
-                template_name_or_list="partials/policies/policies-table.html",
-                policies=policies,
-                policy_count=policy_count,
-                query_state=query,
+    with g.database.Session.begin() as session:
+        policy_count, policies = (
+            PoliciesController.get_all_with_search_pagination_and_actions(
+                session,
+                user_name=web_session.username,
+                sort_col_name=query.sort_key,
+                page_number=query.page_number,
+                page_size=query.page_size,
+                search_term=query.search_term,
             )
         )
+
+    query.record_count = policy_count
+    response: Response = make_response(
+        render_template(
+            template_name_or_list="partials/policies/policies-table.html",
+            policies=policies,
+            policy_count=policy_count,
+            query_state=query,
+        )
+    )
     response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
     return response
 

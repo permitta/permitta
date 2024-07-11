@@ -3,9 +3,34 @@ from flask.testing import FlaskClient
 
 
 def test_index(client: FlaskClient):
+    # bob is not allowed to create policies
+    with client.session_transaction() as session:
+        session["userinfo"] = {
+            "email": "bob@permitta.co",
+        }
+
     response = client.get("/policies/")
-    # TODO implement snapshot tests
+
     assert response.status_code == 200
+    assert "createPolicyButton" not in response.text
+
+    # alice is allowed to create policies
+    with client.session_transaction() as session:
+        session["userinfo"] = {
+            "email": "alice@permitta.co",
+        }
+
+    response = client.get("/policies/")
+
+    assert response.status_code == 200
+    assert "createPolicyButton" in response.text
+
+
+def test_allowed_policy_actions():
+    """
+    Ensure that the UI renders the correct set of actions for each policy row
+    """
+    assert False
 
 
 def test_create_policy(flask_app: Flask, client: FlaskClient):
