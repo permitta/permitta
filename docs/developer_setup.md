@@ -1,5 +1,5 @@
-## Developer Setup
-### Install Dependencies
+# Developer Setup
+## Install Dependencies
 * `venv` and `node_modules` should both be at the project root
 * requires local installation of OPA, python 3.12 and a recent version of nodejs
 * supporting apps run under docker-compose
@@ -20,7 +20,7 @@ npm install
 npm start   # watches both the js folder and tailwind
 ```
 
-### Formatting
+## Formatting
 ```bash
 # in project root
 isort --profile black permitta/src
@@ -49,3 +49,14 @@ flask --app permitta.src.app run --debug --port 8000
 # nuking a bad flask process
 kill $(pgrep -f flask)
 ```
+
+## Documentation
+Docs are provided by `mkdocs` using the `mkdocs-material` theme.
+```bash
+# render docs for development
+mkdocs serve
+
+# build docs
+TBA
+```
+

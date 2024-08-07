@@ -3,8 +3,7 @@
 ## Web Authentication
 Currently the only available method for authenticating a web user is OIDC. This method should work for all OIDC providers
 
-See [here](permitta/src/auth/src/oidc_auth_provider_config.py) for configuration options
-
+See [here](../config/configuration.md) for configuration options
 
 ## API Authentication
 APIs are authenticated using an API key which can be generated via the CLI
@@ -48,7 +47,8 @@ e.g: The attribute `HR:Commercial` has the domain or subject `HR` and the label 
 
 
 ### Default Policies
-Permitta ships with a default RABAC policy with the following paradigm:
+Permitta ships with a default RABAC policy with the following paradigm
+
 * Read access is granted for all users on all things
 * A user with the attribute `permitta_role:admin` has full access to do anything
 * Policies for other users are RABAC in the sense that they acquire a role by owning an attribute, but still require other attributes to change certain objects
@@ -74,7 +74,7 @@ separation of responsibilities, no user can approve a policy they have authored.
 there is at least one owner and one separate maintainer per domain/subject. 
 
 A user can be the owner of multiple domain/subjects, allowing them to approve cross-domain policy changes. 
-For more information, see [Policy Management](policies.md)
+For more information, see [Policy Management](Policies/policies.md)
 
 
 

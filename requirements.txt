@@ -13,3 +13,5 @@ ldap3
 click
 requests
 responses
+mkdocs
+mkdocs-material
