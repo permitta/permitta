@@ -36,6 +36,7 @@ black permitta/src
 | FLASK_SECRET_KEY                 | Encrypts the cookies - use a complex, cryptographically secure string                             |
 | OIDC_AUTH_PROVIDER_CLIENT_SECRET | The client secret provided by the OIDC server (keycloak) - in docker/keycloak/permitta_realm.json |
 
+#### Starting the dev server
 ```bash
 # run dependencies
 docker-compose up -d
@@ -45,6 +46,9 @@ docker compose exec lldap /bootstrap/bootstrap.sh
 
 export PYTHONPATH=permitta/src
 flask --app permitta.src.app run --debug --port 8000
+
+# seed the database
+python permitta/permitta/src/seed_db.py
 
 # nuking a bad flask process
 kill $(pgrep -f flask)

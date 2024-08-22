@@ -11,7 +11,6 @@ dev_addr: localhost:8001
 
 nav:
   - Home: index.md
-  - Developer Setup: developer_setup.md
   - Policies:
     - Policy Management: policies/listing.md
     - Visual Builder: policies/builder.md
@@ -24,3 +23,4 @@ nav:
       - OIDC: config/properties_oidc.md
       - OPA Authorisation: config/properties_opa_authz.md
       - LDAP Client: config/properties_ldap_client.md
+  - Developer Setup: developer_setup.md

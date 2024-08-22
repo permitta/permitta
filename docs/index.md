@@ -1,5 +1,18 @@
 # Overview
 
+## Permitta makes using OPA with Trino simple and fun
+
+OPA and Trino are an awesome combination, but maintaining the policy documents and required data object
+can be painful. Permitta makes this easy with managed curation of principals, catalogs, schemas, tables and columns,
+as well as their associated ABAC attributes.
+
+Permitta provides an API to serve bundles to OPA, including:
+
+* Data objects and attributes ingested from various sources (SQL DBs,data catalogs etc)
+* Principals and attributes/groups ingested from identity providers (SQL DB, LDAP, etc)
+* `Rego` policy documents created in the visual builder or DSL editor
+
+## Architecture
 ![Overview](screenshots/overview-drawing.png)
 
 ## Motivation
@@ -19,7 +32,7 @@ as a (possibly) large JSON object, and updated whenever these values change.
 
 While extremely powerful, OPA is hard to use for non-developers, and has a significant integration cost. 
 
-Permitta simplifies the use of OPA with Trino by:
+**Permitta simplifies the use of OPA with Trino by:**
 
 * Providing a simple drag-and drop policy builder
 * Aggregating metadata from sources such as `Active Directory`
@@ -37,8 +50,10 @@ provided by Trino, against the data in the context data object.
 For example, a user executes a simple query:
 
 `SELECT a, b, c from datalake.hr.employees`
+
 This results in many requests to OPA, one of which checks if this user (alice) 
 is allowed to select these columns:
+
 ```json
 {
   "context": {
@@ -60,19 +75,56 @@ is allowed to select these columns:
 }
 ```
 
-OPA will use this `input` object along with the policy document and `data` object 
-supplied by Permitta to make a policy decision. An example below
+### Policy Implementation
+To implement ABAC policies with OPA, we require a `data` object containing the `principals` 
+and `data-objects` (schemas, tables, columns etc) as well at attributes or groups for each. 
+OPA uses the information in the `data` object, along with `input` object to enforce the rules
+defined in the rego policy document.
+
+#### Example Rego Policy Document
+This policy ensures that any user who exists in our data object is allowed to `SELECT` from
+any table in the `datalake` catalog, as long as the schema is in our data object. 
+All other operations on any other object will be denied
 
 ```rego
 package permitta.trino
 
-# data object for reference
-data := {
-  "users": {
-    "alice": {
-      
-    } 
-  }
+import rego.v1
+import data.trino
+
+allow if {
+  # action is SELECT
+  input.action.operation == "SelectFromColumns"
+  
+  # user exists in our data object
+  some principal in data.trino.principals
+  principal.name == input.context.identity.user
+  
+  # catalog is datalake
+  input.action.resource.table.catalogName == "datalake"
+  
+  # schema is in our data object
+  some schema in data.trino.schemas
+  schema.name == input.action.resource.table.schemaName
+}
+```
+
+#### Example Data object
+```json
+{ 
+  "principals": [
+    {
+      "name": "alice"
+    },
+    {
+      "name": "bob"
+    }
+  ],
+  "schemas": [
+    {
+      "name": "hr"
+    }
+  ]
 }
 
 ```
