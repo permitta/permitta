@@ -13,7 +13,7 @@ RABAC authorisation for Trino and OPA
 * SSO Integration (OIDC)
 
 ## Documentation
-TBA
+https://permitta.github.io/permitta/
 
 ## Development
 The Permitta dev environment relies on a postgres database, OPA, trino, hive-metastore, minio and lldap to run.

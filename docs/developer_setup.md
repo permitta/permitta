@@ -60,7 +60,10 @@ Docs are provided by `mkdocs` using the `mkdocs-material` theme.
 # render docs for development
 mkdocs serve
 
-# build docs
-TBA
+# deploy docs
+mkdocs gh-deploy
+
+# if it fails, try:
+git config http.postBuffer 524288000
 ```
 
