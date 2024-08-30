@@ -56,6 +56,7 @@ kill $(pgrep -f flask)
 
 ## Documentation
 Docs are provided by `mkdocs` using the `mkdocs-material` theme.
+The deployment command pushes the built docs to the `gh-pages` branch which triggers a deploy
 ```bash
 # render docs for development
 mkdocs serve
