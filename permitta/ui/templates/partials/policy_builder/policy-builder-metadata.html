@@ -6,6 +6,7 @@
             <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Name & Description
             </h3>
+            {% if save_enabled %}
             <button
                 id="savePolicyMetadataButton"
                 hx-include="#policy_metadata"
@@ -15,6 +16,7 @@
                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Save
             </button>
+            {% endif %}
         </div>
         <div class="w-full mb-1">
             <div class="mb-4">

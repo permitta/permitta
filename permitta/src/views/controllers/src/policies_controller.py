@@ -2,7 +2,7 @@ from typing import Tuple
 
 from app_logger import Logger, get_logger
 from auth import OpaAuthzProvider, OpaPermittaAuthzActionEnum
-from models import AttributeDto
+from models import AttributeDto, PolicyDbo
 from repositories import PolicyRepository
 from views.models import PolicyTRVm
 
@@ -12,6 +12,24 @@ logger: Logger = get_logger("controllers.policy")
 
 
 class PoliciesController:
+    @staticmethod
+    def _get_allowed_policies(
+        session, user_name: str, policy: PolicyDbo
+    ) -> list[OpaPermittaAuthzActionEnum]:
+        principal_attributes: list[AttributeDto] = (
+            PrincipalsController.get_principal_attributes_by_username(
+                session=session, user_name=user_name
+            )
+        )
+        authz: OpaAuthzProvider = OpaAuthzProvider(
+            user_name=user_name,
+            user_attributes=principal_attributes,
+        )
+        return authz.get_allowed_policy_actions(
+            object_state=policy.status,
+            object_attributes=[],  # TODO filtering by tags
+        )
+
     @staticmethod
     def get_all_with_search_pagination_and_actions(
         session,
@@ -29,24 +47,11 @@ class PoliciesController:
             search_term=search_term,
         )
 
-        principal_attributes: list[AttributeDto] = (
-            PrincipalsController.get_principal_attributes_by_username(
-                session=session, user_name=user_name
-            )
-        )
-
-        # send to OPA
-        authz: OpaAuthzProvider = OpaAuthzProvider(
-            user_name=user_name,
-            user_attributes=principal_attributes,
-        )
-
         policy_vms: list[PolicyTRVm] = []
         for policy in policies:
             allowed_actions: list[OpaPermittaAuthzActionEnum] = (
-                authz.get_allowed_policy_actions(
-                    object_state=policy.status,
-                    object_attributes=[],  # TODO filtering by tags
+                PoliciesController._get_allowed_policies(
+                    session=session, user_name=user_name, policy=policy
                 )
             )
 
@@ -64,5 +69,16 @@ class PoliciesController:
             )
         return policy_count, policy_vms
 
-    # @staticmethod
-    # def get_policy_with_allowed_actions():
+    @staticmethod
+    def get_policy_with_allowed_actions(
+        session, user_name: str, policy_id: int
+    ) -> Tuple[PolicyDbo, list[OpaPermittaAuthzActionEnum]]:
+        policy: PolicyDbo = PolicyRepository.get_by_id(
+            session=session, policy_id=policy_id
+        )
+        allowed_actions: list[OpaPermittaAuthzActionEnum] = (
+            PoliciesController._get_allowed_policies(
+                session=session, user_name=user_name, policy=policy
+            )
+        )
+        return policy, allowed_actions

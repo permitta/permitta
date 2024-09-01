@@ -24,6 +24,7 @@ from views.models import (
     PolicyDslVm,
     PolicyMetadataVm,
     TableQueryVm,
+    PolicyTRVm,
 )
 
 from opa import RegoGenerator
@@ -160,13 +161,16 @@ def clone_policy(policy_id: int):
 @oidc.oidc_auth("default")
 @validate()
 def get_policy(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(
-            session=session, policy_id=policy_id
+        policy, allowed_actions = PoliciesController.get_policy_with_allowed_actions(
+            session=session, user_name=web_session.username, policy_id=policy_id
         )
 
         if not policy:
             abort(404, "Policy not found")
+
+        save_enabled: bool = OpaPermittaAuthzActionEnum.EDIT_POLICY in allowed_actions
 
         response: Response = make_response(
             render_template(
@@ -175,6 +179,7 @@ def get_policy(policy_id: int):
                 policy_id=policy_id,
                 policy=policy,
                 policy_type=policy.policy_type,
+                save_enabled=save_enabled,
             )
         )
     response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
@@ -296,14 +301,17 @@ def delete_policy(policy_id: int):
 @bp.route("/<policy_id>/metadata_tab", methods=["GET"])
 @oidc.oidc_auth("default")
 @validate()
-def get_policy_metadata(policy_id: int):
+def get_policy_metadata_tab(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(
-            session=session, policy_id=policy_id
+        policy, allowed_actions = PoliciesController.get_policy_with_allowed_actions(
+            session=session, user_name=web_session.username, policy_id=policy_id
         )
 
         if not policy:
             abort(404, "Policy not found")
+
+        save_enabled: bool = OpaPermittaAuthzActionEnum.EDIT_POLICY in allowed_actions
 
         response: Response = make_response(
             render_template(
@@ -312,6 +320,7 @@ def get_policy_metadata(policy_id: int):
                 policy=policy,
                 policy_id=policy_id,
                 policy_type=policy.policy_type,
+                save_enabled=save_enabled,
             )
         )
     response.headers.set("HX-Trigger-After-Swap", "initialiseFlowbite")
@@ -366,15 +375,18 @@ def update_policy_metadata(policy_id: int, body: PolicyMetadataVm):
 @oidc.oidc_auth("default")
 @validate()
 def get_principal_attributes_tab(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     query_state: TableQueryVm = TableQueryVm(sort_key="user_name")
 
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(
-            session=session, policy_id=policy_id
+        policy, allowed_actions = PoliciesController.get_policy_with_allowed_actions(
+            session=session, user_name=web_session.username, policy_id=policy_id
         )
 
         if not policy:
             abort(404, "Policy not found")
+
+        save_enabled: bool = OpaPermittaAuthzActionEnum.EDIT_POLICY in allowed_actions
 
         return render_template(
             template_name_or_list="partials/policy_builder/policy-builder-principal-attributes.html",
@@ -382,6 +394,7 @@ def get_principal_attributes_tab(policy_id: int):
             policy_id=policy_id,
             policy_type=policy.policy_type,
             query_state=query_state,
+            save_enabled=save_enabled,
         )
 
 
@@ -457,17 +470,20 @@ def put_principal_attributes(policy_id: int, body: AttributeListVm):
 @oidc.oidc_auth("default")
 @validate()
 def get_object_attributes_tab(policy_id: int):
+    web_session: WebSession = WebSession(flask_session=flask_session)
     query_state: TableQueryVm = TableQueryVm(
         sort_key="tables.table_name", scope="tables"
     )
 
     with g.database.Session.begin() as session:
-        policy: PolicyDbo = PolicyRepository.get_by_id(
-            session=session, policy_id=policy_id
+        policy, allowed_actions = PoliciesController.get_policy_with_allowed_actions(
+            session=session, user_name=web_session.username, policy_id=policy_id
         )
 
         if not policy:
             abort(404, "Policy not found")
+
+        save_enabled: bool = OpaPermittaAuthzActionEnum.EDIT_POLICY in allowed_actions
 
         return render_template(
             template_name_or_list="partials/policy_builder/policy-builder-object-attributes.html",
@@ -475,6 +491,7 @@ def get_object_attributes_tab(policy_id: int):
             policy_id=policy_id,
             policy_type=policy.policy_type,
             query_state=query_state,
+            save_enabled=save_enabled,
         )
 
 
